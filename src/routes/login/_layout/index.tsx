@@ -5,6 +5,7 @@ import { useState } from "react";
 import { v4 as uuid } from "uuid";
 import z from "zod";
 
+import { appName } from "@/constants/appName";
 import { useLoginStore } from "@/store/login";
 
 const LoginSchema = z.object({
@@ -93,7 +94,7 @@ const authApplication = async ({
       ...login,
       instance: loginData.instance,
     });
-    const authURL = `https://${encodeURIComponent(loginData.instance)}/miauth/${id}?name=milistenna&callback=${appURL}&icon=${encodeURIComponent("https://raw.githubusercontent.com/Simirall/milistenna/refs/heads/main/public/192.png")}&permission=read:account,write:account,read:following`;
+    const authURL = `https://${encodeURIComponent(loginData.instance)}/miauth/${id}?name=${appName}&callback=${appURL}&icon=${encodeURIComponent("https://raw.githubusercontent.com/Simirall/milistenna/refs/heads/main/public/192.png")}&permission=read:account,write:account,read:following`;
     window.location.href = authURL;
   } catch (e) {
     setLoginError("それは正しいMisskeyインスタンスですか？");

@@ -1,3 +1,4 @@
+import { appName } from "@/constants/appName";
 import { HStack, Heading, useColorModeValue } from "@yamada-ui/react";
 import { HeaderMenu } from "./HeaderMenu";
 
@@ -17,7 +18,7 @@ export const Header = () => {
       bg={bg}
       backdropFilter="blur(8px) saturate(1.5)"
     >
-      <Heading>Milistenna</Heading>
+      <Heading>{appName}</Heading>
       <HeaderMenu />
     </HStack>
   );
