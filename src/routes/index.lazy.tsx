@@ -1,4 +1,4 @@
-import { useMySelfStore } from "@/store/user";
+import { useLoginStore } from "@/store/login";
 import { createLazyFileRoute } from "@tanstack/react-router";
 import { Heading } from "@yamada-ui/react";
 
@@ -7,7 +7,7 @@ export const Route = createLazyFileRoute("/")({
 });
 
 function RouteComponent() {
-  const { mySelf } = useMySelfStore();
+  const { mySelf } = useLoginStore();
   return (
     <>
       <Heading>{`Hello ! ${mySelf?.name}`}</Heading>

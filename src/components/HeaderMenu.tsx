@@ -1,5 +1,3 @@
-import { useLoginStore } from "@/store/login";
-import { useMySelfStore } from "@/store/user";
 import { DotsNine, MoonStars, SunDim } from "@phosphor-icons/react";
 import { useRouter } from "@tanstack/react-router";
 import {
@@ -15,10 +13,11 @@ import {
   useDisclosure,
 } from "@yamada-ui/react";
 
+import { useLoginStore } from "@/store/login";
+
 export const HeaderMenu = () => {
   const router = useRouter();
-  const { mySelf } = useMySelfStore();
-  const { logout } = useLoginStore();
+  const { logout, mySelf } = useLoginStore();
   const { toggleColorMode } = useColorMode();
 
   const { isOpen, onOpen, onClose } = useDisclosure();
