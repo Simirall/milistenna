@@ -1,15 +1,17 @@
+import type { MeDetailed } from "misskey-js/entities.js";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { useMySelfStore } from "./user";
 
 export type LoginState = {
   isLogin: boolean;
   token?: string;
   instance?: string;
+  mySelf?: MeDetailed;
 };
 
 type LoginActions = {
-  login: (payload: Required<Omit<LoginState, "isLogin">>) => void;
+  login: (payload: Required<Omit<LoginState, "isLogin" | "mySelf">>) => void;
+  setMySelf: (payload: MeDetailed) => void;
   logout: () => void;
 };
 
@@ -22,13 +24,16 @@ export const useLoginStore = create<LoginState & LoginActions>()(
           isLogin: true,
           ...payload,
         })),
+      setMySelf: (payload) =>
+        set({
+          mySelf: payload,
+        }),
       logout: () => {
         set(() => ({
           isLogin: false,
-        }));
-        useMySelfStore.setState({
           mySelf: undefined,
-        });
+          instance: undefined,
+        }));
       },
     }),
     { name: "login" },

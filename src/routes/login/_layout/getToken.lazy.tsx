@@ -2,9 +2,7 @@ import { createLazyFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect } from "react";
 
 import type { LoginState } from "@/store/login";
-
 import { useLoginStore } from "@/store/login";
-import { useMySelfStore } from "@/store/user";
 
 export const Route = createLazyFileRoute("/login/_layout/getToken")({
   component: GetToken,
@@ -28,7 +26,6 @@ function GetToken() {
 }
 
 const fetchData = async (tokenUrl: string, login: LoginState) => {
-  const setMyself = useMySelfStore.setState;
   const setLogin = useLoginStore.setState;
 
   try {
@@ -41,11 +38,11 @@ const fetchData = async (tokenUrl: string, login: LoginState) => {
     const data = await res.json();
 
     if (data.token) {
-      setMyself({ mySelf: data.user });
       setLogin({
         ...login,
         isLogin: true,
         token: data.token,
+        mySelf: data.user,
       });
     }
   } catch (error) {
