@@ -1,4 +1,5 @@
 import { appName } from "@/constants/appName";
+import { Link } from "@tanstack/react-router";
 import { HStack, Heading, useColorModeValue } from "@yamada-ui/react";
 import { HeaderMenu } from "./HeaderMenu";
 
@@ -18,7 +19,9 @@ export const Header = () => {
       bg={bg}
       backdropFilter="blur(8px) saturate(1.5)"
     >
-      <Heading>{appName}</Heading>
+      <Heading as={Link} to="/" isTruncated>
+        {appName}
+      </Heading>
       <HeaderMenu />
     </HStack>
   );
