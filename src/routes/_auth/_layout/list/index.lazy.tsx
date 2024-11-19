@@ -1,10 +1,10 @@
 import { useGetUserListsList } from "@/apis/lists/useGetUsersListsList";
-import { FloatLinkButton } from "@/components/FloatLinkButton";
 import { GridCard } from "@/components/GridCard";
 import { GridContainer } from "@/components/GridContainer";
 import { LinkButton } from "@/components/LinkButton";
 import { createLazyFileRoute } from "@tanstack/react-router";
 import { Container, Heading, Text } from "@yamada-ui/react";
+import { CreateListModalButton } from "./-components/CreateListModal";
 
 export const Route = createLazyFileRoute("/_auth/_layout/list/")({
   component: RouteComponent,
@@ -39,10 +39,7 @@ function RouteComponent() {
             ))}
         </GridContainer>
       </Container>
-      <FloatLinkButton
-        colorScheme="sky"
-        linkProps={{ to: "/list/$edit", params: { edit: "create" } }}
-      />
+      <CreateListModalButton />
     </>
   );
 }
