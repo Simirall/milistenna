@@ -10,9 +10,10 @@ export const usersListsShowQueryOptions = (listId: string) =>
     queryFn: fetcher(endpoint, {
       listId,
     }),
+    enabled: !!listId,
   });
 
-export const useUsersListsShow = (listId: string) => () => {
+export const useGetUsersListsShow = (listId: string) => () => {
   const { data, refetch } = useQuery<UserList | MkError>(
     usersListsShowQueryOptions(listId),
   );

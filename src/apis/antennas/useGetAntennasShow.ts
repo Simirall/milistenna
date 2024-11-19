@@ -10,6 +10,7 @@ export const antennaShowQueryOptions = (antennaId: string) =>
     queryFn: fetcher(endpoint, {
       antennaId,
     }),
+    enabled: !!antennaId,
   });
 
 export const useGetAntennasShow = (antennaId: string) => () => {
