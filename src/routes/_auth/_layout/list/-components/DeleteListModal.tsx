@@ -33,7 +33,7 @@ const DeleteListModal: FC<{
       <ModalFooter>
         <Button
           size="lg"
-          variant="surface"
+          variant="solid"
           colorScheme="red"
           isLoading={isSubmitting}
           onClick={async () => {
@@ -54,7 +54,7 @@ const DeleteListModal: FC<{
         <Button
           size="lg"
           variant="subtle"
-          colorScheme="neutral"
+          colorScheme="red"
           isLoading={isSubmitting}
           onClick={onClose}
         >
