@@ -4,6 +4,8 @@ import { useEffect } from "react";
 import { Loader } from "@/components/Loader";
 import type { LoginState } from "@/store/login";
 import { useLoginStore } from "@/store/login";
+import { getApiUrl } from "@/utils/getApiUrl";
+import type { MeDetailed } from "misskey-js/entities.js";
 
 export const Route = createLazyFileRoute("/login/_layout/getToken")({
   component: GetToken,
@@ -39,11 +41,22 @@ const fetchData = async (tokenUrl: string, login: LoginState) => {
     const data = await res.json();
 
     if (data.token) {
+      const ires = await fetch(getApiUrl("i"), {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          i: data.token,
+        }),
+      });
+      const me: MeDetailed = await ires.json();
+
       setLogin({
         ...login,
         isLogin: true,
         token: data.token,
-        mySelf: data.user,
+        mySelf: me,
       });
     }
   } catch (error) {
