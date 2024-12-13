@@ -3,8 +3,9 @@ import { FloatLinkButton } from "@/components/FloatLinkButton";
 import { GridCard } from "@/components/GridCard";
 import { GridContainer } from "@/components/GridContainer";
 import { LinkButton } from "@/components/LinkButton";
+import { Loader } from "@/components/Loader";
 import { createLazyFileRoute } from "@tanstack/react-router";
-import { Container, Heading, Text } from "@yamada-ui/react";
+import { Center, Container, Heading, Text } from "@yamada-ui/react";
 import type { Antenna } from "misskey-js/entities.js";
 
 export const Route = createLazyFileRoute("/_auth/_layout/antenna/")({
@@ -22,32 +23,12 @@ const antennaSource: {
 };
 
 function RouteComponent() {
-  const { data } = useGetAntennasList();
-
   return (
     <>
       <Container px="10vw">
         <Heading textAlign="center">アンテナ一覧</Heading>
         <GridContainer>
-          {data &&
-            data.length > 0 &&
-            data.map((a) => (
-              <GridCard
-                key={a.id}
-                title={a.name}
-                colorScheme="violet"
-                footer={
-                  <LinkButton
-                    linkProps={{ to: "/antenna/$edit", params: { edit: a.id } }}
-                    buttonProps={{ colorScheme: "purple", variant: "surface" }}
-                  >
-                    編集
-                  </LinkButton>
-                }
-              >
-                <Text>ソース: {antennaSource[a.src]}</Text>
-              </GridCard>
-            ))}
+          <AntennaList />
         </GridContainer>
       </Container>
       <FloatLinkButton
@@ -57,3 +38,33 @@ function RouteComponent() {
     </>
   );
 }
+
+const AntennaList = () => {
+  const { data } = useGetAntennasList();
+
+  if (!data) {
+    return <Loader />;
+  }
+
+  if (data.length === 0) {
+    return <Center>ありません</Center>;
+  }
+
+  return data.map((a) => (
+    <GridCard
+      key={a.id}
+      title={a.name}
+      colorScheme="violet"
+      footer={
+        <LinkButton
+          linkProps={{ to: "/antenna/$edit", params: { edit: a.id } }}
+          buttonProps={{ colorScheme: "purple", variant: "surface" }}
+        >
+          編集
+        </LinkButton>
+      }
+    >
+      <Text>ソース: {antennaSource[a.src]}</Text>
+    </GridCard>
+  ));
+};
