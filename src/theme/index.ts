@@ -21,6 +21,13 @@ const theme: UsageTheme = {
         marginBlockStart: "-0.2em",
       },
     },
+    Switch: {
+      baseStyle: {
+        label: {
+          marginBlockStart: "-0.2em",
+        },
+      },
+    },
   },
 };
 

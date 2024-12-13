@@ -1,6 +1,7 @@
 import { createLazyFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect } from "react";
 
+import { Loader } from "@/components/Loader";
 import type { LoginState } from "@/store/login";
 import { useLoginStore } from "@/store/login";
 
@@ -22,7 +23,7 @@ function GetToken() {
     }
   }, [login, navigate]);
 
-  return <>loading...</>;
+  return <Loader />;
 }
 
 const fetchData = async (tokenUrl: string, login: LoginState) => {

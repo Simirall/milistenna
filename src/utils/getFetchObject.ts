@@ -1,6 +1,8 @@
 import { useLoginStore } from "@/store/login";
 
-export const getFetchObject = (obj: Record<string, unknown> = {}) => ({
+export const getFetchObject = <T = undefined | Record<string, unknown>>(
+  obj: T,
+) => ({
   method: "POST",
   headers: {
     "Content-Type": "application/json",

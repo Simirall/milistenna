@@ -16,6 +16,7 @@ import {
   VStack,
   useDisclosure,
 } from "@yamada-ui/react";
+import type { UsersListsCreateRequest } from "misskey-js/entities.js";
 import type { FC } from "react";
 import { z } from "zod";
 
@@ -43,7 +44,7 @@ const CreateListModal: FC<{ isOpen: boolean; onClose: () => void }> = ({
     onSubmit: async ({ value }) => {
       await fetch(
         getApiUrl("users/lists/create"),
-        getFetchObject({
+        getFetchObject<UsersListsCreateRequest>({
           name: value.name,
         }),
       );
