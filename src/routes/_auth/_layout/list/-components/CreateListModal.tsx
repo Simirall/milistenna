@@ -36,7 +36,7 @@ const CreateListModal: FC<{ isOpen: boolean; onClose: () => void }> = ({
   const form = useForm({
     defaultValues: {
       name: "",
-    } as z.infer<typeof createListSchema>,
+    } satisfies z.infer<typeof createListSchema>,
     validatorAdapter: zodValidator(),
     validators: {
       onChange: createListSchema,
