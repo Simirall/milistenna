@@ -1,6 +1,8 @@
 import { useGetUsersListsShow } from "@/apis/lists/useGetUsersListsShow";
+import { AddUserModalButton } from "@/components/AddUserModal";
 import { Loader } from "@/components/Loader";
 import { UserCardContainer } from "@/components/UserCardContainer";
+import { useLoginStore } from "@/store/login";
 import { getApiUrl } from "@/utils/getApiUrl";
 import { getFetchObject } from "@/utils/getFetchObject";
 import { isError } from "@/utils/isError";
@@ -13,8 +15,10 @@ import {
   Button,
   FormControl,
   HStack,
+  Heading,
   Input,
   Switch,
+  Text,
   VStack,
 } from "@yamada-ui/react";
 import type { UserList, UsersListsUpdateRequest } from "misskey-js/entities.js";
@@ -37,6 +41,7 @@ const editListSchema = z.object({
 
 function RouteComponent() {
   const { edit } = Route.useParams();
+  const { mySelf } = useLoginStore();
   const { data } = useGetUsersListsShow(edit)();
 
   if (!data || isError(data)) {
@@ -45,7 +50,14 @@ function RouteComponent() {
 
   return (
     <VStack p="4">
+      <Heading size="lg">{data.name}</Heading>
       <ListForm data={data} listId={edit} />
+      <AddUserModalButton />
+      <Text>
+        メンバー(
+        {`${data.userIds?.length ?? 0}/${mySelf?.policies.userEachUserListsLimit}`}
+        )
+      </Text>
       {data.userIds && <UserCardContainer userIds={data.userIds} />}
     </VStack>
   );
