@@ -26,17 +26,17 @@ function RouteComponent() {
 }
 
 const ListList = () => {
-  const { data } = useGetUserListsList();
+  const { lists } = useGetUserListsList();
 
-  if (!data) {
+  if (!lists) {
     return <Loader />;
   }
 
-  if (data.length === 0) {
+  if (lists.length === 0) {
     return <Center>ありません</Center>;
   }
 
-  return data.map((l) => (
+  return lists.map((l) => (
     <GridCard
       key={l.id}
       title={l.name}

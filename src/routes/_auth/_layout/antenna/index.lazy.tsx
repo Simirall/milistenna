@@ -40,17 +40,17 @@ function RouteComponent() {
 }
 
 const AntennaList = () => {
-  const { data } = useGetAntennasList();
+  const { antennas } = useGetAntennasList();
 
-  if (!data) {
+  if (!antennas) {
     return <Loader />;
   }
 
-  if (data.length === 0) {
+  if (antennas.length === 0) {
     return <Center>ありません</Center>;
   }
 
-  return data.map((a) => (
+  return antennas.map((a) => (
     <GridCard
       key={a.id}
       title={a.name}

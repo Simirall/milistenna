@@ -2,7 +2,6 @@ import { useGetUsersListsShow } from "@/apis/lists/useGetUsersListsShow";
 import { useDebouncedGetUsersSearchByUsernameAndHost } from "@/apis/users/useGetUsersSearchByUsernameAndHost";
 import { getApiUrl } from "@/utils/getApiUrl";
 import { getFetchObject } from "@/utils/getFetchObject";
-import { isNotError } from "@/utils/isError";
 import { At, Plus } from "@phosphor-icons/react";
 import { useParams } from "@tanstack/react-router";
 import {
@@ -39,9 +38,9 @@ const AddUserModal: FC<{ isOpen: boolean; onClose: () => void }> = ({
   const [host, setHost] = useState("");
 
   const { edit } = useParams({ strict: false });
-  const { refetch } = useGetUsersListsShow(edit ?? "")();
+  const { refetch } = useGetUsersListsShow(edit ?? "");
 
-  const { data } = useDebouncedGetUsersSearchByUsernameAndHost({
+  const { users, isLoading } = useDebouncedGetUsersSearchByUsernameAndHost({
     username,
     host,
   });
@@ -88,18 +87,17 @@ const AddUserModal: FC<{ isOpen: boolean; onClose: () => void }> = ({
             />
           </InputGroup>
         </HStack>
-        {(username || host) && !data && (
+        {(username || host) && isLoading && (
           <Center w="full">
             <Loader />
           </Center>
         )}
-        {data &&
-          isNotError(data) &&
-          (data.length === 0 ? (
+        {users &&
+          (users.length === 0 ? (
             <Text>いません</Text>
           ) : (
             <VStack>
-              {data.map((u) => (
+              {users.map((u) => (
                 <UserCard
                   key={u.id}
                   userId={u.id}

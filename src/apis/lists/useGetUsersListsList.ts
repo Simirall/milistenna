@@ -1,14 +1,36 @@
 import { fetcher } from "@/utils/fetcher";
-import { useQuery } from "@tanstack/react-query";
-import type { UserList } from "misskey-js/entities.js";
+import { defaultQueryConfig } from "@/utils/queryConfig";
+import { queryOptions } from "@tanstack/react-query";
+import type { Error as MkError, UserList } from "misskey-js/entities.js";
+import { useApiQuery } from "../useApiQuery";
 
 const endpoint = "users/lists/list";
 
-export const useGetUserListsList = () => {
-  const { data, refetch } = useQuery<ReadonlyArray<UserList>>({
+/**
+ * ユーザーリスト一覧を取得するためのクエリオプション
+ * @returns ユーザーリスト一覧を取得するためのクエリオプション
+ */
+export const usersListsListQueryOptions = () =>
+  queryOptions<ReadonlyArray<UserList> | MkError>({
     queryKey: [endpoint],
     queryFn: fetcher(endpoint),
+    ...defaultQueryConfig,
   });
 
-  return { data, refetch };
+/**
+ * ユーザーリスト一覧を取得するためのカスタムフック
+ * @returns ユーザーリスト一覧とクエリの状態
+ */
+export const useGetUserListsList = () => {
+  const { data, isLoading, error, refetch, isApiError } = useApiQuery(
+    usersListsListQueryOptions(),
+  );
+
+  return {
+    lists: data,
+    isLoading,
+    isApiError,
+    error,
+    refetch,
+  };
 };

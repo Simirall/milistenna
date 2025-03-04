@@ -42,35 +42,35 @@ const editListSchema = z.object({
 function RouteComponent() {
   const { edit } = Route.useParams();
   const { mySelf } = useLoginStore();
-  const { data } = useGetUsersListsShow(edit)();
+  const { list } = useGetUsersListsShow(edit);
 
-  if (!data || isError(data)) {
+  if (!list || isError(list)) {
     return <Loader />;
   }
 
   return (
     <VStack p="4">
-      <Heading size="lg">{data.name}</Heading>
-      <ListForm data={data} listId={edit} />
+      <Heading size="lg">{list.name}</Heading>
+      <ListForm list={list} listId={edit} />
       <AddUserModalButton />
       <Text>
         メンバー(
-        {`${data.userIds?.length ?? 0}/${mySelf?.policies.userEachUserListsLimit}`}
+        {`${list.userIds?.length ?? 0}/${mySelf?.policies.userEachUserListsLimit}`}
         )
       </Text>
-      {data.userIds && <UserCardContainer userIds={data.userIds} />}
+      {list.userIds && <UserCardContainer userIds={list.userIds} />}
     </VStack>
   );
 }
 
-const ListForm: FC<{ data: UserList; listId: string }> = ({ data, listId }) => {
-  const { refetch } = useGetUsersListsShow(listId)();
+const ListForm: FC<{ list: UserList; listId: string }> = ({ list, listId }) => {
+  const { refetch } = useGetUsersListsShow(listId);
 
   const form = useForm({
     defaultValues: {
       listId: listId,
-      name: data.name,
-      isPublic: data.isPublic,
+      name: list.name,
+      isPublic: list.isPublic,
     } satisfies z.infer<typeof editListSchema>,
     validatorAdapter: zodValidator(),
     validators: {
@@ -135,7 +135,7 @@ const ListForm: FC<{ data: UserList; listId: string }> = ({ data, listId }) => {
             >
               変更
             </Button>
-            <DeleteListButton listId={data.id} name={data.name} />
+            <DeleteListButton listId={list.id} name={list.name} />
           </HStack>
         </VStack>
       </AccordionItem>

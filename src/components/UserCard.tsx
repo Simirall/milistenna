@@ -1,5 +1,4 @@
 import { useGetUsersShow } from "@/apis/users/useGetUsersShow";
-import { isError } from "@/utils/isError";
 import { FediverseLogo } from "@phosphor-icons/react";
 import {
   Avatar,
@@ -18,13 +17,13 @@ export const UserCard: FC<{ userId: string; clickAction?: () => void }> = ({
   userId,
   clickAction,
 }) => {
-  const { data } = useGetUsersShow(userId)();
+  const { user, isLoading } = useGetUsersShow(userId);
   const hoverBg = useColorModeValue<Theme["colors"], Theme["colors"]>(
     "sky.50",
     "sky.950",
   );
 
-  if (!data || isError(data)) {
+  if (isLoading || !user) {
     return <CardSkeleton />;
   }
 
@@ -41,16 +40,16 @@ export const UserCard: FC<{ userId: string; clickAction?: () => void }> = ({
       <CardBody>
         <HStack w="full">
           <Avatar
-            src={data.avatarUrl ?? undefined}
+            src={user.avatarUrl ?? undefined}
             icon={<FediverseLogo fontSize="2rem" />}
           />
           <VStack gap="0" w="full" overflow="hidden">
             <Text isTruncated fontSize="xl">
-              {data.name}
+              {user.name}
             </Text>
             <Text isTruncated>
-              @{data.username}
-              {data.host && `@${data.host}`}
+              @{user.username}
+              {user.host && `@${user.host}`}
             </Text>
           </VStack>
         </HStack>
