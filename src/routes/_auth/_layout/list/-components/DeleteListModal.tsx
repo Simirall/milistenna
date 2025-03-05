@@ -15,17 +15,17 @@ import type { UsersListsDeleteRequest } from "misskey-js/entities.js";
 import { type FC, useState } from "react";
 
 const DeleteListModal: FC<{
-  isOpen: boolean;
+  open: boolean;
   onClose: () => void;
   listId: string;
   name: string;
-}> = ({ isOpen, onClose, listId, name }) => {
+}> = ({ open, onClose, listId, name }) => {
   const { refetch } = useGetUserListsList();
   const navigate = useNavigate();
   const [isSubmitting, setSubmitting] = useState(false);
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
+    <Modal open={open} onClose={onClose}>
       <ModalHeader>リストを削除</ModalHeader>
       <ModalBody>
         <Text>{name}を削除しますか？</Text>
@@ -35,7 +35,7 @@ const DeleteListModal: FC<{
           size="lg"
           variant="solid"
           colorScheme="red"
-          isLoading={isSubmitting}
+          loading={isSubmitting}
           onClick={async () => {
             setSubmitting(true);
             await fetch(
@@ -55,7 +55,7 @@ const DeleteListModal: FC<{
           size="lg"
           variant="subtle"
           colorScheme="red"
-          isLoading={isSubmitting}
+          loading={isSubmitting}
           onClick={onClose}
         >
           キャンセル
@@ -69,7 +69,7 @@ export const DeleteListButton: FC<{ listId: string; name: string }> = ({
   listId,
   name,
 }) => {
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const { open, onOpen, onClose } = useDisclosure();
 
   return (
     <>
@@ -77,7 +77,7 @@ export const DeleteListButton: FC<{ listId: string; name: string }> = ({
         削除
       </Button>
       <DeleteListModal
-        isOpen={isOpen}
+        open={open}
         onClose={onClose}
         listId={listId}
         name={name}

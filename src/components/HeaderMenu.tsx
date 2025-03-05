@@ -20,7 +20,7 @@ export const HeaderMenu = () => {
   const { logout, mySelf } = useLoginStore();
   const { toggleColorMode } = useColorMode();
 
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const { open, onOpen, onClose } = useDisclosure();
   const colorModeButton = useColorModeValue(
     <MoonStars weight="fill" />,
     <SunDim weight="fill" />,
@@ -28,7 +28,7 @@ export const HeaderMenu = () => {
   const colorModeButtonColor = useColorModeValue("orange.900", "orange.100");
 
   return (
-    <Menu isOpen={isOpen} onOpen={onOpen} onClose={onClose}>
+    <Menu open={open} onOpen={onOpen} onClose={onClose}>
       <MenuButton as={IconButton} size="lg" borderRadius="full">
         <Avatar
           src={mySelf?.avatarUrl ?? undefined}

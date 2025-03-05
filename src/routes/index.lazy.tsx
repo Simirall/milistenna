@@ -14,7 +14,7 @@ function RouteComponent() {
           size="xl"
           colorScheme="sky"
           variant="subtle"
-          rightIcon={<ListDashes weight="fill" size="28" />}
+          endIcon={<ListDashes weight="fill" size="28" />}
           as={Link}
           to="/list"
         >
@@ -24,7 +24,7 @@ function RouteComponent() {
           size="xl"
           colorScheme="violet"
           variant="subtle"
-          rightIcon={<Broadcast weight="fill" size="28" />}
+          endIcon={<Broadcast weight="fill" size="28" />}
           as={Link}
           to="/antenna"
         >

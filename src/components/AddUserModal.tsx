@@ -30,8 +30,8 @@ const addUserToList = async (payload: UsersListsPushRequest) => {
   );
 };
 
-const AddUserModal: FC<{ isOpen: boolean; onClose: () => void }> = ({
-  isOpen,
+const AddUserModal: FC<{ open: boolean; onClose: () => void }> = ({
+  open,
   onClose,
 }) => {
   const [username, setUsername] = useState("");
@@ -47,7 +47,7 @@ const AddUserModal: FC<{ isOpen: boolean; onClose: () => void }> = ({
 
   return (
     <Modal
-      isOpen={isOpen}
+      open={open}
       onClose={() => {
         onClose();
         setUsername("");
@@ -121,12 +121,12 @@ const AddUserModal: FC<{ isOpen: boolean; onClose: () => void }> = ({
 };
 
 export const AddUserModalButton = () => {
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const { open, onOpen, onClose } = useDisclosure();
 
   return (
     <>
       <Button
-        leftIcon={<Plus />}
+        startIcon={<Plus />}
         onClick={onOpen}
         colorScheme="cyan"
         variant="surface"
@@ -134,7 +134,7 @@ export const AddUserModalButton = () => {
       >
         追加
       </Button>
-      <AddUserModal isOpen={isOpen} onClose={onClose} />
+      <AddUserModal open={open} onClose={onClose} />
     </>
   );
 };

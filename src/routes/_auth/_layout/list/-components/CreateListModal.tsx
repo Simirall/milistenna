@@ -27,8 +27,8 @@ const createListSchema = z.object({
     .max(100, "最大100文字までです"),
 });
 
-const CreateListModal: FC<{ isOpen: boolean; onClose: () => void }> = ({
-  isOpen,
+const CreateListModal: FC<{ open: boolean; onClose: () => void }> = ({
+  open,
   onClose,
 }) => {
   const { refetch } = useGetUserListsList();
@@ -56,7 +56,7 @@ const CreateListModal: FC<{ isOpen: boolean; onClose: () => void }> = ({
 
   return (
     <Modal
-      isOpen={isOpen}
+      open={open}
       onClose={() => {
         form.reset();
         onClose();
@@ -75,7 +75,7 @@ const CreateListModal: FC<{ isOpen: boolean; onClose: () => void }> = ({
           <form.Field name="name">
             {(field) => (
               <FormControl
-                isInvalid={field.state.meta.errors.length > 0}
+                invalid={field.state.meta.errors.length > 0}
                 errorMessage={field.state.meta.errors}
               >
                 <Input
@@ -94,7 +94,7 @@ const CreateListModal: FC<{ isOpen: boolean; onClose: () => void }> = ({
                 <Button
                   type="submit"
                   disabled={!canSubmit}
-                  isLoading={isSubmitting}
+                  loading={isSubmitting}
                   colorScheme="sky"
                   flex={1}
                 >
@@ -121,7 +121,7 @@ const CreateListModal: FC<{ isOpen: boolean; onClose: () => void }> = ({
 };
 
 export const CreateListModalButton = () => {
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const { open, onOpen, onClose } = useDisclosure();
 
   return (
     <>
@@ -136,7 +136,7 @@ export const CreateListModalButton = () => {
       >
         <Plus weight="bold" fontSize="1.6rem" />
       </IconButton>
-      <CreateListModal isOpen={isOpen} onClose={onClose} />
+      <CreateListModal open={open} onClose={onClose} />
     </>
   );
 };

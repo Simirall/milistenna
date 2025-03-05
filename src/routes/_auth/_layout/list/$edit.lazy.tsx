@@ -101,8 +101,8 @@ const ListForm: FC<{ list: UserList; listId: string }> = ({ list, listId }) => {
             {(field) => (
               <FormControl
                 label="リスト名"
-                isRequired
-                isInvalid={field.state.meta.errors.length > 0}
+                required
+                invalid={field.state.meta.errors.length > 0}
                 errorMessage={field.state.meta.errors}
               >
                 <Input
@@ -118,7 +118,7 @@ const ListForm: FC<{ list: UserList; listId: string }> = ({ list, listId }) => {
               <Switch
                 size="lg"
                 colorScheme="teal"
-                isChecked={field.state.value}
+                checked={field.state.value}
                 onChange={(e) => field.handleChange(e.target.checked)}
               >
                 パブリック
@@ -131,7 +131,7 @@ const ListForm: FC<{ list: UserList; listId: string }> = ({ list, listId }) => {
               colorScheme="cyan"
               variant="surface"
               size="lg"
-              isLoading={form.state.isSubmitting}
+              loading={form.state.isSubmitting}
             >
               変更
             </Button>
