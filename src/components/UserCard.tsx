@@ -10,13 +10,14 @@ import {
   VStack,
   useColorModeValue,
 } from "@yamada-ui/react";
-import type { FC } from "react";
+import type { FC, ReactElement } from "react";
 import { CardSkeleton } from "./CardSkeleton";
 
-export const UserCard: FC<{ userId: string; clickAction?: () => void }> = ({
-  userId,
-  clickAction,
-}) => {
+export const UserCard: FC<{
+  userId: string;
+  clickAction?: () => void;
+  endComponent?: ReactElement;
+}> = ({ userId, clickAction, endComponent }) => {
   const { user, isLoading } = useGetUsersShow(userId);
   const hoverBg = useColorModeValue<Theme["colors"], Theme["colors"]>(
     "sky.50",
@@ -36,6 +37,7 @@ export const UserCard: FC<{ userId: string; clickAction?: () => void }> = ({
           backgroundColor: hoverBg,
         },
       })}
+      width="full"
     >
       <CardBody>
         <HStack w="full">
@@ -52,6 +54,7 @@ export const UserCard: FC<{ userId: string; clickAction?: () => void }> = ({
               {user.host && `@${user.host}`}
             </Text>
           </VStack>
+          {endComponent}
         </HStack>
       </CardBody>
     </Card>

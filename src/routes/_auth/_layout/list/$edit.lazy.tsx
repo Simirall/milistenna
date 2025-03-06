@@ -1,7 +1,7 @@
 import { useGetUsersListsShow } from "@/apis/lists/useGetUsersListsShow";
 import { AddUserModalButton } from "@/components/AddUserModal";
 import { Loader } from "@/components/Loader";
-import { UserCardContainer } from "@/components/UserCardContainer";
+import { UserCard } from "@/components/UserCard";
 import { useLoginStore } from "@/store/login";
 import { getApiUrl } from "@/utils/getApiUrl";
 import { getFetchObject } from "@/utils/getFetchObject";
@@ -24,6 +24,7 @@ import type { UserList, UsersListsUpdateRequest } from "misskey-js/entities.js";
 import type { FC } from "react";
 import { z } from "zod";
 import { DeleteListButton } from "./-components/DeleteListModal";
+import { DeleteUserButton } from "./-components/DeleteUserModal";
 
 export const Route = createLazyFileRoute("/_auth/_layout/list/$edit")({
   component: RouteComponent,
@@ -57,7 +58,17 @@ function RouteComponent() {
         {`${list.userIds?.length ?? 0}/${mySelf?.policies.userEachUserListsLimit}`}
         )
       </Text>
-      {list.userIds && <UserCardContainer userIds={list.userIds} />}
+      {list.userIds && (
+        <VStack>
+          {list.userIds.map((u) => (
+            <UserCard
+              key={u}
+              userId={u}
+              endComponent={<DeleteUserButton listId={list.id} userId={u} />}
+            />
+          ))}
+        </VStack>
+      )}
     </VStack>
   );
 }
