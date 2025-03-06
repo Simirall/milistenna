@@ -3,7 +3,6 @@ import { getApiUrl } from "@/utils/getApiUrl";
 import { getFetchObject } from "@/utils/getFetchObject";
 import { Plus } from "@phosphor-icons/react";
 import { useForm } from "@tanstack/react-form";
-import { zodValidator } from "@tanstack/zod-form-adapter";
 import {
   Button,
   FormControl,
@@ -37,7 +36,6 @@ const CreateListModal: FC<{ open: boolean; onClose: () => void }> = ({
     defaultValues: {
       name: "",
     } satisfies z.infer<typeof createListSchema>,
-    validatorAdapter: zodValidator(),
     validators: {
       onChange: createListSchema,
     },
@@ -76,7 +74,7 @@ const CreateListModal: FC<{ open: boolean; onClose: () => void }> = ({
             {(field) => (
               <FormControl
                 invalid={field.state.meta.errors.length > 0}
-                errorMessage={field.state.meta.errors}
+                errorMessage={field.state.meta.errors.join(", ")}
               >
                 <Input
                   value={field.state.value}

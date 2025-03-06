@@ -8,7 +8,6 @@ import { getFetchObject } from "@/utils/getFetchObject";
 import { isError } from "@/utils/isError";
 import { useForm } from "@tanstack/react-form";
 import { createLazyFileRoute } from "@tanstack/react-router";
-import { zodValidator } from "@tanstack/zod-form-adapter";
 import {
   Accordion,
   AccordionItem,
@@ -72,7 +71,6 @@ const ListForm: FC<{ list: UserList; listId: string }> = ({ list, listId }) => {
       name: list.name,
       isPublic: list.isPublic,
     } satisfies z.infer<typeof editListSchema>,
-    validatorAdapter: zodValidator(),
     validators: {
       onChange: editListSchema,
     },
@@ -103,7 +101,7 @@ const ListForm: FC<{ list: UserList; listId: string }> = ({ list, listId }) => {
                 label="リスト名"
                 required
                 invalid={field.state.meta.errors.length > 0}
-                errorMessage={field.state.meta.errors}
+                errorMessage={field.state.meta.errors.join(", ")}
               >
                 <Input
                   value={field.state.value}

@@ -1,6 +1,6 @@
 import { useForm } from "@tanstack/react-form";
 import { createFileRoute } from "@tanstack/react-router";
-import { Button, Input, Text, VStack } from "@yamada-ui/react";
+import { Button, FormControl, Input, Text, VStack } from "@yamada-ui/react";
 import { useState } from "react";
 import { v4 as uuid } from "uuid";
 import z from "zod";
@@ -8,11 +8,19 @@ import z from "zod";
 import { appName } from "@/constants/appName";
 import { useLoginStore } from "@/store/login";
 
-const LoginSchema = z.object({
-  instance: z.string().min(1).max(255),
+const loginSchema = z.object({
+  instance: z
+    .string()
+    .min(1, "インスタンス名を入力してください")
+    .max(255, "インスタンス名が長すぎます")
+    .refine(
+      (val) => /^([a-zA-Z0-9][a-zA-Z0-9-]*\.)+[a-zA-Z]{2,}$/.test(val),
+      "有効なドメイン形式ではありません",
+    )
+    .transform((val) => val.toLowerCase().trim()),
 });
 
-type LoginType = z.infer<typeof LoginSchema>;
+type LoginType = z.infer<typeof loginSchema>;
 
 export const Route = createFileRoute("/login/_layout/")({
   component: Login,
@@ -21,9 +29,12 @@ export const Route = createFileRoute("/login/_layout/")({
 function Login() {
   const [loginError, setLoginError] = useState<string | undefined>();
 
-  const form = useForm<LoginType>({
+  const form = useForm({
     defaultValues: {
       instance: "",
+    },
+    validators: {
+      onBlur: loginSchema,
     },
     onSubmit: async ({ value }) => {
       authApplication({ loginData: value, setLoginError: setLoginError });
@@ -43,13 +54,18 @@ function Login() {
       >
         <form.Field name="instance">
           {(field) => (
-            <Input
-              name={field.name}
-              value={field.state.value}
-              onBlur={field.handleBlur}
-              onChange={(e) => field.handleChange(e.target.value)}
-              placeholder="misskey.example"
-            />
+            <FormControl
+              invalid={field.state.meta.errors.length > 0}
+              errorMessage={field.state.meta.errors[0]?.message}
+            >
+              <Input
+                name={field.name}
+                value={field.state.value}
+                onBlur={field.handleBlur}
+                onChange={(e) => field.handleChange(e.target.value)}
+                placeholder="misskey.example"
+              />
+            </FormControl>
           )}
         </form.Field>
         <Button type="submit" colorScheme="sky">
