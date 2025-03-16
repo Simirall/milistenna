@@ -1,7 +1,7 @@
 import { createLazyFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect } from "react";
 
-import { Loader } from "@/components/Loader";
+import { Loader } from "@/components/common/Loader";
 import type { LoginState } from "@/store/login";
 import { useLoginStore } from "@/store/login";
 import { getApiUrl } from "@/utils/getApiUrl";

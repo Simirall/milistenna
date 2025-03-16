@@ -1,5 +1,5 @@
 import { useGetUsersListsShow } from "@/apis/lists/useGetUsersListsShow";
-import { UserCard } from "@/components/UserCard";
+import { UserCard } from "@/components/domain/user/UserCard";
 import { getApiUrl } from "@/utils/getApiUrl";
 import { getFetchObject } from "@/utils/getFetchObject";
 import { Trash } from "@phosphor-icons/react";

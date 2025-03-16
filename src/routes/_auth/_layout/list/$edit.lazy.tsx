@@ -1,7 +1,7 @@
 import { useGetUsersListsShow } from "@/apis/lists/useGetUsersListsShow";
-import { AddUserModalButton } from "@/components/AddUserModal";
-import { Loader } from "@/components/Loader";
-import { UserCard } from "@/components/UserCard";
+import { Loader } from "@/components/common/Loader";
+import { AddUserModalButton } from "@/components/domain/user/AddUserModal";
+import { UserCard } from "@/components/domain/user/UserCard";
 import { useLoginStore } from "@/store/login";
 import { getApiUrl } from "@/utils/getApiUrl";
 import { getFetchObject } from "@/utils/getFetchObject";

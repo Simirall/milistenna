@@ -1,8 +1,8 @@
 import { useGetUserListsList } from "@/apis/lists/useGetUsersListsList";
-import { GridCard } from "@/components/GridCard";
-import { GridContainer } from "@/components/GridContainer";
-import { LinkButton } from "@/components/LinkButton";
-import { Loader } from "@/components/Loader";
+import { LinkButton } from "@/components/common/LinkButton";
+import { Loader } from "@/components/common/Loader";
+import { GridCard } from "@/components/layout/GridCard";
+import { GridContainer } from "@/components/layout/GridContainer";
 import { createLazyFileRoute } from "@tanstack/react-router";
 import { Center, Container, Heading, Text } from "@yamada-ui/react";
 import { CreateListModalButton } from "./-components/CreateListModal";
