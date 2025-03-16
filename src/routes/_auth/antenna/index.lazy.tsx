@@ -8,7 +8,7 @@ import { createLazyFileRoute } from "@tanstack/react-router";
 import { Center, Container, Heading, Text } from "@yamada-ui/react";
 import type { Antenna } from "misskey-js/entities.js";
 
-export const Route = createLazyFileRoute("/_auth/_layout/antenna/")({
+export const Route = createLazyFileRoute("/_auth/antenna/")({
   component: RouteComponent,
 });
 

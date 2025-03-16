@@ -74,7 +74,7 @@ const CreateListModal: FC<{ open: boolean; onClose: () => void }> = ({
             {(field) => (
               <FormControl
                 invalid={field.state.meta.errors.length > 0}
-                errorMessage={field.state.meta.errors.join(", ")}
+                errorMessage={field.state.meta.errors[0]?.message}
               >
                 <Input
                   value={field.state.value}

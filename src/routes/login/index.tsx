@@ -22,7 +22,7 @@ const loginSchema = z.object({
 
 type LoginType = z.infer<typeof loginSchema>;
 
-export const Route = createFileRoute("/login/_layout/")({
+export const Route = createFileRoute("/login/")({
   component: Login,
 });
 

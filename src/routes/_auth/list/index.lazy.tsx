@@ -7,7 +7,7 @@ import { createLazyFileRoute } from "@tanstack/react-router";
 import { Center, Container, Heading, Text } from "@yamada-ui/react";
 import { CreateListModalButton } from "./-components/CreateListModal";
 
-export const Route = createLazyFileRoute("/_auth/_layout/list/")({
+export const Route = createLazyFileRoute("/_auth/list/")({
   component: RouteComponent,
 });
 

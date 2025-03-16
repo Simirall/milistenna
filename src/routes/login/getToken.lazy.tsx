@@ -7,7 +7,7 @@ import { useLoginStore } from "@/store/login";
 import { getApiUrl } from "@/utils/getApiUrl";
 import type { MeDetailed } from "misskey-js/entities.js";
 
-export const Route = createLazyFileRoute("/login/_layout/getToken")({
+export const Route = createLazyFileRoute("/login/getToken")({
   component: GetToken,
 });
 

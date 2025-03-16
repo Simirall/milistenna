@@ -26,7 +26,7 @@ import { z } from "zod";
 import { DeleteListButton } from "./-components/DeleteListModal";
 import { DeleteUserButton } from "./-components/DeleteUserModal";
 
-export const Route = createLazyFileRoute("/_auth/_layout/list/$edit")({
+export const Route = createLazyFileRoute("/_auth/list/$edit")({
   component: RouteComponent,
 });
 
@@ -112,7 +112,7 @@ const ListForm: FC<{ list: UserList; listId: string }> = ({ list, listId }) => {
                 label="リスト名"
                 required
                 invalid={field.state.meta.errors.length > 0}
-                errorMessage={field.state.meta.errors.join(", ")}
+                errorMessage={field.state.meta.errors[0]?.message}
               >
                 <Input
                   value={field.state.value}

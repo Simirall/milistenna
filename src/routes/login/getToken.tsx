@@ -5,6 +5,6 @@ const sessionSearchSchema = z.object({
   session: z.string().uuid(),
 });
 
-export const Route = createFileRoute("/login/_layout/getToken")({
+export const Route = createFileRoute("/login/getToken")({
   validateSearch: sessionSearchSchema,
 });
