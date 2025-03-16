@@ -5,13 +5,13 @@ import {
   Card,
   CardBody,
   HStack,
+  Skeleton,
   Text,
   type Theme,
   VStack,
   useColorModeValue,
 } from "@yamada-ui/react";
 import type { FC, ReactElement } from "react";
-import { CardSkeleton } from "./CardSkeleton";
 
 export const UserCard: FC<{
   userId: string;
@@ -56,6 +56,16 @@ export const UserCard: FC<{
           </VStack>
           {endComponent}
         </HStack>
+      </CardBody>
+    </Card>
+  );
+};
+
+const CardSkeleton = () => {
+  return (
+    <Card>
+      <CardBody>
+        <Skeleton lineClamp={2} h={15} borderRadius="md" />
       </CardBody>
     </Card>
   );

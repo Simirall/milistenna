@@ -20,7 +20,7 @@ import {
 } from "@yamada-ui/react";
 import type { UsersListsPushRequest } from "misskey-js/entities.js";
 import { type FC, useState } from "react";
-import { Loader } from "./Loader";
+import { Loader } from "../../common/Loader";
 import { UserCard } from "./UserCard";
 
 const addUserToList = async (payload: UsersListsPushRequest) => {
