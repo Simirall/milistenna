@@ -9,7 +9,7 @@ export const Route = createLazyFileRoute("/")({
 function RouteComponent() {
   return (
     <>
-      <HStack padding="md">
+      <HStack>
         <Button
           size="xl"
           colorScheme="sky"

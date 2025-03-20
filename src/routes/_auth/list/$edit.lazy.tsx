@@ -1,4 +1,5 @@
 import { useGetUsersListsShow } from "@/apis/lists/useGetUsersListsShow";
+import { FloatLinkButton } from "@/components/common/FloatLinkButton";
 import { Loader } from "@/components/common/Loader";
 import { AddUserModalButton } from "@/components/domain/user/AddUserModal";
 import { UserCard } from "@/components/domain/user/UserCard";
@@ -6,11 +7,13 @@ import { useLoginStore } from "@/store/login";
 import { getApiUrl } from "@/utils/getApiUrl";
 import { getFetchObject } from "@/utils/getFetchObject";
 import { isError } from "@/utils/isError";
+import { CaretLeft } from "@phosphor-icons/react";
 import { useForm } from "@tanstack/react-form";
 import { createLazyFileRoute } from "@tanstack/react-router";
 import {
   Accordion,
   AccordionItem,
+  type AccordionProps,
   Button,
   FormControl,
   HStack,
@@ -21,7 +24,7 @@ import {
   VStack,
 } from "@yamada-ui/react";
 import type { UserList, UsersListsUpdateRequest } from "misskey-js/entities.js";
-import type { FC } from "react";
+import { type FC, useState } from "react";
 import { z } from "zod";
 import { DeleteListButton } from "./-components/DeleteListModal";
 import { DeleteUserButton } from "./-components/DeleteUserModal";
@@ -49,32 +52,45 @@ function RouteComponent() {
   }
 
   return (
-    <VStack p="4">
-      <Heading size="lg">{list.name}</Heading>
-      <ListForm list={list} listId={edit} />
-      <AddUserModalButton />
-      <Text>
-        メンバー(
-        {`${list.userIds?.length ?? 0}/${mySelf?.policies.userEachUserListsLimit}`}
-        )
-      </Text>
-      {list.userIds && (
-        <VStack>
-          {list.userIds.map((u) => (
-            <UserCard
-              key={u}
-              userId={u}
-              endComponent={<DeleteUserButton listId={list.id} userId={u} />}
-            />
-          ))}
-        </VStack>
-      )}
-    </VStack>
+    <>
+      <VStack p="4">
+        <Heading size="lg">{list.name}</Heading>
+        <ListForm list={list} listId={edit} />
+        <AddUserModalButton />
+        <Text>
+          メンバー(
+          {`${list.userIds?.length ?? 0}/${mySelf?.policies.userEachUserListsLimit}`}
+          )
+        </Text>
+        {list.userIds && (
+          <VStack>
+            {list.userIds.map((u) => (
+              <UserCard
+                key={u}
+                userId={u}
+                endComponent={<DeleteUserButton listId={list.id} userId={u} />}
+              />
+            ))}
+          </VStack>
+        )}
+      </VStack>
+      <FloatLinkButton
+        colorScheme="sky"
+        position="left"
+        linkProps={{
+          to: "/list",
+        }}
+      >
+        <CaretLeft weight="bold" fontSize="1.4em" />
+      </FloatLinkButton>
+    </>
   );
 }
 
 const ListForm: FC<{ list: UserList; listId: string }> = ({ list, listId }) => {
   const { refetch } = useGetUsersListsShow(listId);
+  const [accordionIndex, onChangeAccordionIndex] =
+    useState<AccordionProps["index"]>(-1);
 
   const form = useForm({
     defaultValues: {
@@ -90,12 +106,18 @@ const ListForm: FC<{ list: UserList; listId: string }> = ({ list, listId }) => {
         getApiUrl("users/lists/update"),
         getFetchObject<UsersListsUpdateRequest>(value),
       );
+      onChangeAccordionIndex(-1);
       refetch();
     },
   });
 
   return (
-    <Accordion variant="card" isToggle>
+    <Accordion
+      variant="card"
+      toggle
+      index={accordionIndex}
+      onChange={onChangeAccordionIndex}
+    >
       <AccordionItem label="設定">
         <VStack
           p="2"
@@ -130,7 +152,7 @@ const ListForm: FC<{ list: UserList; listId: string }> = ({ list, listId }) => {
                 checked={field.state.value}
                 onChange={(e) => field.handleChange(e.target.checked)}
               >
-                パブリック
+                <Text>パブリック</Text>
               </Switch>
             )}
           </form.Field>
@@ -142,7 +164,7 @@ const ListForm: FC<{ list: UserList; listId: string }> = ({ list, listId }) => {
               size="lg"
               loading={form.state.isSubmitting}
             >
-              変更
+              <Text>変更</Text>
             </Button>
             <DeleteListButton listId={list.id} name={list.name} />
           </HStack>

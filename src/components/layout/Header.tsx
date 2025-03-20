@@ -15,7 +15,8 @@ export const Header = () => {
       top="0"
       justifyContent="space-between"
       zIndex="1"
-      p="2"
+      px="md"
+      py="sm"
       bg={bg}
       backdropFilter="blur(8px) saturate(1.5)"
     >

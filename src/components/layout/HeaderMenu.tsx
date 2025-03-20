@@ -7,6 +7,7 @@ import {
   Menu,
   MenuButton,
   MenuList,
+  Text,
   VStack,
   useColorMode,
   useColorModeValue,
@@ -46,7 +47,7 @@ export const HeaderMenu = () => {
               onClose();
             }}
           >
-            ログアウト
+            <Text>ログアウト</Text>
           </Button>
         )}
         <IconButton

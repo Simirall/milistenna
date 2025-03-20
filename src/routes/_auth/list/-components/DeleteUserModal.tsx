@@ -47,7 +47,7 @@ const DeleteUserModal: FC<{
             refetch();
           }}
         >
-          削除
+          <Text>削除</Text>
         </Button>
         <Button
           size="lg"
@@ -56,7 +56,7 @@ const DeleteUserModal: FC<{
           loading={isSubmitting}
           onClick={onClose}
         >
-          キャンセル
+          <Text>キャンセル</Text>
         </Button>
       </ModalFooter>
     </Modal>

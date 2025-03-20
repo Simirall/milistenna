@@ -17,6 +17,7 @@ import {
   Modal,
   ModalBody,
   ModalHeader,
+  Text,
   VStack,
   useDisclosure,
 } from "@yamada-ui/react";
@@ -83,13 +84,13 @@ export const AddUserModalButton = () => {
   return (
     <>
       <Button
-        startIcon={<Plus />}
+        startIcon={<Plus weight="bold" />}
         onClick={onOpen}
         colorScheme="cyan"
         variant="surface"
         size="lg"
       >
-        追加
+        <Text>ユーザーを追加</Text>
       </Button>
       <AddUserModal open={open} onClose={onClose} />
     </>

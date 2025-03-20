@@ -49,7 +49,7 @@ const DeleteListModal: FC<{
             });
           }}
         >
-          削除
+          <Text>削除</Text>
         </Button>
         <Button
           size="lg"
@@ -74,7 +74,7 @@ export const DeleteListButton: FC<{ listId: string; name: string }> = ({
   return (
     <>
       <Button size="lg" variant="surface" colorScheme="red" onClick={onOpen}>
-        削除
+        <Text>削除</Text>
       </Button>
       <DeleteListModal
         open={open}

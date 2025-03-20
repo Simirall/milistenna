@@ -69,7 +69,7 @@ function Login() {
           )}
         </form.Field>
         <Button type="submit" colorScheme="sky">
-          次へ
+          <Text>次へ</Text>
         </Button>
         {loginError && <p>{loginError}</p>}
       </VStack>
