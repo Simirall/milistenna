@@ -68,8 +68,8 @@ export const useDebouncedGetUsersSearchByUsernameAndHost = (
   payload: SearchPayload,
 ) => {
   // 入力からAPI呼び出しまでを1秒間デバウンスする
-  const [username] = useDebounce(payload.username, 1000);
-  const [host] = useDebounce(payload.host, 1000);
+  const [username] = useDebounce(payload.username, 500);
+  const [host] = useDebounce(payload.host, 500);
 
   // デバウンスした値を使ってユーザー検索を実行
   const { users, isLoading, isApiError, error, refetch } =
