@@ -14,7 +14,7 @@ export const Route = createLazyFileRoute("/_auth/list/")({
 function RouteComponent() {
   return (
     <>
-      <Container px="10vw">
+      <Container>
         <Heading textAlign="center">リスト一覧</Heading>
         <GridContainer>
           <ListList />

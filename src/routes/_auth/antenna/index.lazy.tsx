@@ -25,7 +25,7 @@ const antennaSource: {
 function RouteComponent() {
   return (
     <>
-      <Container px="10vw">
+      <Container>
         <Heading textAlign="center">アンテナ一覧</Heading>
         <GridContainer>
           <AntennaList />

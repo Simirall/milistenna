@@ -12,6 +12,7 @@ import {
   Modal,
   ModalBody,
   ModalHeader,
+  Text,
   VStack,
   useDisclosure,
 } from "@yamada-ui/react";
@@ -84,32 +85,32 @@ const CreateListModal: FC<{ open: boolean; onClose: () => void }> = ({
               </FormControl>
             )}
           </form.Field>
-          <HStack>
+          <HStack justify="end">
             <form.Subscribe
               selector={(state) => [state.canSubmit, state.isSubmitting]}
             >
               {([canSubmit, isSubmitting]) => (
                 <Button
+                  size="lg"
                   type="submit"
                   disabled={!canSubmit}
                   loading={isSubmitting}
                   colorScheme="sky"
-                  flex={1}
                 >
-                  作成
+                  <Text>作成</Text>
                 </Button>
               )}
             </form.Subscribe>
             <Button
+              size="lg"
               colorScheme="cyan"
               variant="subtle"
-              flex={1}
               onClick={() => {
                 onClose();
                 form.reset();
               }}
             >
-              キャンセル
+              <Text>キャンセル</Text>
             </Button>
           </HStack>
         </VStack>

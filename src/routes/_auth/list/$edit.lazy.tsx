@@ -53,7 +53,7 @@ function RouteComponent() {
 
   return (
     <>
-      <VStack p="4">
+      <VStack>
         <Heading size="lg">{list.name}</Heading>
         <ListForm list={list} listId={edit} />
         <AddUserModalButton />

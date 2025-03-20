@@ -42,7 +42,7 @@ function Login() {
   });
 
   return (
-    <VStack p="md">
+    <VStack>
       <Text>ログインページです。</Text>
       <VStack
         as="form"
