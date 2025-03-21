@@ -50,6 +50,8 @@ const AddUserModal: FC<{ open: boolean; onClose: () => void }> = ({
         listId: edit,
       });
       await refetch();
+      setUsername("");
+      setHost("");
       onClose();
     }
   };
