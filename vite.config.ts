@@ -4,10 +4,6 @@ import reactSwc from "@vitejs/plugin-react-swc";
 import { defineConfig } from "vite";
 import tsconfigPaths from "vite-tsconfig-paths";
 
-const ReactCompilerConfig = {
-  target: "18",
-};
-
 // https://vite.dev/config/
 export default defineConfig(({ command }) => ({
   plugins: [
@@ -18,7 +14,7 @@ export default defineConfig(({ command }) => ({
       : react({
           // ビルド時は標準のReactプラグイン+React Compilerを使用
           babel: {
-            plugins: [["babel-plugin-react-compiler", ReactCompilerConfig]],
+            plugins: [["babel-plugin-react-compiler"]],
           },
         }),
   ],
