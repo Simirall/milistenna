@@ -6,12 +6,13 @@ import { getFetchObject } from "@/utils/getFetchObject";
 import { Trash } from "@phosphor-icons/react";
 import { Text } from "@yamada-ui/react";
 import type { UsersListsPullRequest } from "misskey-js/entities.js";
-import type { FC } from "react";
 
-export const DeleteUserButton: FC<{
+type DeleteUserButtonProps = {
   listId: string;
   userId: string;
-}> = ({ listId, userId }) => {
+};
+
+export const DeleteUserButton = ({ listId, userId }: DeleteUserButtonProps) => {
   const { refetch } = useGetUsersListsShow(listId);
 
   const handleClicked = async () => {

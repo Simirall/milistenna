@@ -11,13 +11,15 @@ import {
   VStack,
   useColorModeValue,
 } from "@yamada-ui/react";
-import type { FC, ReactElement } from "react";
+import type { ReactElement } from "react";
 
-export const UserCard: FC<{
+type UserCardProps = {
   userId: string;
   clickAction?: () => void;
   endComponent?: ReactElement;
-}> = ({ userId, clickAction, endComponent }) => {
+};
+
+export const UserCard = ({ userId, clickAction, endComponent }: UserCardProps) => {
   const { user, isLoading } = useGetUsersShow(userId);
   const hoverBg = useColorModeValue<Theme["colors"], Theme["colors"]>(
     "sky.50",
