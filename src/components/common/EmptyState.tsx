@@ -4,13 +4,15 @@ import {
   EmptyStateTitle,
   EmptyState as YmdEmptyState,
 } from "@yamada-ui/react";
-import type { FC, ReactElement } from "react";
+import type { ReactElement } from "react";
 
-export const EmptyState: FC<{
+type EmptyStateProps = {
   icon?: ReactElement;
   title?: string;
   children?: ReactElement;
-}> = ({ icon = <MinusCircle />, title, children }) => {
+};
+
+export const EmptyState = ({ icon = <MinusCircle />, title, children }: EmptyStateProps) => {
   return (
     <YmdEmptyState>
       <EmptyStateIndicator>{icon}</EmptyStateIndicator>

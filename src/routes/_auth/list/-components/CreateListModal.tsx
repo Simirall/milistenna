@@ -17,7 +17,6 @@ import {
   useDisclosure,
 } from "@yamada-ui/react";
 import type { UsersListsCreateRequest } from "misskey-js/entities.js";
-import type { FC } from "react";
 import { z } from "zod";
 
 const createListSchema = z.object({
@@ -27,10 +26,9 @@ const createListSchema = z.object({
     .max(100, "最大100文字までです"),
 });
 
-const CreateListModal: FC<{ open: boolean; onClose: () => void }> = ({
-  open,
-  onClose,
-}) => {
+type CreateListModalProps = { open: boolean; onClose: () => void };
+
+const CreateListModal = ({ open, onClose }: CreateListModalProps) => {
   const { refetch } = useGetUserListsList();
 
   const form = useForm({

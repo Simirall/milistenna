@@ -22,7 +22,7 @@ import {
   useDisclosure,
 } from "@yamada-ui/react";
 import type { UsersListsPushRequest } from "misskey-js/entities.js";
-import { type FC, useState } from "react";
+import { useState } from "react";
 import { Loader } from "../../common/Loader";
 import { UserCard } from "./UserCard";
 
@@ -33,10 +33,12 @@ const addUserToList = async (payload: UsersListsPushRequest) => {
   );
 };
 
-const AddUserModal: FC<{ open: boolean; onClose: () => void }> = ({
+type AddUserModalProps = { open: boolean; onClose: () => void };
+
+const AddUserModal = ({
   open,
   onClose,
-}) => {
+}: AddUserModalProps) => {
   const [username, setUsername] = useState("");
   const [host, setHost] = useState("");
 
@@ -99,10 +101,12 @@ export const AddUserModalButton = () => {
   );
 };
 
-const UserSearchForm: FC<{
+type UserSearchFormProps = {
   setUsername: (username: string) => void;
   setHost: (host: string) => void;
-}> = ({ setUsername, setHost }) => {
+};
+
+const UserSearchForm = ({ setUsername, setHost }: UserSearchFormProps) => {
   return (
     <HStack gap="sm">
       <FormControl>
@@ -146,11 +150,13 @@ const UserSearchForm: FC<{
   );
 };
 
-const UserSearchResult: FC<{
+type UserSearchResultProps = {
   username: string;
   host: string;
   onUserClick: (userId: string) => Promise<void>;
-}> = ({ username, host, onUserClick }) => {
+};
+
+const UserSearchResult = ({ username, host, onUserClick }: UserSearchResultProps) => {
   const { users, isLoading } = useDebouncedGetUsersSearchByUsernameAndHost({
     username,
     host,

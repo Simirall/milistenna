@@ -11,7 +11,7 @@ import {
   type ThemeColorScheme,
   useDisclosure,
 } from "@yamada-ui/react";
-import { type FC, type ReactElement, type ReactNode, useState } from "react";
+import { type ReactElement, type ReactNode, useState } from "react";
 
 type ConfirmProps = {
   children: ReactNode;
@@ -22,12 +22,12 @@ type ConfirmProps = {
   onAccept: (() => Promise<void>) | (() => void);
 };
 
-const Confirm: FC<
-  {
-    open: boolean;
-    onClose: () => void;
-  } & ConfirmProps
-> = ({
+type ConfirmModalInternalProps = {
+  open: boolean;
+  onClose: () => void;
+} & ConfirmProps;
+
+const Confirm = ({
   open,
   onClose,
   children,
@@ -36,7 +36,7 @@ const Confirm: FC<
   cancelText = "キャンセル",
   colorScheme = "teal",
   onAccept,
-}) => {
+}: ConfirmModalInternalProps) => {
   const [isSubmitting, setSubmitting] = useState(false);
 
   return (
@@ -72,19 +72,19 @@ const Confirm: FC<
   );
 };
 
-export const ConfirmModal: FC<
-  ConfirmProps &
-    (
-      | {
-          button: string;
-          buttonProps?: ButtonProps;
-        }
-      | {
-          button: ReactElement;
-          buttonProps?: IconButtonProps;
-        }
-    )
-> = (props) => {
+type ConfirmModalProps = ConfirmProps &
+  (
+    | {
+        button: string;
+        buttonProps?: ButtonProps;
+      }
+    | {
+        button: ReactElement;
+        buttonProps?: IconButtonProps;
+      }
+  );
+
+export const ConfirmModal = (props: ConfirmModalProps) => {
   const { open, onOpen, onClose } = useDisclosure();
 
   return (

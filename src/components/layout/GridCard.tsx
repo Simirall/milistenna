@@ -1,12 +1,14 @@
 import { Card, type ColorScheme, Heading } from "@yamada-ui/react";
-import type { FC, ReactElement } from "react";
+import type { ReactElement } from "react";
 
-export const GridCard: FC<{
+type GridCardProps = {
   title: string;
   colorScheme: ColorScheme;
   children: ReactElement;
   footer: ReactElement;
-}> = ({ title, colorScheme, children, footer }) => {
+};
+
+export const GridCard = ({ title, colorScheme, children, footer }: GridCardProps) => {
   return (
     <Card
       display="grid"

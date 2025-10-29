@@ -4,12 +4,13 @@ import { getApiUrl } from "@/utils/getApiUrl";
 import { getFetchObject } from "@/utils/getFetchObject";
 import { useNavigate } from "@tanstack/react-router";
 import type { UsersListsDeleteRequest } from "misskey-js/entities.js";
-import type { FC } from "react";
 
-export const DeleteListButton: FC<{ listId: string; name: string }> = ({
+type DeleteListButtonProps = { listId: string; name: string };
+
+export const DeleteListButton = ({
   listId,
   name,
-}) => {
+}: DeleteListButtonProps) => {
   const { refetch } = useGetUserListsList();
   const navigate = useNavigate();
 

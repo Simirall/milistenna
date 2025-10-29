@@ -24,7 +24,7 @@ import {
   VStack,
 } from "@yamada-ui/react";
 import type { UserList, UsersListsUpdateRequest } from "misskey-js/entities.js";
-import { type FC, useState } from "react";
+import { useState } from "react";
 import { z } from "zod";
 import { DeleteListButton } from "./-components/DeleteListModal";
 import { DeleteUserButton } from "./-components/DeleteUserModal";
@@ -87,7 +87,9 @@ function RouteComponent() {
   );
 }
 
-const ListForm: FC<{ list: UserList; listId: string }> = ({ list, listId }) => {
+type ListFormProps = { list: UserList; listId: string };
+
+const ListForm = ({ list, listId }: ListFormProps) => {
   const { refetch } = useGetUsersListsShow(listId);
   const [accordionIndex, onChangeAccordionIndex] =
     useState<AccordionProps["index"]>(-1);
