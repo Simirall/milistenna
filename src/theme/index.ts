@@ -1,8 +1,8 @@
 import {
-  type ThemeConfig,
-  type UsageTheme,
   extendConfig,
   extendTheme,
+  type ThemeConfig,
+  type UsageTheme,
 } from "@yamada-ui/react";
 
 const theme: UsageTheme = {

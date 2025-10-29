@@ -1,6 +1,6 @@
+import { createFileRoute, redirect } from "@tanstack/react-router";
 import { usersListsShowQueryOptions } from "@/apis/lists/useGetUsersListsShow";
 import { isError } from "@/utils/isError";
-import { createFileRoute, redirect } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/_auth/list/$edit")({
   beforeLoad: async ({ params, context }) => {

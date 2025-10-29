@@ -1,8 +1,3 @@
-import { useGetUsersListsShow } from "@/apis/lists/useGetUsersListsShow";
-import { useDebouncedGetUsersSearchByUsernameAndHost } from "@/apis/users/useGetUsersSearchByUsernameAndHost";
-import { EmptyState } from "@/components/common/EmptyState";
-import { getApiUrl } from "@/utils/getApiUrl";
-import { getFetchObject } from "@/utils/getFetchObject";
 import { At, MagnifyingGlassPlus, Plus } from "@phosphor-icons/react";
 import { useParams } from "@tanstack/react-router";
 import {
@@ -18,11 +13,16 @@ import {
   ModalBody,
   ModalHeader,
   Text,
-  VStack,
   useDisclosure,
+  VStack,
 } from "@yamada-ui/react";
 import type { UsersListsPushRequest } from "misskey-js/entities.js";
 import { useState } from "react";
+import { useGetUsersListsShow } from "@/apis/lists/useGetUsersListsShow";
+import { useDebouncedGetUsersSearchByUsernameAndHost } from "@/apis/users/useGetUsersSearchByUsernameAndHost";
+import { EmptyState } from "@/components/common/EmptyState";
+import { getApiUrl } from "@/utils/getApiUrl";
+import { getFetchObject } from "@/utils/getFetchObject";
 import { Loader } from "../../common/Loader";
 import { UserCard } from "./UserCard";
 
@@ -35,10 +35,7 @@ const addUserToList = async (payload: UsersListsPushRequest) => {
 
 type AddUserModalProps = { open: boolean; onClose: () => void };
 
-const AddUserModal = ({
-  open,
-  onClose,
-}: AddUserModalProps) => {
+const AddUserModal = ({ open, onClose }: AddUserModalProps) => {
   const [username, setUsername] = useState("");
   const [host, setHost] = useState("");
 
@@ -156,7 +153,11 @@ type UserSearchResultProps = {
   onUserClick: (userId: string) => Promise<void>;
 };
 
-const UserSearchResult = ({ username, host, onUserClick }: UserSearchResultProps) => {
+const UserSearchResult = ({
+  username,
+  host,
+  onUserClick,
+}: UserSearchResultProps) => {
   const { users, isLoading } = useDebouncedGetUsersSearchByUsernameAndHost({
     username,
     host,
@@ -177,7 +178,7 @@ const UserSearchResult = ({ username, host, onUserClick }: UserSearchResultProps
   }
 
   // 検索結果がない場合
-  if (users && users.length === 0) {
+  if (users.length === 0) {
     return <EmptyState title="ユーザーが見つかりません" />;
   }
 

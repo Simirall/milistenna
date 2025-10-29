@@ -1,11 +1,9 @@
-import { UIProvider, getColorModeScript } from "@yamada-ui/react";
-
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { customConfig, customTheme } from "./theme/index.ts";
-
-import { RouterProvider, createRouter } from "@tanstack/react-router";
+import { createRouter, RouterProvider } from "@tanstack/react-router";
+import { getColorModeScript, UIProvider } from "@yamada-ui/react";
 import { routeTree } from "./routeTree.gen.ts";
 import { type LoginState, useLoginStore } from "./store/login.ts";
+import { customConfig, customTheme } from "./theme/index.ts";
 
 const queryClient = new QueryClient();
 

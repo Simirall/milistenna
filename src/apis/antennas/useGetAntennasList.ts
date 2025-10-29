@@ -1,7 +1,7 @@
-import { fetcher } from "@/utils/fetcher";
-import { defaultQueryConfig } from "@/utils/queryConfig";
 import { queryOptions } from "@tanstack/react-query";
 import type { Antenna, Error as MkError } from "misskey-js/entities.js";
+import { fetcher } from "@/utils/fetcher";
+import { defaultQueryConfig } from "@/utils/queryConfig";
 import { useApiQuery } from "../useApiQuery";
 
 const endpoint = "antennas/list";

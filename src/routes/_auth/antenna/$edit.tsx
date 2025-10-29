@@ -1,6 +1,6 @@
+import { createFileRoute, redirect } from "@tanstack/react-router";
 import { antennaShowQueryOptions } from "@/apis/antennas/useGetAntennasShow";
 import { isError } from "@/utils/isError";
-import { createFileRoute, redirect } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/_auth/antenna/$edit")({
   beforeLoad: async ({ params, context }) => {

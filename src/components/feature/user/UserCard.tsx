@@ -1,4 +1,3 @@
-import { useGetUsersShow } from "@/apis/users/useGetUsersShow";
 import { FediverseLogo } from "@phosphor-icons/react";
 import {
   Avatar,
@@ -8,10 +7,11 @@ import {
   Skeleton,
   Text,
   type Theme,
-  VStack,
   useColorModeValue,
+  VStack,
 } from "@yamada-ui/react";
 import type { ReactElement } from "react";
+import { useGetUsersShow } from "@/apis/users/useGetUsersShow";
 
 type UserCardProps = {
   userId: string;
@@ -19,7 +19,11 @@ type UserCardProps = {
   endComponent?: ReactElement;
 };
 
-export const UserCard = ({ userId, clickAction, endComponent }: UserCardProps) => {
+export const UserCard = ({
+  userId,
+  clickAction,
+  endComponent,
+}: UserCardProps) => {
   const { user, isLoading } = useGetUsersShow(userId);
   const hoverBg = useColorModeValue<Theme["colors"], Theme["colors"]>(
     "sky.50",

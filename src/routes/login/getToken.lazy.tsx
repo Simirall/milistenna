@@ -1,11 +1,10 @@
 import { createLazyFileRoute, useNavigate } from "@tanstack/react-router";
+import type { MeDetailed } from "misskey-js/entities.js";
 import { useEffect } from "react";
-
 import { Loader } from "@/components/common/Loader";
 import type { LoginState } from "@/store/login";
 import { useLoginStore } from "@/store/login";
 import { getApiUrl } from "@/utils/getApiUrl";
-import type { MeDetailed } from "misskey-js/entities.js";
 
 export const Route = createLazyFileRoute("/login/getToken")({
   component: GetToken,

@@ -12,7 +12,11 @@ type EmptyStateProps = {
   children?: ReactElement;
 };
 
-export const EmptyState = ({ icon = <MinusCircle />, title, children }: EmptyStateProps) => {
+export const EmptyState = ({
+  icon = <MinusCircle />,
+  title,
+  children,
+}: EmptyStateProps) => {
   return (
     <YmdEmptyState>
       <EmptyStateIndicator>{icon}</EmptyStateIndicator>

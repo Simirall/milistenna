@@ -1,9 +1,9 @@
-import { fetcher } from "@/utils/fetcher";
-import { defaultQueryConfig } from "@/utils/queryConfig";
 import { queryOptions } from "@tanstack/react-query";
 import type { Error as MkError, UserDetailed } from "misskey-js/entities.js";
 import { useDebounce } from "use-debounce";
 import { z } from "zod";
+import { fetcher } from "@/utils/fetcher";
+import { defaultQueryConfig } from "@/utils/queryConfig";
 import { useApiQuery } from "../useApiQuery";
 
 const endpoint = "users/search-by-username-and-host";
