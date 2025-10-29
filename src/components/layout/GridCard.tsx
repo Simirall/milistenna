@@ -8,7 +8,12 @@ type GridCardProps = {
   footer: ReactElement;
 };
 
-export const GridCard = ({ title, colorScheme, children, footer }: GridCardProps) => {
+export const GridCard = ({
+  title,
+  colorScheme,
+  children,
+  footer,
+}: GridCardProps) => {
   return (
     <Card
       display="grid"

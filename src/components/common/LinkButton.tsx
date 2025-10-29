@@ -8,7 +8,11 @@ type LinkButtonProps = {
   buttonProps?: ButtonProps;
 };
 
-export const LinkButton = ({ children, linkProps, buttonProps }: LinkButtonProps) => {
+export const LinkButton = ({
+  children,
+  linkProps,
+  buttonProps,
+}: LinkButtonProps) => {
   return (
     <Button as={Link} {...linkProps} {...buttonProps}>
       {children}

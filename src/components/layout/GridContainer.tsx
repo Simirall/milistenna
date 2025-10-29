@@ -1,5 +1,5 @@
-import type { ReactNode } from "@tanstack/react-router";
 import { Grid } from "@yamada-ui/react";
+import type { ReactNode } from "react";
 
 type GridContainerProps = { children: ReactNode };
 

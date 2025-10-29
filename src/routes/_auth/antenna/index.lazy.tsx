@@ -1,12 +1,12 @@
+import { createLazyFileRoute } from "@tanstack/react-router";
+import { Center, Container, Heading, Text } from "@yamada-ui/react";
+import type { Antenna } from "misskey-js/entities.js";
 import { useGetAntennasList } from "@/apis/antennas/useGetAntennasList";
 import { FloatLinkButton } from "@/components/common/FloatLinkButton";
 import { LinkButton } from "@/components/common/LinkButton";
 import { Loader } from "@/components/common/Loader";
 import { GridCard } from "@/components/layout/GridCard";
 import { GridContainer } from "@/components/layout/GridContainer";
-import { createLazyFileRoute } from "@tanstack/react-router";
-import { Center, Container, Heading, Text } from "@yamada-ui/react";
-import type { Antenna } from "misskey-js/entities.js";
 
 export const Route = createLazyFileRoute("/_auth/antenna/")({
   component: RouteComponent,

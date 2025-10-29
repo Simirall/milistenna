@@ -112,7 +112,7 @@ const authApplication = async ({
     });
     const authURL = `https://${encodeURIComponent(loginData.instance)}/miauth/${id}?name=${appName}&callback=${appURL}&icon=${encodeURIComponent("https://raw.githubusercontent.com/Simirall/milistenna/refs/heads/main/public/192.png")}&permission=read:account,write:account,read:following`;
     window.location.href = authURL;
-  } catch (e) {
+  } catch (_e) {
     setLoginError("それは正しいMisskeyインスタンスですか？");
   }
 };

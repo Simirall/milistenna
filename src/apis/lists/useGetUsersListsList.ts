@@ -1,7 +1,7 @@
-import { fetcher } from "@/utils/fetcher";
-import { defaultQueryConfig } from "@/utils/queryConfig";
 import { queryOptions } from "@tanstack/react-query";
 import type { Error as MkError, UserList } from "misskey-js/entities.js";
+import { fetcher } from "@/utils/fetcher";
+import { defaultQueryConfig } from "@/utils/queryConfig";
 import { useApiQuery } from "../useApiQuery";
 
 const endpoint = "users/lists/list";
