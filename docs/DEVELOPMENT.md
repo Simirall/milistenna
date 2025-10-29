@@ -69,7 +69,7 @@ pnpm lint --write
 - **`components/common/`**: 汎用的で再利用可能なコンポーネント
   - 例: ボタン、モーダル、ローディング、エラー表示
 
-- **`components/domain/`**: 特定のドメインに関連するコンポーネント
+- **`components/feature/`**: 特定の機能に関連するコンポーネント
   - 例: ユーザーカード、リストカード、アンテナ設定
 
 - **`components/layout/`**: レイアウト関連のコンポーネント

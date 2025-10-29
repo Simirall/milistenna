@@ -1,6 +1,6 @@
 import { useGetUsersListsShow } from "@/apis/lists/useGetUsersListsShow";
 import { ConfirmModal } from "@/components/common/Confirm";
-import { UserCard } from "@/components/domain/user/UserCard";
+import { UserCard } from "@/components/feature/user/UserCard";
 import { getApiUrl } from "@/utils/getApiUrl";
 import { getFetchObject } from "@/utils/getFetchObject";
 import { Trash } from "@phosphor-icons/react";
