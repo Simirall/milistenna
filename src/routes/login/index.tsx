@@ -1,6 +1,6 @@
 import { useForm } from "@tanstack/react-form";
 import { createFileRoute } from "@tanstack/react-router";
-import { Button, FormControl, Input, Text, VStack } from "@yamada-ui/react";
+import { Button, FormControl, Heading, Input, Text, VStack } from "@yamada-ui/react";
 import { useState } from "react";
 import { v4 as uuid } from "uuid";
 import z from "zod";
@@ -43,7 +43,8 @@ function Login() {
 
   return (
     <VStack>
-      <Text>ログインページです。</Text>
+      <Heading as="h1">ログイン</Heading>
+      <Heading as="h2" size="md">ログインしたいMisskeyのインスタンス名を入力してください</Heading>
       <VStack
         as="form"
         onSubmit={(e) => {
@@ -64,11 +65,12 @@ function Login() {
                 onBlur={field.handleBlur}
                 onChange={(e) => field.handleChange(e.target.value)}
                 placeholder="misskey.example"
+                size="xl"
               />
             </FormControl>
           )}
         </form.Field>
-        <Button type="submit" colorScheme="sky">
+        <Button type="submit" colorScheme="sky" alignSelf="end" size="xl">
           <Text>次へ</Text>
         </Button>
         {loginError && <p>{loginError}</p>}

@@ -15,7 +15,7 @@ import { Route as LoginRouteRouteImport } from "./routes/login/route"
 import { Route as AuthRouteRouteImport } from "./routes/_auth/route"
 import { Route as IndexRouteImport } from "./routes/index"
 import { Route as LoginIndexRouteImport } from "./routes/login/index"
-import { Route as LoginGetTokenRouteImport } from "./routes/login/getToken"
+import { Route as LoginGetTokenIndexRouteImport } from "./routes/login/getToken/index"
 import { Route as AuthListEditRouteImport } from "./routes/_auth/list/$edit"
 import { Route as AuthAntennaEditRouteImport } from "./routes/_auth/antenna/$edit"
 
@@ -41,13 +41,6 @@ const LoginIndexRoute = LoginIndexRouteImport.update({
   path: "/",
   getParentRoute: () => LoginRouteRoute,
 } as any)
-const LoginGetTokenRoute = LoginGetTokenRouteImport.update({
-  id: "/getToken",
-  path: "/getToken",
-  getParentRoute: () => LoginRouteRoute,
-} as any).lazy(() =>
-  import("./routes/login/getToken.lazy").then((d) => d.Route),
-)
 const AuthListIndexLazyRoute = AuthListIndexLazyRouteImport.update({
   id: "/list/",
   path: "/list/",
@@ -61,6 +54,13 @@ const AuthAntennaIndexLazyRoute = AuthAntennaIndexLazyRouteImport.update({
   getParentRoute: () => AuthRouteRoute,
 } as any).lazy(() =>
   import("./routes/_auth/antenna/index.lazy").then((d) => d.Route),
+)
+const LoginGetTokenIndexRoute = LoginGetTokenIndexRouteImport.update({
+  id: "/getToken/",
+  path: "/getToken/",
+  getParentRoute: () => LoginRouteRoute,
+} as any).lazy(() =>
+  import("./routes/login/getToken/index.lazy").then((d) => d.Route),
 )
 const AuthListEditRoute = AuthListEditRouteImport.update({
   id: "/list/$edit",
@@ -80,19 +80,19 @@ const AuthAntennaEditRoute = AuthAntennaEditRouteImport.update({
 export interface FileRoutesByFullPath {
   "/": typeof IndexRoute
   "/login": typeof LoginRouteRouteWithChildren
-  "/login/getToken": typeof LoginGetTokenRoute
   "/login/": typeof LoginIndexRoute
   "/antenna/$edit": typeof AuthAntennaEditRoute
   "/list/$edit": typeof AuthListEditRoute
+  "/login/getToken": typeof LoginGetTokenIndexRoute
   "/antenna": typeof AuthAntennaIndexLazyRoute
   "/list": typeof AuthListIndexLazyRoute
 }
 export interface FileRoutesByTo {
   "/": typeof IndexRoute
-  "/login/getToken": typeof LoginGetTokenRoute
   "/login": typeof LoginIndexRoute
   "/antenna/$edit": typeof AuthAntennaEditRoute
   "/list/$edit": typeof AuthListEditRoute
+  "/login/getToken": typeof LoginGetTokenIndexRoute
   "/antenna": typeof AuthAntennaIndexLazyRoute
   "/list": typeof AuthListIndexLazyRoute
 }
@@ -101,10 +101,10 @@ export interface FileRoutesById {
   "/": typeof IndexRoute
   "/_auth": typeof AuthRouteRouteWithChildren
   "/login": typeof LoginRouteRouteWithChildren
-  "/login/getToken": typeof LoginGetTokenRoute
   "/login/": typeof LoginIndexRoute
   "/_auth/antenna/$edit": typeof AuthAntennaEditRoute
   "/_auth/list/$edit": typeof AuthListEditRoute
+  "/login/getToken/": typeof LoginGetTokenIndexRoute
   "/_auth/antenna/": typeof AuthAntennaIndexLazyRoute
   "/_auth/list/": typeof AuthListIndexLazyRoute
 }
@@ -113,19 +113,19 @@ export interface FileRouteTypes {
   fullPaths:
     | "/"
     | "/login"
-    | "/login/getToken"
     | "/login/"
     | "/antenna/$edit"
     | "/list/$edit"
+    | "/login/getToken"
     | "/antenna"
     | "/list"
   fileRoutesByTo: FileRoutesByTo
   to:
     | "/"
-    | "/login/getToken"
     | "/login"
     | "/antenna/$edit"
     | "/list/$edit"
+    | "/login/getToken"
     | "/antenna"
     | "/list"
   id:
@@ -133,10 +133,10 @@ export interface FileRouteTypes {
     | "/"
     | "/_auth"
     | "/login"
-    | "/login/getToken"
     | "/login/"
     | "/_auth/antenna/$edit"
     | "/_auth/list/$edit"
+    | "/login/getToken/"
     | "/_auth/antenna/"
     | "/_auth/list/"
   fileRoutesById: FileRoutesById
@@ -177,13 +177,6 @@ declare module "@tanstack/react-router" {
       preLoaderRoute: typeof LoginIndexRouteImport
       parentRoute: typeof LoginRouteRoute
     }
-    "/login/getToken": {
-      id: "/login/getToken"
-      path: "/getToken"
-      fullPath: "/login/getToken"
-      preLoaderRoute: typeof LoginGetTokenRouteImport
-      parentRoute: typeof LoginRouteRoute
-    }
     "/_auth/list/": {
       id: "/_auth/list/"
       path: "/list"
@@ -197,6 +190,13 @@ declare module "@tanstack/react-router" {
       fullPath: "/antenna"
       preLoaderRoute: typeof AuthAntennaIndexLazyRouteImport
       parentRoute: typeof AuthRouteRoute
+    }
+    "/login/getToken/": {
+      id: "/login/getToken/"
+      path: "/getToken"
+      fullPath: "/login/getToken"
+      preLoaderRoute: typeof LoginGetTokenIndexRouteImport
+      parentRoute: typeof LoginRouteRoute
     }
     "/_auth/list/$edit": {
       id: "/_auth/list/$edit"
@@ -234,13 +234,13 @@ const AuthRouteRouteWithChildren = AuthRouteRoute._addFileChildren(
 )
 
 interface LoginRouteRouteChildren {
-  LoginGetTokenRoute: typeof LoginGetTokenRoute
   LoginIndexRoute: typeof LoginIndexRoute
+  LoginGetTokenIndexRoute: typeof LoginGetTokenIndexRoute
 }
 
 const LoginRouteRouteChildren: LoginRouteRouteChildren = {
-  LoginGetTokenRoute: LoginGetTokenRoute,
   LoginIndexRoute: LoginIndexRoute,
+  LoginGetTokenIndexRoute: LoginGetTokenIndexRoute,
 }
 
 const LoginRouteRouteWithChildren = LoginRouteRoute._addFileChildren(
