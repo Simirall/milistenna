@@ -13,11 +13,11 @@ const endpoint = "antennas/show";
  */
 export const antennaShowQueryOptions = (antennaId: string) =>
   queryOptions<Antenna | MkError>({
-    queryKey: [endpoint, antennaId],
+    enabled: !!antennaId,
     queryFn: fetcher(endpoint, {
       antennaId,
     }),
-    enabled: !!antennaId,
+    queryKey: [endpoint, antennaId],
     ...defaultQueryConfig,
   });
 
@@ -33,9 +33,9 @@ export const useGetAntennasShow = (antennaId: string) => {
 
   return {
     antenna: data,
-    isLoading,
-    isApiError,
     error,
+    isApiError,
+    isLoading,
     refetch,
   };
 };

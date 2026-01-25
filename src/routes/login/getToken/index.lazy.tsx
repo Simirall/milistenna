@@ -20,7 +20,7 @@ function GetToken() {
 
   useEffect(() => {
     if (login.isLogin) {
-      navigate({ to: "/", replace: true });
+      navigate({ replace: true, to: "/" });
     }
   }, [login, navigate]);
 
@@ -41,21 +41,21 @@ const fetchData = async (tokenUrl: string, login: LoginState) => {
 
     if (data.token) {
       const ires = await fetch(getApiUrl("i"), {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
         body: JSON.stringify({
           i: data.token,
         }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+        method: "POST",
       });
       const me: MeDetailed = await ires.json();
 
       setLogin({
         ...login,
         isLogin: true,
-        token: data.token,
         mySelf: me,
+        token: data.token,
       });
     }
   } catch (error) {

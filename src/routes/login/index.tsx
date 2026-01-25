@@ -33,11 +33,11 @@ function Login() {
     defaultValues: {
       instance: "",
     },
-    validators: {
-      onBlur: loginSchema,
-    },
     onSubmit: async ({ value }) => {
       authApplication({ loginData: value, setLoginError: setLoginError });
+    },
+    validators: {
+      onBlur: loginSchema,
     },
   });
 
@@ -58,21 +58,21 @@ function Login() {
         <form.Field name="instance">
           {(field) => (
             <Field.Root
-              invalid={field.state.meta.errors.length > 0}
               errorMessage={field.state.meta.errors[0]?.message}
+              invalid={field.state.meta.errors.length > 0}
             >
               <Input
                 name={field.name}
-                value={field.state.value}
                 onBlur={field.handleBlur}
                 onChange={(e) => field.handleChange(e.target.value)}
                 placeholder="misskey.example"
                 size="xl"
+                value={field.state.value}
               />
             </Field.Root>
           )}
         </form.Field>
-        <Button type="submit" colorScheme="sky" alignSelf="end" size="xl">
+        <Button alignSelf="end" colorScheme="sky" size="xl" type="submit">
           <Text>次へ</Text>
         </Button>
         {loginError && <p>{loginError}</p>}
@@ -96,11 +96,11 @@ const authApplication = async ({
 
   try {
     const res = await fetch(checkEndpointURL, {
-      method: "POST",
+      body: JSON.stringify({}),
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({}),
+      method: "POST",
     });
     if (!res.ok) {
       throw new Error();

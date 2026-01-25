@@ -27,9 +27,9 @@ export const DeleteUserButton = ({ listId, userId }: DeleteUserButtonProps) => {
     <ConfirmModal
       button={<TrashIcon fontSize="1.2em" />}
       colorScheme="red"
+      okText="削除"
       onAccept={handleClicked}
       title="ユーザーを削除"
-      okText="削除"
     >
       <Text>リストから削除しますか？</Text>
       <UserCard userId={userId} />

@@ -12,8 +12,8 @@ const endpoint = "antennas/list";
  */
 export const antennasListQueryOptions = () =>
   queryOptions<ReadonlyArray<Antenna> | MkError>({
-    queryKey: [endpoint],
     queryFn: fetcher(endpoint),
+    queryKey: [endpoint],
     ...defaultQueryConfig,
   });
 
@@ -28,9 +28,9 @@ export const useGetAntennasList = () => {
 
   return {
     antennas: data,
-    isLoading,
-    isApiError,
     error,
+    isApiError,
+    isLoading,
     refetch,
   };
 };

@@ -10,22 +10,22 @@ function RouteComponent() {
   return (
     <HStack>
       <Button
-        size="xl"
-        colorScheme="sky"
-        variant="subtle"
-        endIcon={<ListDashesIcon weight="fill" size="28" />}
         as={Link}
+        colorScheme="sky"
+        endIcon={<ListDashesIcon size="28" weight="fill" />}
+        size="xl"
         to="/list"
+        variant="subtle"
       >
         <Text>リスト一覧</Text>
       </Button>
       <Button
-        size="xl"
-        colorScheme="emerald"
-        variant="subtle"
-        endIcon={<BroadcastIcon weight="fill" size="28" />}
         as={Link}
+        colorScheme="emerald"
+        endIcon={<BroadcastIcon size="28" weight="fill" />}
+        size="xl"
         to="/antenna"
+        variant="subtle"
       >
         <Text>アンテナ一覧</Text>
       </Button>

@@ -18,8 +18,8 @@ export const DeleteListButton = ({ listId, name }: DeleteListButtonProps) => {
     );
     await refetch();
     navigate({
-      to: "/list",
       replace: true,
+      to: "/list",
     });
   };
 
@@ -27,9 +27,9 @@ export const DeleteListButton = ({ listId, name }: DeleteListButtonProps) => {
     <ConfirmModal
       button="削除"
       colorScheme="red"
+      okText="削除"
       onAccept={handleClicked}
       title="リストを削除"
-      okText="削除"
     >
       {name}を削除しますか？
     </ConfirmModal>

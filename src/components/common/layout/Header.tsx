@@ -11,13 +11,13 @@ export const Header = () => {
 
   return (
     <Box
+      backdropFilter="blur(8px) saturate(1.5)"
+      bg={bg}
       pos="sticky"
+      px={{ base: "20vw", md: "md" }}
+      py="sm"
       top="0"
       zIndex="1"
-      py="sm"
-      px={{ base: "20vw", md: "md" }}
-      bg={bg}
-      backdropFilter="blur(8px) saturate(1.5)"
     >
       <HStack justifyContent="space-between">
         <Heading as={Link} to="/" truncated>

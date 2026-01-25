@@ -14,12 +14,12 @@ const endpoint = "users/following";
  */
 export const usersFollowingQueryOptions = (userId: string) =>
   queryOptions<ReadonlyArray<Following> | MkError>({
-    queryKey: [endpoint, userId],
+    enabled: !!userId,
     queryFn: fetcher(endpoint, {
       limit: 10,
       userId,
     }),
-    enabled: !!userId,
+    queryKey: [endpoint, userId],
     ...defaultQueryConfig,
   });
 
@@ -36,10 +36,10 @@ export const useGetUsersFollowing = () => {
   );
 
   return {
-    following: data,
-    isLoading,
-    isApiError,
     error,
+    following: data,
+    isApiError,
+    isLoading,
     refetch,
   };
 };

@@ -26,17 +26,17 @@ export const HeaderMenu = () => {
   const colorModeButtonColor = useColorModeValue("orange.900", "orange.100");
 
   return (
-    <Menu.Root open={open} onOpen={onOpen} onClose={onClose}>
+    <Menu.Root onClose={onClose} onOpen={onOpen} open={open}>
       <Menu.Trigger asChild>
-        <IconButton size="lg" borderRadius="full">
+        <IconButton borderRadius="full" size="lg">
           <Avatar
-            src={mySelf?.avatarUrl ?? undefined}
-            icon={<DotsNineIcon fontSize="1.6rem" />}
             bg="cyan.600"
+            icon={<DotsNineIcon fontSize="1.6rem" />}
+            src={mySelf?.avatarUrl ?? undefined}
           />
         </IconButton>
       </Menu.Trigger>
-      <Menu.Content as={VStack} alignItems="center">
+      <Menu.Content alignItems="center" as={VStack}>
         {mySelf && (
           <Button
             colorScheme="red"
@@ -51,9 +51,9 @@ export const HeaderMenu = () => {
         )}
         <IconButton
           borderRadius="full"
+          color={colorModeButtonColor}
           colorScheme="yellow"
           fontSize="2xl"
-          color={colorModeButtonColor}
           onClick={() => {
             toggleColorMode();
             onClose();

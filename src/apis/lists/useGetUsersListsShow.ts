@@ -13,11 +13,11 @@ const endpoint = "users/lists/show";
  */
 export const usersListsShowQueryOptions = (listId: string) =>
   queryOptions<UserList | MkError>({
-    queryKey: [endpoint, listId],
+    enabled: !!listId,
     queryFn: fetcher(endpoint, {
       listId,
     }),
-    enabled: !!listId,
+    queryKey: [endpoint, listId],
     ...defaultQueryConfig,
   });
 
@@ -32,10 +32,10 @@ export const useGetUsersListsShow = (listId: string) => {
   );
 
   return {
-    list: data,
-    isLoading,
-    isApiError,
     error,
+    isApiError,
+    isLoading,
+    list: data,
     refetch,
   };
 };

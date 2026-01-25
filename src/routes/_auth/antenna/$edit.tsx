@@ -13,7 +13,7 @@ export const Route = createFileRoute("/_auth/antenna/$edit")({
     );
     // エラーの場合リダイレクト
     if (isError(res)) {
-      throw redirect({ to: "/", replace: true });
+      throw redirect({ replace: true, to: "/" });
     }
   },
 });

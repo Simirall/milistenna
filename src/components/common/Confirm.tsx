@@ -37,15 +37,13 @@ const Confirm = ({
   const [isSubmitting, setSubmitting] = useState(false);
 
   return (
-    <Modal.Root open={open} onClose={onClose}>
+    <Modal.Root onClose={onClose} open={open}>
       <Modal.Overlay />
       <Modal.Content>
         <Modal.Header>{title}</Modal.Header>
         <Modal.Body py="sm">{children}</Modal.Body>
         <Modal.Footer>
           <Button
-            size="lg"
-            variant="solid"
             colorScheme={colorScheme}
             loading={isSubmitting}
             onClick={async () => {
@@ -54,15 +52,17 @@ const Confirm = ({
               setSubmitting(false);
               onClose();
             }}
+            size="lg"
+            variant="solid"
           >
             <Text>{okText}</Text>
           </Button>
           <Button
-            size="lg"
-            variant="subtle"
             colorScheme={colorScheme}
             loading={isSubmitting}
             onClick={onClose}
+            size="lg"
+            variant="subtle"
           >
             <Text>{cancelText}</Text>
           </Button>
@@ -91,26 +91,26 @@ export const ConfirmModal = (props: ConfirmModalProps) => {
     <>
       {typeof props.button === "string" ? (
         <Button
-          size="lg"
-          variant="surface"
           colorScheme={props.colorScheme ?? "teal"}
           onClick={onOpen}
+          size="lg"
+          variant="surface"
           {...(props.buttonProps as ButtonProps)}
         >
           <Text>{props.button}</Text>
         </Button>
       ) : (
         <IconButton
-          size="lg"
-          variant="surface"
           colorScheme={props.colorScheme ?? "teal"}
           onClick={onOpen}
+          size="lg"
+          variant="surface"
           {...(props.buttonProps as IconButtonProps)}
         >
           {props.button}
         </IconButton>
       )}
-      <Confirm open={open} onClose={onClose} {...props} />
+      <Confirm onClose={onClose} open={open} {...props} />
     </>
   );
 };

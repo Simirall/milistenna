@@ -16,19 +16,19 @@ export const GridCard = ({
 }: GridCardProps) => {
   return (
     <Card.Root
-      display="grid"
-      p="sm"
-      gridTemplateRows="subgrid"
-      gridRow="span 3"
       colorScheme={colorScheme}
+      display="grid"
+      gridRow="span 3"
+      gridTemplateRows="subgrid"
+      p="sm"
       variant="subtle"
     >
       <Heading
-        wordBreak="normal"
-        lineBreak="strict"
         css={{
           overflowWrap: "anywhere",
         }}
+        lineBreak="strict"
+        wordBreak="normal"
       >
         {title}
       </Heading>

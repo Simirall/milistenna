@@ -33,9 +33,6 @@ const CreateListModal = ({ open, onClose }: CreateListModalProps) => {
     defaultValues: {
       name: "",
     } satisfies z.infer<typeof createListSchema>,
-    validators: {
-      onChange: createListSchema,
-    },
     onSubmit: async ({ value }) => {
       await fetch(
         getApiUrl("users/lists/create"),
@@ -47,15 +44,18 @@ const CreateListModal = ({ open, onClose }: CreateListModalProps) => {
       onClose();
       form.reset();
     },
+    validators: {
+      onChange: createListSchema,
+    },
   });
 
   return (
     <Modal.Root
-      open={open}
       onClose={() => {
         form.reset();
         onClose();
       }}
+      open={open}
     >
       <Modal.Overlay />
       <Modal.Content>
@@ -72,13 +72,13 @@ const CreateListModal = ({ open, onClose }: CreateListModalProps) => {
             <form.Field name="name">
               {(field) => (
                 <Field.Root
-                  invalid={field.state.meta.errors.length > 0}
                   errorMessage={field.state.meta.errors[0]?.message}
+                  invalid={field.state.meta.errors.length > 0}
                 >
                   <Input
-                    value={field.state.value}
                     onBlur={field.handleBlur}
                     onChange={(e) => field.handleChange(e.target.value)}
+                    value={field.state.value}
                   />
                 </Field.Root>
               )}
@@ -89,24 +89,24 @@ const CreateListModal = ({ open, onClose }: CreateListModalProps) => {
               >
                 {([canSubmit, isSubmitting]) => (
                   <Button
-                    size="lg"
-                    type="submit"
+                    colorScheme="sky"
                     disabled={!canSubmit}
                     loading={isSubmitting}
-                    colorScheme="sky"
+                    size="lg"
+                    type="submit"
                   >
                     <Text>作成</Text>
                   </Button>
                 )}
               </form.Subscribe>
               <Button
-                size="lg"
                 colorScheme="cyan"
-                variant="subtle"
                 onClick={() => {
                   onClose();
                   form.reset();
                 }}
+                size="lg"
+                variant="subtle"
               >
                 <Text>キャンセル</Text>
               </Button>
@@ -124,18 +124,18 @@ export const CreateListModalButton = () => {
   return (
     <>
       <IconButton
-        pos="fixed"
-        bottom="xl"
-        right={{ base: "calc(20vw + 1rem)", md: "md" }}
         borderRadius="full"
-        size="xl"
+        bottom="xl"
         colorScheme="sky"
-        shadow="md"
         onClick={onOpen}
+        pos="fixed"
+        right={{ base: "calc(20vw + 1rem)", md: "md" }}
+        shadow="md"
+        size="xl"
       >
-        <PlusIcon weight="bold" fontSize="1.6rem" />
+        <PlusIcon fontSize="1.6rem" weight="bold" />
       </IconButton>
-      <CreateListModal open={open} onClose={onClose} />
+      <CreateListModal onClose={onClose} open={open} />
     </>
   );
 };

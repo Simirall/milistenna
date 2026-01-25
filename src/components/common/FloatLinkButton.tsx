@@ -13,11 +13,11 @@ const positionProps: Record<
   Position,
   Record<string, ResponsiveObject<string | number>>
 > = {
-  right: {
-    right: { base: "calc(20vw + 1rem)", md: "md" },
-  },
   left: {
     left: { base: "calc(20vw + 1rem)", md: "md" },
+  },
+  right: {
+    right: { base: "calc(20vw + 1rem)", md: "md" },
   },
 };
 
@@ -32,17 +32,17 @@ export const FloatLinkButton = ({
   colorScheme,
   position = "right",
   linkProps,
-  children = <PlusIcon weight="bold" fontSize="1.6rem" />,
+  children = <PlusIcon fontSize="1.6rem" weight="bold" />,
 }: FloatLinkButtonProps) => {
   return (
     <IconButton
-      pos="fixed"
       bottom="xl"
+      pos="fixed"
       {...positionProps[position]}
       borderRadius="full"
-      size="xl"
       colorScheme={colorScheme}
       shadow="md"
+      size="xl"
     >
       <Link {...linkProps}>{children}</Link>
     </IconButton>

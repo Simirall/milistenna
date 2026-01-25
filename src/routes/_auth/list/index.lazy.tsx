@@ -38,17 +38,17 @@ const ListList = () => {
 
   return lists.map((l) => (
     <GridCard
-      key={l.id}
-      title={l.name}
       colorScheme="sky"
       footer={
         <LinkButton
-          linkProps={{ to: "/list/$edit", params: { edit: l.id } }}
           buttonProps={{ colorScheme: "cyan", variant: "surface" }}
+          linkProps={{ params: { edit: l.id }, to: "/list/$edit" }}
         >
           編集
         </LinkButton>
       }
+      key={l.id}
+      title={l.name}
     >
       <Text>{l.userIds?.length}人のメンバー</Text>
     </GridCard>

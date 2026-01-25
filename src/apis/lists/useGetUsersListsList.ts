@@ -12,8 +12,8 @@ const endpoint = "users/lists/list";
  */
 export const usersListsListQueryOptions = () =>
   queryOptions<ReadonlyArray<UserList> | MkError>({
-    queryKey: [endpoint],
     queryFn: fetcher(endpoint),
+    queryKey: [endpoint],
     ...defaultQueryConfig,
   });
 
@@ -27,10 +27,10 @@ export const useGetUserListsList = () => {
   );
 
   return {
-    lists: data,
-    isLoading,
-    isApiError,
     error,
+    isApiError,
+    isLoading,
+    lists: data,
     refetch,
   };
 };

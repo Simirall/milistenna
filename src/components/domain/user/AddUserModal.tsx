@@ -46,8 +46,8 @@ const AddUserModal = ({ open, onClose }: AddUserModalProps) => {
   const handleUserSelect = async (userId: string) => {
     if (edit) {
       await addUserToList({
-        userId,
         listId: edit,
+        userId,
       });
       await refetch();
       setUsername("");
@@ -58,24 +58,24 @@ const AddUserModal = ({ open, onClose }: AddUserModalProps) => {
 
   return (
     <Modal.Root
-      open={open}
       onClose={() => {
         onClose();
         setUsername("");
         setHost("");
       }}
-      size="xl"
+      open={open}
       placement="center"
+      size="xl"
     >
       <Modal.Overlay />
       <Modal.Content>
         <Modal.Header>ユーザーを検索</Modal.Header>
         <Modal.Body>
-          <UserSearchForm setUsername={setUsername} setHost={setHost} />
+          <UserSearchForm setHost={setHost} setUsername={setUsername} />
           <UserSearchResult
-            username={username}
             host={host}
             onUserClick={handleUserSelect}
+            username={username}
           />
         </Modal.Body>
       </Modal.Content>
@@ -89,15 +89,15 @@ export const AddUserModalButton = () => {
   return (
     <>
       <Button
-        startIcon={<PlusIcon weight="bold" />}
-        onClick={onOpen}
         colorScheme="cyan"
-        variant="surface"
+        onClick={onOpen}
         size="lg"
+        startIcon={<PlusIcon weight="bold" />}
+        variant="surface"
       >
         <Text>ユーザーを追加</Text>
       </Button>
-      <AddUserModal open={open} onClose={onClose} />
+      <AddUserModal onClose={onClose} open={open} />
     </>
   );
 };
@@ -117,12 +117,12 @@ const UserSearchForm = ({ setUsername, setHost }: UserSearchFormProps) => {
             <AtIcon />
           </InputGroup.Addon>
           <Input
-            autoFocus
-            placeholder="username"
             autoComplete="none"
+            autoFocus
             onChange={(e) => {
               setUsername(e.target.value);
             }}
+            placeholder="username"
           />
         </InputGroup.Root>
       </Field.Root>
@@ -133,7 +133,6 @@ const UserSearchForm = ({ setUsername, setHost }: UserSearchFormProps) => {
             <At />
           </InputGroup.Addon>
           <Input
-            placeholder="misskey.example"
             autoComplete="off"
             enterKeyHint="done"
             onChange={(e) => {
@@ -144,6 +143,7 @@ const UserSearchForm = ({ setUsername, setHost }: UserSearchFormProps) => {
                 e.currentTarget.blur();
               }
             }}
+            placeholder="misskey.example"
           />
         </InputGroup.Root>
       </Field.Root>
@@ -163,14 +163,14 @@ const UserSearchResult = ({
   onUserClick,
 }: UserSearchResultProps) => {
   const { users, isLoading } = useDebouncedGetUsersSearchByUsernameAndHost({
-    username,
     host,
+    username,
   });
 
   // ローディング状態
   if ((username || host) && isLoading) {
     return (
-      <Center w="full" py="6">
+      <Center py="6" w="full">
         <Loader />
       </Center>
     );
@@ -188,14 +188,14 @@ const UserSearchResult = ({
 
   // 検索結果がある場合
   return (
-    <VStack mt="4" w="full" gap="2">
+    <VStack gap="2" mt="4" w="full">
       {users.map((user) => (
         <UserCard
-          key={user.id}
-          userId={user.id}
           clickAction={async () => {
             await onUserClick(user.id);
           }}
+          key={user.id}
+          userId={user.id}
         />
       ))}
     </VStack>

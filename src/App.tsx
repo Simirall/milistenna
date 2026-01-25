@@ -10,12 +10,12 @@ const queryClient = new QueryClient();
 export type RouterContext = { auth: LoginState; queryClient: QueryClient };
 
 const router = createRouter({
-  routeTree,
-  defaultPreload: "intent",
   context: {
     auth: undefined!,
     queryClient: queryClient,
   },
+  defaultPreload: "intent",
+  routeTree,
 });
 
 declare module "@tanstack/react-router" {
@@ -31,7 +31,7 @@ export function App() {
     <QueryClientProvider client={queryClient}>
       <UIProvider config={customConfig} theme={customTheme}>
         <ColorModeScript />
-        <RouterProvider router={router} context={{ auth: loginStore }} />
+        <RouterProvider context={{ auth: loginStore }} router={router} />
       </UIProvider>
     </QueryClientProvider>
   );

@@ -14,8 +14,8 @@ const endpoint = "users/search-by-username-and-host";
  * @property host - 検索するホスト（nullable）
  */
 const searchPayloadSchema = z.object({
-  username: z.string(),
   host: z.string().nullable(),
+  username: z.string(),
 });
 
 type SearchPayload = z.infer<typeof searchPayloadSchema>;
@@ -29,12 +29,12 @@ export const usersSearchByUsernameAndHostQueryOptions = (
   payload: SearchPayload,
 ) =>
   queryOptions<ReadonlyArray<UserDetailed> | MkError>({
-    queryKey: [endpoint, payload],
-    queryFn: fetcher(endpoint, {
-      username: payload.username,
-      host: payload.host,
-    }),
     enabled: !!payload.username,
+    queryFn: fetcher(endpoint, {
+      host: payload.host,
+      username: payload.username,
+    }),
+    queryKey: [endpoint, payload],
     ...defaultQueryConfig,
   });
 
@@ -50,11 +50,11 @@ export const useGetUsersSearchByUsernameAndHost = (payload: SearchPayload) => {
     useApiQuery(queryOptions);
 
   return {
-    users: data,
-    isLoading,
-    isApiError,
     error,
+    isApiError,
+    isLoading,
     refetch,
+    users: data,
   };
 };
 
@@ -74,15 +74,15 @@ export const useDebouncedGetUsersSearchByUsernameAndHost = (
   // デバウンスした値を使ってユーザー検索を実行
   const { users, isLoading, isApiError, error, refetch } =
     useGetUsersSearchByUsernameAndHost({
-      username,
       host,
+      username,
     });
 
   return {
-    users,
-    isLoading,
-    isApiError,
     error,
+    isApiError,
+    isLoading,
     refetch,
+    users,
   };
 };

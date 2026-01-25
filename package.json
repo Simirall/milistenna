@@ -6,8 +6,9 @@
   "scripts": {
     "dev": "vite",
     "build": "tsgo -b && vite build",
+    "preview": "vite preview",
     "lint": "biome check ./src",
-    "preview": "vite preview"
+    "lint:fix": "biome check --write ./src"
   },
   "dependencies": {
     "@phosphor-icons/react": "^2.1.10",

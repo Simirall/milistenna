@@ -23,11 +23,11 @@ export function useApiQuery<TData>(
   return {
     // 元のクエリ結果をそのまま返す
     ...query,
+    // エラーオブジェクト（あれば）
+    apiError: isError(query.data) ? query.data : undefined,
     // データがエラーの場合はundefined、そうでなければデータを返す
     data: isError(query.data) ? undefined : (query.data as TData | undefined),
     // データがエラーオブジェクトかどうか
     isApiError: isError(query.data),
-    // エラーオブジェクト（あれば）
-    apiError: isError(query.data) ? query.data : undefined,
   };
 }

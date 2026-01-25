@@ -24,17 +24,17 @@ export const useLoginStore = create<LoginState & LoginActions>()(
           isLogin: true,
           ...payload,
         })),
+      logout: () => {
+        set(() => ({
+          instance: undefined,
+          isLogin: false,
+          mySelf: undefined,
+        }));
+      },
       setMySelf: (payload) =>
         set({
           mySelf: payload,
         }),
-      logout: () => {
-        set(() => ({
-          isLogin: false,
-          mySelf: undefined,
-          instance: undefined,
-        }));
-      },
     }),
     { name: "login" },
   ),

@@ -13,11 +13,11 @@ const endpoint = "users/show";
  */
 export const usersShowQueryOptions = (userId: string) =>
   queryOptions<UserDetailed | MkError>({
-    queryKey: [endpoint, userId],
+    enabled: !!userId,
     queryFn: fetcher(endpoint, {
       userId,
     }),
-    enabled: !!userId,
+    queryKey: [endpoint, userId],
     ...defaultQueryConfig,
   });
 
@@ -32,12 +32,12 @@ export const useGetUsersShow = (userId: string) => {
     useApiQuery(queryOptions);
 
   return {
-    user: data,
-    isLoading,
-    isError,
-    isApiError,
-    error,
     apiError,
+    error,
+    isApiError,
+    isError,
+    isLoading,
     refetch,
+    user: data,
   };
 };

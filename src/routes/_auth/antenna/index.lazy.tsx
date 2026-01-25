@@ -15,11 +15,11 @@ export const Route = createLazyFileRoute("/_auth/antenna/")({
 const antennaSource: {
   [key in Antenna["src"]]: string;
 } = {
-  home: "ホーム？",
   all: "すべての投稿",
+  home: "ホーム？",
+  list: "指定したリスト",
   users: "指定したユーザーの投稿",
   users_blacklist: "指定したユーザーを除いたすべて",
-  list: "指定したリスト",
 };
 
 function RouteComponent() {
@@ -33,7 +33,7 @@ function RouteComponent() {
       </Box>
       <FloatLinkButton
         colorScheme="emerald"
-        linkProps={{ to: "/antenna/$edit", params: { edit: "create" } }}
+        linkProps={{ params: { edit: "create" }, to: "/antenna/$edit" }}
       />
     </>
   );
@@ -52,17 +52,17 @@ const AntennaList = () => {
 
   return antennas.map((a) => (
     <GridCard
-      key={a.id}
-      title={a.name}
       colorScheme="emerald"
       footer={
         <LinkButton
-          linkProps={{ to: "/antenna/$edit", params: { edit: a.id } }}
           buttonProps={{ colorScheme: "lime", variant: "surface" }}
+          linkProps={{ params: { edit: a.id }, to: "/antenna/$edit" }}
         >
           編集
         </LinkButton>
       }
+      key={a.id}
+      title={a.name}
     >
       <Text>ソース: {antennaSource[a.src]}</Text>
     </GridCard>

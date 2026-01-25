@@ -33,12 +33,12 @@ export const Route = createLazyFileRoute("/_auth/list/$edit")({
 });
 
 const editListSchema = z.object({
+  isPublic: z.boolean(),
   listId: z.string(),
   name: z
     .string()
     .min(1, "リスト名を入力してください")
     .max(100, "最大100文字までです"),
-  isPublic: z.boolean(),
 });
 
 function RouteComponent() {
@@ -65,9 +65,9 @@ function RouteComponent() {
           <VStack>
             {list.userIds.map((u) => (
               <UserCard
+                endComponent={<DeleteUserButton listId={list.id} userId={u} />}
                 key={u}
                 userId={u}
-                endComponent={<DeleteUserButton listId={list.id} userId={u} />}
               />
             ))}
           </VStack>
@@ -75,12 +75,12 @@ function RouteComponent() {
       </VStack>
       <FloatLinkButton
         colorScheme="sky"
-        position="left"
         linkProps={{
           to: "/list",
         }}
+        position="left"
       >
-        <CaretLeftIcon weight="bold" fontSize="1em" />
+        <CaretLeftIcon fontSize="1em" weight="bold" />
       </FloatLinkButton>
     </>
   );
@@ -95,13 +95,10 @@ const ListForm = ({ list, listId }: ListFormProps) => {
 
   const form = useForm({
     defaultValues: {
+      isPublic: list.isPublic,
       listId: listId,
       name: list.name,
-      isPublic: list.isPublic,
     } satisfies z.infer<typeof editListSchema>,
-    validators: {
-      onChange: editListSchema,
-    },
     onSubmit: async ({ value }) => {
       await fetch(
         getApiUrl("users/lists/update"),
@@ -110,39 +107,42 @@ const ListForm = ({ list, listId }: ListFormProps) => {
       onChangeAccordionIndex(-1);
       refetch();
     },
+    validators: {
+      onChange: editListSchema,
+    },
   });
 
   return (
     <Accordion.Root
-      variant="panel"
-      toggle
       index={accordionIndex}
       onChange={onChangeAccordionIndex}
+      toggle
+      variant="panel"
     >
       <Accordion.Item index={0}>
         <Accordion.Button>設定</Accordion.Button>
         <Accordion.Panel>
           <VStack
-            p="2"
             as="form"
             onSubmit={(e) => {
               e.preventDefault();
               e.stopPropagation();
               form.handleSubmit();
             }}
+            p="2"
           >
             <form.Field name="name">
               {(field) => (
                 <Field.Root
+                  errorMessage={field.state.meta.errors[0]?.message}
+                  invalid={field.state.meta.errors.length > 0}
                   label="リスト名"
                   required
-                  invalid={field.state.meta.errors.length > 0}
-                  errorMessage={field.state.meta.errors[0]?.message}
                 >
                   <Input
-                    value={field.state.value}
                     onBlur={field.handleBlur}
                     onChange={(e) => field.handleChange(e.target.value)}
+                    value={field.state.value}
                   />
                 </Field.Root>
               )}
@@ -150,10 +150,10 @@ const ListForm = ({ list, listId }: ListFormProps) => {
             <form.Field name="isPublic">
               {(field) => (
                 <Switch
-                  size="lg"
-                  colorScheme="teal"
                   checked={field.state.value}
+                  colorScheme="teal"
                   onChange={(e) => field.handleChange(e.target.checked)}
+                  size="lg"
                 >
                   <Text>パブリック</Text>
                 </Switch>
@@ -161,11 +161,11 @@ const ListForm = ({ list, listId }: ListFormProps) => {
             </form.Field>
             <HStack>
               <Button
-                type="submit"
                 colorScheme="cyan"
-                variant="surface"
-                size="lg"
                 loading={form.state.isSubmitting}
+                size="lg"
+                type="submit"
+                variant="surface"
               >
                 <Text>変更</Text>
               </Button>

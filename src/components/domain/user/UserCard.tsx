@@ -32,22 +32,22 @@ export const UserCard = ({
   return (
     <Card.Root
       {...(clickAction && {
-        onClick: clickAction,
-        cursor: "pointer",
         _hover: {
           backgroundColor: hoverBg,
         },
+        cursor: "pointer",
+        onClick: clickAction,
       })}
       width="full"
     >
       <Card.Body>
         <HStack w="full">
           <Avatar
-            src={user.avatarUrl ?? undefined}
             icon={<FediverseLogoIcon fontSize="2rem" />}
+            src={user.avatarUrl ?? undefined}
           />
-          <VStack gap="0" w="full" overflow="hidden">
-            <Text truncated fontSize="xl">
+          <VStack gap="0" overflow="hidden" w="full">
+            <Text fontSize="xl" truncated>
               {user.name}
             </Text>
             <Text truncated>
@@ -66,7 +66,7 @@ const CardSkeleton = () => {
   return (
     <Card.Root>
       <Card.Body>
-        <Skeleton lineClamp={2} h={15} borderRadius="md" />
+        <Skeleton borderRadius="md" h={15} lineClamp={2} />
       </Card.Body>
     </Card.Root>
   );
