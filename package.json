@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "build": "tsgo -b && vite build",
     "lint": "biome check ./src",
     "preview": "vite preview"
   },
@@ -14,7 +14,6 @@
     "@tanstack/react-form": "^1.27.7",
     "@tanstack/react-query": "^5.90.20",
     "@tanstack/react-router": "^1.154.13",
-    "@typescript/native-preview": "7.0.0-dev.20260122.4",
     "@yamada-ui/react": "^2.0.8",
     "react": "^19.2.3",
     "react-compiler-runtime": "19.1.0-rc.2",
@@ -29,15 +28,14 @@
     "@tanstack/router-plugin": "^1.154.13",
     "@types/react": "^19.2.9",
     "@types/react-dom": "^19.2.3",
+    "@typescript/native-preview": "7.0.0-dev.20260122.4",
     "@vitejs/plugin-react": "^5.1.2",
     "@vitejs/plugin-react-swc": "^4.2.2",
     "babel-plugin-react-compiler": "19.1.0-rc.2",
     "misskey-js": "2026.1.0-beta.0",
-    "typescript": "~5.9.3",
     "vite": "^7.3.1",
     "vite-tsconfig-paths": "^6.0.4"
   },
-  "packageManager": "pnpm@10.6.5+sha512.cdf928fca20832cd59ec53826492b7dc25dc524d4370b6b4adbf65803d32efaa6c1c88147c0ae4e8d579a6c9eec715757b50d4fa35eea179d868eada4ed043af",
   "pnpm": {
     "onlyBuiltDependencies": [
       "@biomejs/biome",

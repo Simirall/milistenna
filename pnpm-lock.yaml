@@ -20,9 +20,6 @@ importers:
       '@tanstack/react-router':
         specifier: ^1.154.13
         version: 1.154.13(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
-      '@typescript/native-preview':
-        specifier: 7.0.0-dev.20260122.4
-        version: 7.0.0-dev.20260122.4
       '@yamada-ui/react':
         specifier: ^2.0.8
         version: 2.0.8(@emotion/react@11.11.0(@types/react@19.2.9)(react@19.2.3))(@emotion/styled@11.11.0(@emotion/react@11.11.0(@types/react@19.2.9)(react@19.2.3))(@types/react@19.2.9)(react@19.2.3))(@types/react@19.2.9)(motion@12.5.0(@emotion/is-prop-valid@1.4.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
@@ -60,6 +57,9 @@ importers:
       '@types/react-dom':
         specifier: ^19.2.3
         version: 19.2.3(@types/react@19.2.9)
+      '@typescript/native-preview':
+        specifier: 7.0.0-dev.20260122.4
+        version: 7.0.0-dev.20260122.4
       '@vitejs/plugin-react':
         specifier: ^5.1.2
         version: 5.1.2(vite@7.3.1(tsx@4.21.0))
@@ -72,9 +72,6 @@ importers:
       misskey-js:
         specifier: 2026.1.0-beta.0
         version: 2026.1.0-beta.0
-      typescript:
-        specifier: ~5.9.3
-        version: 5.9.3
       vite:
         specifier: ^7.3.1
         version: 7.3.1(tsx@4.21.0)
@@ -2917,7 +2914,8 @@ snapshots:
     optionalDependencies:
       fsevents: 2.3.3
 
-  typescript@5.9.3: {}
+  typescript@5.9.3:
+    optional: true
 
   unplugin@2.3.11:
     dependencies:
