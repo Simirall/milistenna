@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { Heading, HStack, useColorModeValue } from "@yamada-ui/react";
+import { Box, Heading, HStack, useColorModeValue } from "@yamada-ui/react";
 import { appName } from "@/constants/appName";
 import { HeaderMenu } from "./HeaderMenu";
 
@@ -10,20 +10,21 @@ export const Header = () => {
   );
 
   return (
-    <HStack
+    <Box
       pos="sticky"
       top="0"
-      justifyContent="space-between"
       zIndex="1"
-      px="md"
       py="sm"
+      px={{ base: "20vw", md: "md" }}
       bg={bg}
       backdropFilter="blur(8px) saturate(1.5)"
     >
-      <Heading as={Link} to="/" truncated>
-        {appName}
-      </Heading>
-      <HeaderMenu />
-    </HStack>
+      <HStack justifyContent="space-between">
+        <Heading as={Link} to="/" truncated>
+          {appName}
+        </Heading>
+        <HeaderMenu />
+      </HStack>
+    </Box>
   );
 };

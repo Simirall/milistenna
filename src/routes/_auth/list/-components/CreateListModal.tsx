@@ -125,11 +125,12 @@ export const CreateListModalButton = () => {
     <>
       <IconButton
         pos="fixed"
-        bottom="md"
-        right="md"
+        bottom="xl"
+        right={{ base: "calc(20vw + 1rem)", md: "md" }}
         borderRadius="full"
         size="xl"
         colorScheme="sky"
+        shadow="md"
         onClick={onOpen}
       >
         <PlusIcon weight="bold" fontSize="1.6rem" />

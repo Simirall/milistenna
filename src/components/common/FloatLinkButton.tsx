@@ -1,16 +1,23 @@
 import { PlusIcon } from "@phosphor-icons/react";
 import { Link, type LinkProps } from "@tanstack/react-router";
-import { type ColorScheme, IconButton } from "@yamada-ui/react";
+import {
+  type ColorScheme,
+  IconButton,
+  type ResponsiveObject,
+} from "@yamada-ui/react";
 import type { ReactElement } from "react";
 
 type Position = "right" | "left";
 
-const positionProps: Record<Position, Record<string, string>> = {
+const positionProps: Record<
+  Position,
+  Record<string, ResponsiveObject<string | number>>
+> = {
   right: {
-    right: "xl",
+    right: { base: "calc(20vw + 1rem)", md: "md" },
   },
   left: {
-    left: "md",
+    left: { base: "calc(20vw + 1rem)", md: "md" },
   },
 };
 
@@ -30,11 +37,12 @@ export const FloatLinkButton = ({
   return (
     <IconButton
       pos="fixed"
-      bottom="md"
+      bottom="xl"
       {...positionProps[position]}
       borderRadius="full"
       size="xl"
       colorScheme={colorScheme}
+      shadow="md"
     >
       <Link {...linkProps}>{children}</Link>
     </IconButton>
