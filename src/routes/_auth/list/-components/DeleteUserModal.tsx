@@ -3,7 +3,7 @@ import { Text } from "@yamada-ui/react";
 import type { UsersListsPullRequest } from "misskey-js/entities.js";
 import { useGetUsersListsShow } from "@/apis/lists/useGetUsersListsShow";
 import { ConfirmModal } from "@/components/common/Confirm";
-import { UserCard } from "@/components/feature/user/UserCard";
+import { UserCard } from "@/components/domain/user/UserCard";
 import { getApiUrl } from "@/utils/getApiUrl";
 import { getFetchObject } from "@/utils/getFetchObject";
 

@@ -3,8 +3,8 @@ import { Box, Center, Heading, Text } from "@yamada-ui/react";
 import { useGetUserListsList } from "@/apis/lists/useGetUsersListsList";
 import { LinkButton } from "@/components/common/LinkButton";
 import { Loader } from "@/components/common/Loader";
-import { GridCard } from "@/components/layout/GridCard";
-import { GridContainer } from "@/components/layout/GridContainer";
+import { GridCard } from "@/components/common/layout/GridCard";
+import { GridContainer } from "@/components/common/layout/GridContainer";
 import { CreateListModalButton } from "./-components/CreateListModal";
 
 export const Route = createLazyFileRoute("/_auth/list/")({
