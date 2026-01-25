@@ -1,12 +1,13 @@
 {
+  "typescript.experimental.useTsgo": true,
   "[typescript][typescriptreact][javascript][javascriptreact][json][jsonc]": {
     "editor.defaultFormatter": "biomejs.biome"
   },
   "editor.codeActionsOnSave": {
-    "quickfix.biome": "explicit",
-    "source.organizeImports.biome": "explicit",
+    "source.fixAll.biome": "explicit",
+    "source.organizeImports.biome": "explicit"
   },
-  "biome.rename": true,
+  "biome.enabled": true,
   "cSpell.words": [
     "biomejs",
     "miauth",
