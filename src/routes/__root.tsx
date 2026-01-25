@@ -7,7 +7,7 @@ export const Route = createRootRouteWithContext<RouterContext>()({
   component: () => (
     <Box display="grid" gridTemplateRows="auto 1fr" minH="100vh">
       <Header />
-      <Box bg="bg.subtle" px={{ base: "20vw", md: "0" }} py="md">
+      <Box bg="bg.subtle" px={{ base: "20vw", md: "md" }} py="md">
         <Box
           as="main"
           bg="bg.float"

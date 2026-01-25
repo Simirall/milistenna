@@ -129,7 +129,7 @@ export const CreateListModalButton = () => {
         colorScheme="sky"
         onClick={onOpen}
         pos="fixed"
-        right={{ base: "calc(20vw + 1rem)", md: "md" }}
+        right={{ base: "calc(20vw + 1rem)", md: "xl" }}
         shadow="md"
         size="xl"
       >

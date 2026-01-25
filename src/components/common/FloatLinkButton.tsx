@@ -14,10 +14,10 @@ const positionProps: Record<
   Record<string, ResponsiveObject<string | number>>
 > = {
   left: {
-    left: { base: "calc(20vw + 1rem)", md: "md" },
+    left: { base: "calc(20vw + 1rem)", md: "xl" },
   },
   right: {
-    right: { base: "calc(20vw + 1rem)", md: "md" },
+    right: { base: "calc(20vw + 1rem)", md: "xl" },
   },
 };
 
