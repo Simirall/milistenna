@@ -2,13 +2,11 @@ import { Plus } from "@phosphor-icons/react";
 import { useForm } from "@tanstack/react-form";
 import {
   Button,
-  FormControl,
+  Field,
   HStack,
   IconButton,
   Input,
   Modal,
-  ModalBody,
-  ModalHeader,
   Text,
   useDisclosure,
   VStack,
@@ -52,68 +50,71 @@ const CreateListModal = ({ open, onClose }: CreateListModalProps) => {
   });
 
   return (
-    <Modal
+    <Modal.Root
       open={open}
       onClose={() => {
         form.reset();
         onClose();
       }}
     >
-      <ModalHeader>リストを作成</ModalHeader>
-      <ModalBody>
-        <VStack
-          as="form"
-          onSubmit={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            form.handleSubmit();
-          }}
-        >
-          <form.Field name="name">
-            {(field) => (
-              <FormControl
-                invalid={field.state.meta.errors.length > 0}
-                errorMessage={field.state.meta.errors[0]?.message}
-              >
-                <Input
-                  value={field.state.value}
-                  onBlur={field.handleBlur}
-                  onChange={(e) => field.handleChange(e.target.value)}
-                />
-              </FormControl>
-            )}
-          </form.Field>
-          <HStack justify="end">
-            <form.Subscribe
-              selector={(state) => [state.canSubmit, state.isSubmitting]}
-            >
-              {([canSubmit, isSubmitting]) => (
-                <Button
-                  size="lg"
-                  type="submit"
-                  disabled={!canSubmit}
-                  loading={isSubmitting}
-                  colorScheme="sky"
+      <Modal.Overlay />
+      <Modal.Content>
+        <Modal.Header>リストを作成</Modal.Header>
+        <Modal.Body>
+          <VStack
+            as="form"
+            onSubmit={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              form.handleSubmit();
+            }}
+          >
+            <form.Field name="name">
+              {(field) => (
+                <Field.Root
+                  invalid={field.state.meta.errors.length > 0}
+                  errorMessage={field.state.meta.errors[0]?.message}
                 >
-                  <Text>作成</Text>
-                </Button>
+                  <Input
+                    value={field.state.value}
+                    onBlur={field.handleBlur}
+                    onChange={(e) => field.handleChange(e.target.value)}
+                  />
+                </Field.Root>
               )}
-            </form.Subscribe>
-            <Button
-              size="lg"
-              colorScheme="cyan"
-              variant="subtle"
-              onClick={() => {
-                onClose();
-                form.reset();
-              }}
-            >
-              <Text>キャンセル</Text>
-            </Button>
-          </HStack>
-        </VStack>
-      </ModalBody>
-    </Modal>
+            </form.Field>
+            <HStack justify="end">
+              <form.Subscribe
+                selector={(state) => [state.canSubmit, state.isSubmitting]}
+              >
+                {([canSubmit, isSubmitting]) => (
+                  <Button
+                    size="lg"
+                    type="submit"
+                    disabled={!canSubmit}
+                    loading={isSubmitting}
+                    colorScheme="sky"
+                  >
+                    <Text>作成</Text>
+                  </Button>
+                )}
+              </form.Subscribe>
+              <Button
+                size="lg"
+                colorScheme="cyan"
+                variant="subtle"
+                onClick={() => {
+                  onClose();
+                  form.reset();
+                }}
+              >
+                <Text>キャンセル</Text>
+              </Button>
+            </HStack>
+          </VStack>
+        </Modal.Body>
+      </Modal.Content>
+    </Modal.Root>
   );
 };
 

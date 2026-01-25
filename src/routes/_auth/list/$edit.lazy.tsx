@@ -3,15 +3,14 @@ import { useForm } from "@tanstack/react-form";
 import { createLazyFileRoute } from "@tanstack/react-router";
 import {
   Accordion,
-  AccordionItem,
-  type AccordionProps,
   Button,
-  FormControl,
+  Field,
   Heading,
   HStack,
   Input,
   Switch,
   Text,
+  type UseAccordionProps,
   VStack,
 } from "@yamada-ui/react";
 import type { UserList, UsersListsUpdateRequest } from "misskey-js/entities.js";
@@ -92,7 +91,7 @@ type ListFormProps = { list: UserList; listId: string };
 const ListForm = ({ list, listId }: ListFormProps) => {
   const { refetch } = useGetUsersListsShow(listId);
   const [accordionIndex, onChangeAccordionIndex] =
-    useState<AccordionProps["index"]>(-1);
+    useState<UseAccordionProps["index"]>(-1);
 
   const form = useForm({
     defaultValues: {
@@ -114,64 +113,67 @@ const ListForm = ({ list, listId }: ListFormProps) => {
   });
 
   return (
-    <Accordion
-      variant="card"
+    <Accordion.Root
+      variant="panel"
       toggle
       index={accordionIndex}
       onChange={onChangeAccordionIndex}
     >
-      <AccordionItem label="設定">
-        <VStack
-          p="2"
-          as="form"
-          onSubmit={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            form.handleSubmit();
-          }}
-        >
-          <form.Field name="name">
-            {(field) => (
-              <FormControl
-                label="リスト名"
-                required
-                invalid={field.state.meta.errors.length > 0}
-                errorMessage={field.state.meta.errors[0]?.message}
-              >
-                <Input
-                  value={field.state.value}
-                  onBlur={field.handleBlur}
-                  onChange={(e) => field.handleChange(e.target.value)}
-                />
-              </FormControl>
-            )}
-          </form.Field>
-          <form.Field name="isPublic">
-            {(field) => (
-              <Switch
+      <Accordion.Item index={0}>
+        <Accordion.Button>設定</Accordion.Button>
+        <Accordion.Panel>
+          <VStack
+            p="2"
+            as="form"
+            onSubmit={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              form.handleSubmit();
+            }}
+          >
+            <form.Field name="name">
+              {(field) => (
+                <Field.Root
+                  label="リスト名"
+                  required
+                  invalid={field.state.meta.errors.length > 0}
+                  errorMessage={field.state.meta.errors[0]?.message}
+                >
+                  <Input
+                    value={field.state.value}
+                    onBlur={field.handleBlur}
+                    onChange={(e) => field.handleChange(e.target.value)}
+                  />
+                </Field.Root>
+              )}
+            </form.Field>
+            <form.Field name="isPublic">
+              {(field) => (
+                <Switch
+                  size="lg"
+                  colorScheme="teal"
+                  checked={field.state.value}
+                  onChange={(e) => field.handleChange(e.target.checked)}
+                >
+                  <Text>パブリック</Text>
+                </Switch>
+              )}
+            </form.Field>
+            <HStack>
+              <Button
+                type="submit"
+                colorScheme="cyan"
+                variant="surface"
                 size="lg"
-                colorScheme="teal"
-                checked={field.state.value}
-                onChange={(e) => field.handleChange(e.target.checked)}
+                loading={form.state.isSubmitting}
               >
-                <Text>パブリック</Text>
-              </Switch>
-            )}
-          </form.Field>
-          <HStack>
-            <Button
-              type="submit"
-              colorScheme="cyan"
-              variant="surface"
-              size="lg"
-              loading={form.state.isSubmitting}
-            >
-              <Text>変更</Text>
-            </Button>
-            <DeleteListButton listId={list.id} name={list.name} />
-          </HStack>
-        </VStack>
-      </AccordionItem>
-    </Accordion>
+                <Text>変更</Text>
+              </Button>
+              <DeleteListButton listId={list.id} name={list.name} />
+            </HStack>
+          </VStack>
+        </Accordion.Panel>
+      </Accordion.Item>
+    </Accordion.Root>
   );
 };

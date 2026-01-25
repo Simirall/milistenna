@@ -1,6 +1,6 @@
 import { useForm } from "@tanstack/react-form";
 import { createFileRoute } from "@tanstack/react-router";
-import { Button, FormControl, Heading, Input, Text, VStack } from "@yamada-ui/react";
+import { Button, Field, Heading, Input, Text, VStack } from "@yamada-ui/react";
 import { useState } from "react";
 import { v4 as uuid } from "uuid";
 import z from "zod";
@@ -44,7 +44,9 @@ function Login() {
   return (
     <VStack>
       <Heading as="h1">ログイン</Heading>
-      <Heading as="h2" size="md">ログインしたいMisskeyのインスタンス名を入力してください</Heading>
+      <Heading as="h2" size="md">
+        ログインしたいMisskeyのインスタンス名を入力してください
+      </Heading>
       <VStack
         as="form"
         onSubmit={(e) => {
@@ -55,7 +57,7 @@ function Login() {
       >
         <form.Field name="instance">
           {(field) => (
-            <FormControl
+            <Field.Root
               invalid={field.state.meta.errors.length > 0}
               errorMessage={field.state.meta.errors[0]?.message}
             >
@@ -67,7 +69,7 @@ function Login() {
                 placeholder="misskey.example"
                 size="xl"
               />
-            </FormControl>
+            </Field.Root>
           )}
         </form.Field>
         <Button type="submit" colorScheme="sky" alignSelf="end" size="xl">

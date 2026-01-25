@@ -2,11 +2,9 @@ import { FediverseLogo } from "@phosphor-icons/react";
 import {
   Avatar,
   Card,
-  CardBody,
   HStack,
   Skeleton,
   Text,
-  type Theme,
   useColorModeValue,
   VStack,
 } from "@yamada-ui/react";
@@ -25,17 +23,14 @@ export const UserCard = ({
   endComponent,
 }: UserCardProps) => {
   const { user, isLoading } = useGetUsersShow(userId);
-  const hoverBg = useColorModeValue<Theme["colors"], Theme["colors"]>(
-    "sky.50",
-    "sky.950",
-  );
+  const hoverBg = useColorModeValue("sky.50", "sky.950");
 
   if (isLoading || !user) {
     return <CardSkeleton />;
   }
 
   return (
-    <Card
+    <Card.Root
       {...(clickAction && {
         onClick: clickAction,
         cursor: "pointer",
@@ -45,34 +40,34 @@ export const UserCard = ({
       })}
       width="full"
     >
-      <CardBody>
+      <Card.Body>
         <HStack w="full">
           <Avatar
             src={user.avatarUrl ?? undefined}
             icon={<FediverseLogo fontSize="2rem" />}
           />
           <VStack gap="0" w="full" overflow="hidden">
-            <Text isTruncated fontSize="xl">
+            <Text truncated fontSize="xl">
               {user.name}
             </Text>
-            <Text isTruncated>
+            <Text truncated>
               @{user.username}
               {user.host && `@${user.host}`}
             </Text>
           </VStack>
           {endComponent}
         </HStack>
-      </CardBody>
-    </Card>
+      </Card.Body>
+    </Card.Root>
   );
 };
 
 const CardSkeleton = () => {
   return (
-    <Card>
-      <CardBody>
+    <Card.Root>
+      <Card.Body>
         <Skeleton lineClamp={2} h={15} borderRadius="md" />
-      </CardBody>
-    </Card>
+      </Card.Body>
+    </Card.Root>
   );
 };

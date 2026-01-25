@@ -20,7 +20,7 @@ export const Header = () => {
       bg={bg}
       backdropFilter="blur(8px) saturate(1.5)"
     >
-      <Heading as={Link} to="/" isTruncated>
+      <Heading as={Link} to="/" truncated>
         {appName}
       </Heading>
       <HeaderMenu />

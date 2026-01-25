@@ -5,8 +5,6 @@ import {
   Button,
   IconButton,
   Menu,
-  MenuButton,
-  MenuList,
   Text,
   useColorMode,
   useColorModeValue,
@@ -29,15 +27,17 @@ export const HeaderMenu = () => {
   const colorModeButtonColor = useColorModeValue("orange.900", "orange.100");
 
   return (
-    <Menu open={open} onOpen={onOpen} onClose={onClose}>
-      <MenuButton as={IconButton} size="lg" borderRadius="full">
-        <Avatar
-          src={mySelf?.avatarUrl ?? undefined}
-          icon={<DotsNine fontSize="1.6rem" />}
-          bg="cyan.600"
-        />
-      </MenuButton>
-      <MenuList as={VStack} alignItems="center">
+    <Menu.Root open={open} onOpen={onOpen} onClose={onClose}>
+      <Menu.Trigger asChild>
+        <IconButton size="lg" borderRadius="full">
+          <Avatar
+            src={mySelf?.avatarUrl ?? undefined}
+            icon={<DotsNine fontSize="1.6rem" />}
+            bg="cyan.600"
+          />
+        </IconButton>
+      </Menu.Trigger>
+      <Menu.Content as={VStack} alignItems="center">
         {mySelf && (
           <Button
             colorScheme="red"
@@ -62,7 +62,7 @@ export const HeaderMenu = () => {
         >
           {colorModeButton}
         </IconButton>
-      </MenuList>
-    </Menu>
+      </Menu.Content>
+    </Menu.Root>
   );
 };

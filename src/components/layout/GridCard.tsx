@@ -15,7 +15,7 @@ export const GridCard = ({
   footer,
 }: GridCardProps) => {
   return (
-    <Card
+    <Card.Root
       display="grid"
       p="sm"
       gridTemplateRows="subgrid"
@@ -26,7 +26,7 @@ export const GridCard = ({
       <Heading
         wordBreak="normal"
         lineBreak="strict"
-        sx={{
+        css={{
           overflowWrap: "anywhere",
         }}
       >
@@ -34,6 +34,6 @@ export const GridCard = ({
       </Heading>
       {children}
       {footer}
-    </Card>
+    </Card.Root>
   );
 };

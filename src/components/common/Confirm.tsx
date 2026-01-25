@@ -1,14 +1,11 @@
 import {
   Button,
   type ButtonProps,
+  type ColorScheme,
   IconButton,
   type IconButtonProps,
   Modal,
-  ModalBody,
-  ModalFooter,
-  ModalHeader,
   Text,
-  type ThemeColorScheme,
   useDisclosure,
 } from "@yamada-ui/react";
 import { type ReactElement, type ReactNode, useState } from "react";
@@ -18,7 +15,7 @@ type ConfirmProps = {
   title?: string;
   okText?: string;
   cancelText?: string;
-  colorScheme?: ThemeColorScheme;
+  colorScheme?: ColorScheme;
   onAccept: (() => Promise<void>) | (() => void);
 };
 
@@ -40,35 +37,38 @@ const Confirm = ({
   const [isSubmitting, setSubmitting] = useState(false);
 
   return (
-    <Modal open={open} onClose={onClose}>
-      <ModalHeader>{title}</ModalHeader>
-      <ModalBody py="sm">{children}</ModalBody>
-      <ModalFooter>
-        <Button
-          size="lg"
-          variant="solid"
-          colorScheme={colorScheme}
-          loading={isSubmitting}
-          onClick={async () => {
-            setSubmitting(true);
-            await onAccept();
-            setSubmitting(false);
-            onClose();
-          }}
-        >
-          <Text>{okText}</Text>
-        </Button>
-        <Button
-          size="lg"
-          variant="subtle"
-          colorScheme={colorScheme}
-          loading={isSubmitting}
-          onClick={onClose}
-        >
-          <Text>{cancelText}</Text>
-        </Button>
-      </ModalFooter>
-    </Modal>
+    <Modal.Root open={open} onClose={onClose}>
+      <Modal.Overlay />
+      <Modal.Content>
+        <Modal.Header>{title}</Modal.Header>
+        <Modal.Body py="sm">{children}</Modal.Body>
+        <Modal.Footer>
+          <Button
+            size="lg"
+            variant="solid"
+            colorScheme={colorScheme}
+            loading={isSubmitting}
+            onClick={async () => {
+              setSubmitting(true);
+              await onAccept();
+              setSubmitting(false);
+              onClose();
+            }}
+          >
+            <Text>{okText}</Text>
+          </Button>
+          <Button
+            size="lg"
+            variant="subtle"
+            colorScheme={colorScheme}
+            loading={isSubmitting}
+            onClick={onClose}
+          >
+            <Text>{cancelText}</Text>
+          </Button>
+        </Modal.Footer>
+      </Modal.Content>
+    </Modal.Root>
   );
 };
 
@@ -93,9 +93,9 @@ export const ConfirmModal = (props: ConfirmModalProps) => {
         <Button
           size="lg"
           variant="surface"
-          colorScheme={props.colorScheme}
+          colorScheme={props.colorScheme ?? "teal"}
           onClick={onOpen}
-          {...props.buttonProps}
+          {...(props.buttonProps as ButtonProps)}
         >
           <Text>{props.button}</Text>
         </Button>
@@ -103,11 +103,12 @@ export const ConfirmModal = (props: ConfirmModalProps) => {
         <IconButton
           size="lg"
           variant="surface"
-          colorScheme={props.colorScheme}
+          colorScheme={props.colorScheme ?? "teal"}
           onClick={onOpen}
-          icon={props.button}
-          {...props.buttonProps}
-        />
+          {...(props.buttonProps as IconButtonProps)}
+        >
+          {props.button}
+        </IconButton>
       )}
       <Confirm open={open} onClose={onClose} {...props} />
     </>

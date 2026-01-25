@@ -1,5 +1,5 @@
 import { createLazyFileRoute } from "@tanstack/react-router";
-import { Center, Container, Heading, Text } from "@yamada-ui/react";
+import { Box, Center, Heading, Text } from "@yamada-ui/react";
 import { useGetUserListsList } from "@/apis/lists/useGetUsersListsList";
 import { LinkButton } from "@/components/common/LinkButton";
 import { Loader } from "@/components/common/Loader";
@@ -14,12 +14,12 @@ export const Route = createLazyFileRoute("/_auth/list/")({
 function RouteComponent() {
   return (
     <>
-      <Container>
+      <Box>
         <Heading textAlign="center">リスト一覧</Heading>
         <GridContainer>
           <ListList />
         </GridContainer>
-      </Container>
+      </Box>
       <CreateListModalButton />
     </>
   );

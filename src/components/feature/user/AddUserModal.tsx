@@ -3,15 +3,11 @@ import { useParams } from "@tanstack/react-router";
 import {
   Button,
   Center,
-  FormControl,
+  Field,
   HStack,
   Input,
   InputGroup,
-  InputLeftAddon,
-  Label,
   Modal,
-  ModalBody,
-  ModalHeader,
   Text,
   useDisclosure,
   VStack,
@@ -56,7 +52,7 @@ const AddUserModal = ({ open, onClose }: AddUserModalProps) => {
   };
 
   return (
-    <Modal
+    <Modal.Root
       open={open}
       onClose={() => {
         onClose();
@@ -64,18 +60,21 @@ const AddUserModal = ({ open, onClose }: AddUserModalProps) => {
         setHost("");
       }}
       size="xl"
-      placement="top"
+      placement="center"
     >
-      <ModalHeader>ユーザーを検索</ModalHeader>
-      <ModalBody>
-        <UserSearchForm setUsername={setUsername} setHost={setHost} />
-        <UserSearchResult
-          username={username}
-          host={host}
-          onUserClick={handleUserSelect}
-        />
-      </ModalBody>
-    </Modal>
+      <Modal.Overlay />
+      <Modal.Content>
+        <Modal.Header>ユーザーを検索</Modal.Header>
+        <Modal.Body>
+          <UserSearchForm setUsername={setUsername} setHost={setHost} />
+          <UserSearchResult
+            username={username}
+            host={host}
+            onUserClick={handleUserSelect}
+          />
+        </Modal.Body>
+      </Modal.Content>
+    </Modal.Root>
   );
 };
 
@@ -106,28 +105,28 @@ type UserSearchFormProps = {
 const UserSearchForm = ({ setUsername, setHost }: UserSearchFormProps) => {
   return (
     <HStack gap="sm">
-      <FormControl>
-        <Label>ユーザー名</Label>
-        <InputGroup>
-          <InputLeftAddon>
+      <Field.Root>
+        <Field.Label>ユーザー名</Field.Label>
+        <InputGroup.Root>
+          <InputGroup.Addon>
             <At />
-          </InputLeftAddon>
+          </InputGroup.Addon>
           <Input
             autoFocus
             placeholder="username"
-            autoComplete="off"
+            autoComplete="none"
             onChange={(e) => {
               setUsername(e.target.value);
             }}
           />
-        </InputGroup>
-      </FormControl>
-      <FormControl>
-        <Label>ホスト</Label>
-        <InputGroup>
-          <InputLeftAddon>
+        </InputGroup.Root>
+      </Field.Root>
+      <Field.Root>
+        <Field.Label>ホスト</Field.Label>
+        <InputGroup.Root>
+          <InputGroup.Addon>
             <At />
-          </InputLeftAddon>
+          </InputGroup.Addon>
           <Input
             placeholder="misskey.example"
             autoComplete="off"
@@ -141,8 +140,8 @@ const UserSearchForm = ({ setUsername, setHost }: UserSearchFormProps) => {
               }
             }}
           />
-        </InputGroup>
-      </FormControl>
+        </InputGroup.Root>
+      </Field.Root>
     </HStack>
   );
 };

@@ -1,5 +1,5 @@
 import { createLazyFileRoute } from "@tanstack/react-router";
-import { Center, Container, Heading, Text } from "@yamada-ui/react";
+import { Box, Center, Heading, Text } from "@yamada-ui/react";
 import type { Antenna } from "misskey-js/entities.js";
 import { useGetAntennasList } from "@/apis/antennas/useGetAntennasList";
 import { FloatLinkButton } from "@/components/common/FloatLinkButton";
@@ -25,12 +25,12 @@ const antennaSource: {
 function RouteComponent() {
   return (
     <>
-      <Container>
+      <Box>
         <Heading textAlign="center">アンテナ一覧</Heading>
         <GridContainer>
           <AntennaList />
         </GridContainer>
-      </Container>
+      </Box>
       <FloatLinkButton
         colorScheme="violet"
         linkProps={{ to: "/antenna/$edit", params: { edit: "create" } }}

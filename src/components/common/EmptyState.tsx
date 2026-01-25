@@ -1,9 +1,5 @@
 import { MinusCircle } from "@phosphor-icons/react";
-import {
-  EmptyStateIndicator,
-  EmptyStateTitle,
-  EmptyState as YmdEmptyState,
-} from "@yamada-ui/react";
+import { EmptyState as YmdEmptyState } from "@yamada-ui/react";
 import type { ReactElement } from "react";
 
 type EmptyStateProps = {
@@ -18,10 +14,10 @@ export const EmptyState = ({
   children,
 }: EmptyStateProps) => {
   return (
-    <YmdEmptyState>
-      <EmptyStateIndicator>{icon}</EmptyStateIndicator>
-      {title && <EmptyStateTitle>{title}</EmptyStateTitle>}
+    <YmdEmptyState.Root>
+      <YmdEmptyState.Indicator>{icon}</YmdEmptyState.Indicator>
+      {title && <YmdEmptyState.Title>{title}</YmdEmptyState.Title>}
       {children}
-    </YmdEmptyState>
+    </YmdEmptyState.Root>
   );
 };

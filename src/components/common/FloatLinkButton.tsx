@@ -29,16 +29,14 @@ export const FloatLinkButton = ({
 }: FloatLinkButtonProps) => {
   return (
     <IconButton
-      as={Link}
       pos="fixed"
       bottom="md"
       {...positionProps[position]}
       borderRadius="full"
       size="xl"
       colorScheme={colorScheme}
-      {...linkProps}
     >
-      {children}
+      <Link {...linkProps}>{children}</Link>
     </IconButton>
   );
 };
