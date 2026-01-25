@@ -21,7 +21,7 @@ function RouteComponent() {
       </Button>
       <Button
         size="xl"
-        colorScheme="violet"
+        colorScheme="emerald"
         variant="subtle"
         endIcon={<BroadcastIcon weight="fill" size="28" />}
         as={Link}

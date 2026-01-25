@@ -32,7 +32,7 @@ function RouteComponent() {
         </GridContainer>
       </Box>
       <FloatLinkButton
-        colorScheme="violet"
+        colorScheme="emerald"
         linkProps={{ to: "/antenna/$edit", params: { edit: "create" } }}
       />
     </>
@@ -54,11 +54,11 @@ const AntennaList = () => {
     <GridCard
       key={a.id}
       title={a.name}
-      colorScheme="violet"
+      colorScheme="emerald"
       footer={
         <LinkButton
           linkProps={{ to: "/antenna/$edit", params: { edit: a.id } }}
-          buttonProps={{ colorScheme: "purple", variant: "surface" }}
+          buttonProps={{ colorScheme: "lime", variant: "surface" }}
         >
           編集
         </LinkButton>
