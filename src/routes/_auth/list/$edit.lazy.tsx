@@ -1,4 +1,4 @@
-import { CaretLeft } from "@phosphor-icons/react";
+import { CaretLeftIcon } from "@phosphor-icons/react";
 import { useForm } from "@tanstack/react-form";
 import { createLazyFileRoute } from "@tanstack/react-router";
 import {
@@ -80,7 +80,7 @@ function RouteComponent() {
           to: "/list",
         }}
       >
-        <CaretLeft weight="bold" fontSize="1.4em" />
+        <CaretLeftIcon weight="bold" fontSize="1em" />
       </FloatLinkButton>
     </>
   );

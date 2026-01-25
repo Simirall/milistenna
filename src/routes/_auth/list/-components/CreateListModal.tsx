@@ -1,4 +1,4 @@
-import { Plus } from "@phosphor-icons/react";
+import { PlusIcon } from "@phosphor-icons/react";
 import { useForm } from "@tanstack/react-form";
 import {
   Button,
@@ -132,7 +132,7 @@ export const CreateListModalButton = () => {
         colorScheme="sky"
         onClick={onOpen}
       >
-        <Plus weight="bold" fontSize="1.6rem" />
+        <PlusIcon weight="bold" fontSize="1.6rem" />
       </IconButton>
       <CreateListModal open={open} onClose={onClose} />
     </>

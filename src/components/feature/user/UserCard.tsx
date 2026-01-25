@@ -1,4 +1,4 @@
-import { FediverseLogo } from "@phosphor-icons/react";
+import { FediverseLogoIcon } from "@phosphor-icons/react";
 import {
   Avatar,
   Card,
@@ -44,7 +44,7 @@ export const UserCard = ({
         <HStack w="full">
           <Avatar
             src={user.avatarUrl ?? undefined}
-            icon={<FediverseLogo fontSize="2rem" />}
+            icon={<FediverseLogoIcon fontSize="2rem" />}
           />
           <VStack gap="0" w="full" overflow="hidden">
             <Text truncated fontSize="xl">

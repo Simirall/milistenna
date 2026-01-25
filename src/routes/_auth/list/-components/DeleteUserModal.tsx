@@ -1,4 +1,4 @@
-import { Trash } from "@phosphor-icons/react";
+import { TrashIcon } from "@phosphor-icons/react";
 import { Text } from "@yamada-ui/react";
 import type { UsersListsPullRequest } from "misskey-js/entities.js";
 import { useGetUsersListsShow } from "@/apis/lists/useGetUsersListsShow";
@@ -25,7 +25,7 @@ export const DeleteUserButton = ({ listId, userId }: DeleteUserButtonProps) => {
 
   return (
     <ConfirmModal
-      button={<Trash fontSize="1.6em" />}
+      button={<TrashIcon fontSize="1.2em" />}
       colorScheme="red"
       onAccept={handleClicked}
       title="ユーザーを削除"

@@ -1,4 +1,4 @@
-import { DotsNine, MoonStars, SunDim } from "@phosphor-icons/react";
+import { DotsNineIcon, MoonStarsIcon, SunDimIcon } from "@phosphor-icons/react";
 import { useRouter } from "@tanstack/react-router";
 import {
   Avatar,
@@ -11,7 +11,6 @@ import {
   useDisclosure,
   VStack,
 } from "@yamada-ui/react";
-
 import { useLoginStore } from "@/store/login";
 
 export const HeaderMenu = () => {
@@ -21,8 +20,8 @@ export const HeaderMenu = () => {
 
   const { open, onOpen, onClose } = useDisclosure();
   const colorModeButton = useColorModeValue(
-    <MoonStars weight="fill" />,
-    <SunDim weight="fill" />,
+    <MoonStarsIcon weight="fill" />,
+    <SunDimIcon weight="fill" />,
   );
   const colorModeButtonColor = useColorModeValue("orange.900", "orange.100");
 
@@ -32,7 +31,7 @@ export const HeaderMenu = () => {
         <IconButton size="lg" borderRadius="full">
           <Avatar
             src={mySelf?.avatarUrl ?? undefined}
-            icon={<DotsNine fontSize="1.6rem" />}
+            icon={<DotsNineIcon fontSize="1.6rem" />}
             bg="cyan.600"
           />
         </IconButton>

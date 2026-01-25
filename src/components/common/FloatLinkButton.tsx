@@ -1,4 +1,4 @@
-import { Plus } from "@phosphor-icons/react";
+import { PlusIcon } from "@phosphor-icons/react";
 import { Link, type LinkProps } from "@tanstack/react-router";
 import { type ColorScheme, IconButton } from "@yamada-ui/react";
 import type { ReactElement } from "react";
@@ -25,7 +25,7 @@ export const FloatLinkButton = ({
   colorScheme,
   position = "right",
   linkProps,
-  children = <Plus weight="bold" fontSize="1.6rem" />,
+  children = <PlusIcon weight="bold" fontSize="1.6rem" />,
 }: FloatLinkButtonProps) => {
   return (
     <IconButton

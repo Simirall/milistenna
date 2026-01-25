@@ -1,4 +1,4 @@
-import { MinusCircle } from "@phosphor-icons/react";
+import { MinusCircleIcon } from "@phosphor-icons/react";
 import { EmptyState as YmdEmptyState } from "@yamada-ui/react";
 import type { ReactElement } from "react";
 
@@ -9,7 +9,7 @@ type EmptyStateProps = {
 };
 
 export const EmptyState = ({
-  icon = <MinusCircle />,
+  icon = <MinusCircleIcon />,
   title,
   children,
 }: EmptyStateProps) => {

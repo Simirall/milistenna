@@ -1,4 +1,4 @@
-import { Broadcast, ListDashes } from "@phosphor-icons/react";
+import { BroadcastIcon, ListDashesIcon } from "@phosphor-icons/react";
 import { createLazyFileRoute, Link } from "@tanstack/react-router";
 import { Button, HStack, Text } from "@yamada-ui/react";
 
@@ -13,7 +13,7 @@ function RouteComponent() {
         size="xl"
         colorScheme="sky"
         variant="subtle"
-        endIcon={<ListDashes weight="fill" size="28" />}
+        endIcon={<ListDashesIcon weight="fill" size="28" />}
         as={Link}
         to="/list"
       >
@@ -23,7 +23,7 @@ function RouteComponent() {
         size="xl"
         colorScheme="violet"
         variant="subtle"
-        endIcon={<Broadcast weight="fill" size="28" />}
+        endIcon={<BroadcastIcon weight="fill" size="28" />}
         as={Link}
         to="/antenna"
       >

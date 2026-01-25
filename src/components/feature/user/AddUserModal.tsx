@@ -1,4 +1,9 @@
-import { At, MagnifyingGlassPlus, Plus } from "@phosphor-icons/react";
+import {
+  At,
+  AtIcon,
+  MagnifyingGlassPlusIcon,
+  PlusIcon,
+} from "@phosphor-icons/react";
 import { useParams } from "@tanstack/react-router";
 import {
   Button,
@@ -84,7 +89,7 @@ export const AddUserModalButton = () => {
   return (
     <>
       <Button
-        startIcon={<Plus weight="bold" />}
+        startIcon={<PlusIcon weight="bold" />}
         onClick={onOpen}
         colorScheme="cyan"
         variant="surface"
@@ -109,7 +114,7 @@ const UserSearchForm = ({ setUsername, setHost }: UserSearchFormProps) => {
         <Field.Label>ユーザー名</Field.Label>
         <InputGroup.Root>
           <InputGroup.Addon>
-            <At />
+            <AtIcon />
           </InputGroup.Addon>
           <Input
             autoFocus
@@ -173,7 +178,7 @@ const UserSearchResult = ({
 
   // 初期状態: 検索語が未入力の場合
   if ((!username && !host) || !users) {
-    return <EmptyState icon={<MagnifyingGlassPlus />} />;
+    return <EmptyState icon={<MagnifyingGlassPlusIcon />} />;
   }
 
   // 検索結果がない場合
