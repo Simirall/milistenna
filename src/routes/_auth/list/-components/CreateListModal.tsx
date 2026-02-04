@@ -3,13 +3,11 @@ import { useForm } from "@tanstack/react-form";
 import {
   Button,
   Field,
-  HStack,
   IconButton,
   Input,
   Modal,
   Text,
   useDisclosure,
-  VStack,
 } from "@yamada-ui/react";
 import type { UsersListsCreateRequest } from "misskey-js/entities.js";
 import { z } from "zod";
@@ -58,61 +56,61 @@ const CreateListModal = ({ open, onClose }: CreateListModalProps) => {
       open={open}
     >
       <Modal.Overlay />
-      <Modal.Content>
+      <Modal.Content
+        as="form"
+        onSubmit={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          form.handleSubmit();
+        }}
+      >
         <Modal.Header>リストを作成</Modal.Header>
         <Modal.Body>
-          <VStack
-            as="form"
-            onSubmit={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              form.handleSubmit();
-            }}
-          >
-            <form.Field name="name">
-              {(field) => (
-                <Field.Root
-                  errorMessage={field.state.meta.errors[0]?.message}
-                  invalid={field.state.meta.errors.length > 0}
-                >
-                  <Input
-                    onBlur={field.handleBlur}
-                    onChange={(e) => field.handleChange(e.target.value)}
-                    value={field.state.value}
-                  />
-                </Field.Root>
-              )}
-            </form.Field>
-            <HStack justify="end">
-              <form.Subscribe
-                selector={(state) => [state.canSubmit, state.isSubmitting]}
+          <form.Field name="name">
+            {(field) => (
+              <Field.Root
+                errorMessage={field.state.meta.errors[0]?.message}
+                invalid={field.state.meta.errors.length > 0}
               >
-                {([canSubmit, isSubmitting]) => (
-                  <Button
-                    colorScheme="sky"
-                    disabled={!canSubmit}
-                    loading={isSubmitting}
-                    size="lg"
-                    type="submit"
-                  >
-                    <Text>作成</Text>
-                  </Button>
-                )}
-              </form.Subscribe>
-              <Button
-                colorScheme="cyan"
-                onClick={() => {
-                  onClose();
-                  form.reset();
-                }}
-                size="lg"
-                variant="subtle"
-              >
-                <Text>キャンセル</Text>
-              </Button>
-            </HStack>
-          </VStack>
+                <Input
+                  onBlur={field.handleBlur}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                  value={field.state.value}
+                  autoFocus
+                  placeholder="リスト名"
+                />
+              </Field.Root>
+            )}
+          </form.Field>
         </Modal.Body>
+        <Modal.Footer>
+          <form.Subscribe
+            selector={(state) => [state.canSubmit, state.isSubmitting]}
+          >
+            {([canSubmit, isSubmitting]) => (
+              <Button
+                colorScheme="sky"
+                disabled={!canSubmit}
+                loading={isSubmitting}
+                size="lg"
+                type="submit"
+              >
+                <Text>作成</Text>
+              </Button>
+            )}
+          </form.Subscribe>
+          <Button
+            colorScheme="cyan"
+            onClick={() => {
+              onClose();
+              form.reset();
+            }}
+            size="lg"
+            variant="subtle"
+          >
+            <Text>キャンセル</Text>
+          </Button>
+        </Modal.Footer>
       </Modal.Content>
     </Modal.Root>
   );
