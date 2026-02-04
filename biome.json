@@ -7,7 +7,11 @@
   },
   "files": {
     "ignoreUnknown": false,
-    "includes": ["**", "!**/routeTree.gen.ts"]
+    "includes": [
+      "**",
+      "!**/routeTree.gen.ts",
+      "!!**/node_modules"
+    ]
   },
   "formatter": {
     "enabled": true,
@@ -36,6 +40,9 @@
       },
       "style": {
         "noNonNullAssertion": "info"
+      },
+      "nursery": {
+        "noDeprecatedImports": "warn"
       }
     }
   }
