@@ -1,7 +1,7 @@
 import { createRootRouteWithContext, Outlet } from "@tanstack/react-router";
 import { Box } from "@yamada-ui/react";
 import type { RouterContext } from "@/App";
-import { Header } from "@/components/common/layout/Header";
+import { Header } from "@/components/Header";
 
 export const Route = createRootRouteWithContext<RouterContext>()({
   component: () => (

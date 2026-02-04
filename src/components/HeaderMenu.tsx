@@ -9,7 +9,6 @@ import {
   useColorMode,
   useColorModeValue,
   useDisclosure,
-  VStack,
 } from "@yamada-ui/react";
 import { useLoginStore } from "@/store/login";
 
@@ -36,7 +35,7 @@ export const HeaderMenu = () => {
           />
         </IconButton>
       </Menu.Trigger>
-      <Menu.Content alignItems="center" as={VStack}>
+      <Menu.Content alignItems="center" gap="md" py="md">
         {mySelf && (
           <Button
             colorScheme="red"
