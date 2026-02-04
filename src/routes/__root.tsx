@@ -16,6 +16,7 @@ export const Route = createRootRouteWithContext<RouterContext>()({
           gridTemplateRows="1fr"
           minH="full"
           p="md"
+          pb="20"
           shadow="md"
         >
           <Outlet />
