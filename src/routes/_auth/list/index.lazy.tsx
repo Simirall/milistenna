@@ -1,11 +1,12 @@
 import { createLazyFileRoute } from "@tanstack/react-router";
-import { Box, Center, Heading, Text } from "@yamada-ui/react";
+import { Box, Center, Heading, HStack, Text } from "@yamada-ui/react";
 import { useGetUserListsList } from "@/apis/lists/useGetUsersListsList";
 import { LinkButton } from "@/components/common/LinkButton";
 import { Loader } from "@/components/common/Loader";
 import { GridCard } from "@/components/common/layout/GridCard";
 import { GridContainer } from "@/components/common/layout/GridContainer";
 import { CreateListModalButton } from "./-components/CreateListModal";
+import { DeleteListButton } from "./-components/DeleteListModal";
 
 export const Route = createLazyFileRoute("/_auth/list/")({
   component: RouteComponent,
@@ -40,12 +41,15 @@ const ListList = () => {
     <GridCard
       colorScheme="sky"
       footer={
-        <LinkButton
-          buttonProps={{ colorScheme: "cyan", variant: "surface" }}
-          linkProps={{ params: { edit: l.id }, to: "/list/$edit" }}
-        >
-          編集
-        </LinkButton>
+        <HStack>
+          <LinkButton
+            buttonProps={{ colorScheme: "info", variant: "surface", flex: 1 }}
+            linkProps={{ params: { edit: l.id }, to: "/list/$edit" }}
+          >
+            編集
+          </LinkButton>
+          <DeleteListButton listId={l.id} name={l.name} />
+        </HStack>
       }
       key={l.id}
       title={l.name}
