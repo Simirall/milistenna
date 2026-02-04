@@ -29,7 +29,10 @@
     "rules": {
       "recommended": true,
       "correctness": {
-        "noUnusedImports": "warn"
+        "noUnusedImports": {
+          "level": "warn",
+          "fix": "safe"
+        }
       },
       "style": {
         "noNonNullAssertion": "info"
