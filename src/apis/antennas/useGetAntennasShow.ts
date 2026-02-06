@@ -13,7 +13,7 @@ const endpoint = "antennas/show";
  */
 export const antennaShowQueryOptions = (antennaId: string) =>
   queryOptions<Antenna | MkError>({
-    enabled: !!antennaId,
+    enabled: !!antennaId && antennaId !== "create",
     queryFn: fetcher(endpoint, {
       antennaId,
     }),
