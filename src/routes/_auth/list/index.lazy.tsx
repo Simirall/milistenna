@@ -43,7 +43,12 @@ const ListList = () => {
       footer={
         <HStack>
           <LinkButton
-            buttonProps={{ colorScheme: "info", variant: "surface", flex: 1 }}
+            buttonProps={{
+              colorScheme: "info",
+              variant: "surface",
+              flex: 1,
+              size: "lg",
+            }}
             linkProps={{ params: { edit: l.id }, to: "/list/$edit" }}
           >
             編集
