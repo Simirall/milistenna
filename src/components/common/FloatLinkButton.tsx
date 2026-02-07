@@ -23,7 +23,7 @@ const positionProps: Record<
 
 type FloatLinkButtonProps = {
   colorScheme: ColorScheme;
-  linkProps: Omit<LinkProps, "mask">;
+  linkProps: LinkProps;
   position?: Position;
   children?: ReactElement;
 };
@@ -36,6 +36,7 @@ export const FloatLinkButton = ({
 }: FloatLinkButtonProps) => {
   return (
     <IconButton
+      as={Link}
       bottom="xl"
       pos="fixed"
       {...positionProps[position]}
@@ -43,8 +44,9 @@ export const FloatLinkButton = ({
       colorScheme={colorScheme}
       shadow="md"
       size="xl"
+      {...(linkProps as Record<string, unknown>)}
     >
-      <Link {...linkProps}>{children}</Link>
+      {children}
     </IconButton>
   );
 };
