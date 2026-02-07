@@ -6,6 +6,7 @@ import { ConfirmModal } from "@/components/common/Confirm";
 import { UserCard } from "@/components/domain/user/UserCard";
 import { getApiUrl } from "@/utils/getApiUrl";
 import { getFetchObject } from "@/utils/getFetchObject";
+import { useGetUserListsList } from "@/apis/lists/useGetUsersListsList";
 
 type DeleteUserButtonProps = {
   listId: string;
@@ -14,13 +15,14 @@ type DeleteUserButtonProps = {
 
 export const DeleteUserButton = ({ listId, userId }: DeleteUserButtonProps) => {
   const { refetch } = useGetUsersListsShow(listId);
+  const { refetch: refetchList } = useGetUserListsList();
 
   const handleClicked = async () => {
     await fetch(
       getApiUrl("users/lists/pull"),
       getFetchObject<UsersListsPullRequest>({ listId, userId }),
     );
-    refetch();
+    await Promise.all([refetch(), refetchList()]);
   };
 
   return (

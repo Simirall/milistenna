@@ -29,6 +29,7 @@ import { getApiUrl } from "@/utils/getApiUrl";
 import { getFetchObject } from "@/utils/getFetchObject";
 import { Loader } from "../../common/Loader";
 import { UserCard } from "./UserCard";
+import { useGetUserListsList } from "@/apis/lists/useGetUsersListsList";
 
 const addUserToList = async (payload: UsersListsPushRequest) => {
   await fetch(
@@ -91,6 +92,7 @@ type AddUserModalProps = { open: boolean; onClose: () => void };
 const AddUserModal = ({ open, onClose }: AddUserModalProps) => {
   const { edit } = useParams({ strict: false });
   const { refetch } = useGetUsersListsShow(edit ?? "");
+  const { refetch: refetchList } = useGetUserListsList();
 
   const handleUserSelect = async (user: UserDetailed) => {
     if (edit) {
@@ -98,7 +100,7 @@ const AddUserModal = ({ open, onClose }: AddUserModalProps) => {
         listId: edit,
         userId: user.id,
       });
-      await refetch();
+      await Promise.all([refetch(), refetchList()]);
     }
   };
 
