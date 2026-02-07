@@ -2,20 +2,24 @@ import { DotsNineIcon, MoonStarsIcon, SunDimIcon } from "@phosphor-icons/react";
 import { useRouter } from "@tanstack/react-router";
 import {
   Avatar,
+  Box,
   Button,
   IconButton,
   Menu,
+  Select,
   Text,
   useColorMode,
   useColorModeValue,
   useDisclosure,
 } from "@yamada-ui/react";
+import { FONT_OPTIONS, type FontValue, useFontStore } from "@/store/font";
 import { useLoginStore } from "@/store/login";
 
 export const HeaderMenu = () => {
   const router = useRouter();
   const { logout, mySelf } = useLoginStore();
   const { toggleColorMode } = useColorMode();
+  const { fontValue, setFont } = useFontStore();
 
   const { open, onOpen, onClose } = useDisclosure();
   const colorModeButton = useColorModeValue(
@@ -35,7 +39,7 @@ export const HeaderMenu = () => {
           />
         </IconButton>
       </Menu.Trigger>
-      <Menu.Content alignItems="center" gap="md" py="md">
+      <Menu.Content alignItems="center" gap="md" p="md">
         {mySelf && (
           <Button
             colorScheme="red"
@@ -49,6 +53,21 @@ export const HeaderMenu = () => {
             <Text>ログアウト</Text>
           </Button>
         )}
+        <Box w="full">
+          <Text>フォント</Text>
+          <Select.Root
+            size="sm"
+            value={fontValue}
+            width="full"
+            onChange={(e) => setFont(e as FontValue)}
+          >
+            {FONT_OPTIONS.map((option) => (
+              <Select.Option key={option.value} value={option.value}>
+                {option.label}
+              </Select.Option>
+            ))}
+          </Select.Root>
+        </Box>
         <IconButton
           borderRadius="full"
           color={colorModeButtonColor}

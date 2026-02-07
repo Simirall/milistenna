@@ -3,10 +3,11 @@ import { createRouter, RouterProvider } from "@tanstack/react-router";
 import { ColorModeScript, UIProvider } from "@yamada-ui/react";
 import { Provider as JotaiProvider } from "jotai";
 import type { MeDetailed } from "misskey-js/entities.js";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { routeTree } from "./routeTree.gen.ts";
+import { useFontStore } from "./store/font.ts";
 import { type LoginState, useLoginStore } from "./store/login.ts";
-import { customConfig, customTheme } from "./theme/index.ts";
+import { createCustomTheme, customConfig } from "./theme/index.ts";
 import { getApiUrl } from "./utils/getApiUrl.ts";
 import { getFetchObject } from "./utils/getFetchObject.ts";
 import "mfm-react-render/style.css";
@@ -32,6 +33,9 @@ declare module "@tanstack/react-router" {
 
 export function App() {
   const loginStore = useLoginStore();
+  const { fontValue } = useFontStore();
+
+  const customTheme = useMemo(() => createCustomTheme(fontValue), [fontValue]);
 
   useEffect(() => {
     if (!loginStore.isLogin || !loginStore.token) return;
