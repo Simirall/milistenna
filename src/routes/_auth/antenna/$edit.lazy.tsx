@@ -1,6 +1,6 @@
 import { CaretLeftIcon } from "@phosphor-icons/react";
 import { useForm } from "@tanstack/react-form";
-import { createLazyFileRoute } from "@tanstack/react-router";
+import { createLazyFileRoute, useNavigate } from "@tanstack/react-router";
 import {
   Button,
   Field,
@@ -14,11 +14,18 @@ import {
   Textarea,
   VStack,
 } from "@yamada-ui/react";
-import type { Antenna } from "misskey-js/entities.js";
+import type {
+  Antenna,
+  AntennasCreateRequest,
+  AntennasUpdateRequest,
+} from "misskey-js/entities.js";
+import { useGetAntennasList } from "@/apis/antennas/useGetAntennasList";
 import { useGetAntennasShow } from "@/apis/antennas/useGetAntennasShow";
 import { useGetUsersListsShow } from "@/apis/lists/useGetUsersListsShow";
 import { FloatLinkButton } from "@/components/common/FloatLinkButton";
 import { Loader } from "@/components/common/Loader";
+import { getApiUrl } from "@/utils/getApiUrl";
+import { getFetchObject } from "@/utils/getFetchObject";
 import { isError } from "@/utils/isError";
 import { SelectListField } from "./-components/SelectListModal";
 
@@ -96,6 +103,8 @@ type AntennaFormProps = {
 
 const AntennaForm = ({ antenna, initialListName }: AntennaFormProps) => {
   const isCreate = !antenna;
+  const navigate = useNavigate();
+  const { refetch } = useGetAntennasList();
 
   const form = useForm({
     defaultValues: {
@@ -115,26 +124,54 @@ const AntennaForm = ({ antenna, initialListName }: AntennaFormProps) => {
         antenna?.excludeNotesInSensitiveChannel ?? false,
     },
     onSubmit: async ({ value }) => {
-      const payload = {
-        ...(!isCreate && { antennaId: antenna.id }),
-        name: value.name,
-        src: value.src,
-        userListId: value.src === "list" ? value.userListId : null,
-        users:
-          value.src === "users" || value.src === "users_blacklist"
-            ? value.users.split("\n").filter(Boolean)
-            : [],
-        keywords: stringToKeywords(value.keywords),
-        excludeKeywords: stringToKeywords(value.excludeKeywords),
-        caseSensitive: value.caseSensitive,
-        localOnly: value.localOnly,
-        excludeBots: value.excludeBots,
-        withReplies: value.withReplies,
-        withFile: value.withFile,
-        excludeNotesInSensitiveChannel: value.excludeNotesInSensitiveChannel,
-      };
-      // TODO: APIリクエスト実装
-      console.log(payload);
+      if (isCreate) {
+        const payload: AntennasCreateRequest = {
+          name: value.name,
+          src: value.src,
+          userListId: value.src === "list" ? value.userListId : null,
+          users:
+            value.src === "users" || value.src === "users_blacklist"
+              ? value.users.split("\n").filter(Boolean)
+              : [],
+          keywords: stringToKeywords(value.keywords),
+          excludeKeywords: stringToKeywords(value.excludeKeywords),
+          caseSensitive: value.caseSensitive,
+          localOnly: value.localOnly,
+          excludeBots: value.excludeBots,
+          withReplies: value.withReplies,
+          withFile: value.withFile,
+          excludeNotesInSensitiveChannel: value.excludeNotesInSensitiveChannel,
+        };
+        await fetch(
+          getApiUrl("antennas/create"),
+          getFetchObject<AntennasCreateRequest>(payload),
+        );
+      } else {
+        const payload: AntennasUpdateRequest = {
+          antennaId: antenna.id,
+          name: value.name,
+          src: value.src,
+          userListId: value.src === "list" ? value.userListId : null,
+          users:
+            value.src === "users" || value.src === "users_blacklist"
+              ? value.users.split("\n").filter(Boolean)
+              : [],
+          keywords: stringToKeywords(value.keywords),
+          excludeKeywords: stringToKeywords(value.excludeKeywords),
+          caseSensitive: value.caseSensitive,
+          localOnly: value.localOnly,
+          excludeBots: value.excludeBots,
+          withReplies: value.withReplies,
+          withFile: value.withFile,
+          excludeNotesInSensitiveChannel: value.excludeNotesInSensitiveChannel,
+        };
+        await fetch(
+          getApiUrl("antennas/update"),
+          getFetchObject<AntennasUpdateRequest>(payload),
+        );
+      }
+      await refetch();
+      navigate({ to: "/antenna" });
     },
   });
 
@@ -199,6 +236,7 @@ const AntennaForm = ({ antenna, initialListName }: AntennaFormProps) => {
                     onChange={(e) => field.handleChange(e.target.value)}
                     placeholder={"@user@example.com"}
                     value={field.state.value}
+                    required
                   />
                 </Field.Root>
               )}
@@ -253,6 +291,7 @@ const AntennaForm = ({ antenna, initialListName }: AntennaFormProps) => {
               onChange={(e) => field.handleChange(e.target.value)}
               placeholder={"foo bar\nbaz"}
               value={field.state.value}
+              required
             />
           </Field.Root>
         )}
