@@ -8,8 +8,10 @@ import {
   useColorModeValue,
   VStack,
 } from "@yamada-ui/react";
+import { MfmSimple } from "mfm-react-render";
 import type { ReactElement } from "react";
 import { useGetUsersShow } from "@/apis/users/useGetUsersShow";
+import { useLoginStore } from "@/store/login";
 
 type UserCardProps = {
   userId: string;
@@ -23,6 +25,7 @@ export const UserCard = ({
   endComponent,
 }: UserCardProps) => {
   const { user, isLoading } = useGetUsersShow(userId);
+  const instanceEmojis = useLoginStore((s) => s.instanceEmojis);
   const hoverBg = useColorModeValue("sky.50", "sky.950");
 
   if (isLoading || !user) {
@@ -47,8 +50,19 @@ export const UserCard = ({
             src={user.avatarUrl ?? undefined}
           />
           <VStack gap="0" minW={0} overflow="hidden" w="full">
-            <Text fontSize="xl" truncated>
-              {user.name}
+            <Text
+              fontSize="xl"
+              truncated
+              css={{
+                img: {
+                  verticalAlign: "middle",
+                },
+              }}
+            >
+              <MfmSimple
+                emojis={user.host ? user.emojis : instanceEmojis}
+                text={user.name ?? user.username}
+              />
             </Text>
             <Text truncated>
               @{user.username}

@@ -16,6 +16,8 @@
     "@tanstack/react-query": "^5.90.20",
     "@tanstack/react-router": "^1.158.0",
     "@yamada-ui/react": "^2.0.8",
+    "jotai": "^2.17.1",
+    "mfm-react-render": "^0.1.1",
     "react": "^19.2.4",
     "react-compiler-runtime": "19.1.0-rc.2",
     "react-dom": "^19.2.4",
