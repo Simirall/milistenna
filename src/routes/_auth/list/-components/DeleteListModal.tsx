@@ -1,5 +1,6 @@
 import { useNavigate } from "@tanstack/react-router";
 import type { UsersListsDeleteRequest } from "misskey-js/entities.js";
+import { useGetAntennasList } from "@/apis/antennas/useGetAntennasList";
 import { useGetUserListsList } from "@/apis/lists/useGetUsersListsList";
 import { ConfirmModal } from "@/components/common/Confirm";
 import { getApiUrl } from "@/utils/getApiUrl";
@@ -9,6 +10,7 @@ type DeleteListButtonProps = { listId: string; name: string };
 
 export const DeleteListButton = ({ listId, name }: DeleteListButtonProps) => {
   const { refetch } = useGetUserListsList();
+  const { refetch: refetchAntennas } = useGetAntennasList();
   const navigate = useNavigate();
 
   const handleClicked = async () => {
@@ -16,7 +18,7 @@ export const DeleteListButton = ({ listId, name }: DeleteListButtonProps) => {
       getApiUrl("users/lists/delete"),
       getFetchObject<UsersListsDeleteRequest>({ listId }),
     );
-    await refetch();
+    await Promise.all([refetch(), refetchAntennas()]);
     navigate({
       replace: true,
       to: "/list",

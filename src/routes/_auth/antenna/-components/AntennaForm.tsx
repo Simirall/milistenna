@@ -195,6 +195,7 @@ export const AntennaForm = ({ antenna, initialListName }: AntennaFormProps) => {
                   {(listNameField) => (
                     <Field.Root
                       errorMessage={listIdField.state.meta.errors[0]}
+                      helperMessage="リストを削除すると、そのリストをソースにしているアンテナも削除されます"
                       invalid={listIdField.state.meta.errors.length > 0}
                       label="リスト"
                       required
