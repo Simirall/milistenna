@@ -35,7 +35,7 @@ function RouteComponent() {
     <>
       <VStack>
         <Heading size="lg">
-          {isCreate ? "アンテナ作成" : `${antennaData?.name} の編集`}
+          {isCreate ? "アンテナ作成" : antennaData?.name}
         </Heading>
         <AntennaForm antenna={antennaData} initialListName={initialListName} />
       </VStack>

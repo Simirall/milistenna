@@ -155,6 +155,7 @@ export const AntennaForm = ({ antenna, initialListName }: AntennaFormProps) => {
                 <Field.Root
                   helperMessage="1行に1ユーザーずつ入力してください（例: @user@example.com）"
                   label="ユーザー"
+                  required
                 >
                   <Textarea
                     autosize
@@ -182,11 +183,22 @@ export const AntennaForm = ({ antenna, initialListName }: AntennaFormProps) => {
       <form.Subscribe selector={(state) => state.values.src}>
         {(src) =>
           src === "list" && (
-            <form.Field name="userListId">
+            <form.Field
+              name="userListId"
+              validators={{
+                onSubmit: ({ value }) =>
+                  !value ? "リストを選択してください" : undefined,
+              }}
+            >
               {(listIdField) => (
                 <form.Field name="userListName">
                   {(listNameField) => (
-                    <Field.Root label="リスト">
+                    <Field.Root
+                      errorMessage={listIdField.state.meta.errors[0]}
+                      invalid={listIdField.state.meta.errors.length > 0}
+                      label="リスト"
+                      required
+                    >
                       <SelectListField
                         listId={listIdField.state.value}
                         listName={listNameField.state.value}
@@ -216,13 +228,14 @@ export const AntennaForm = ({ antenna, initialListName }: AntennaFormProps) => {
           <Field.Root
             helperMessage="スペース区切りでAND指定、改行区切りでOR指定"
             label="キーワード"
+            required
           >
             <Textarea
               autosize
               minRows={3}
               onBlur={field.handleBlur}
               onChange={(e) => field.handleChange(e.target.value)}
-              placeholder={"foo bar\nbaz"}
+              placeholder={"とりにく ぎゅうにく\nさかな"}
               value={field.state.value}
               required
             />
