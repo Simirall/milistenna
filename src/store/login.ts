@@ -31,10 +31,11 @@ export const useLoginStore = create<LoginState & LoginActions>()(
         })),
       logout: () => {
         set(() => ({
+          isLogin: false,
           instance: undefined,
           instanceEmojis: undefined,
-          isLogin: false,
           mySelf: undefined,
+          token: undefined,
         }));
       },
       setInstanceEmojis: (payload) =>

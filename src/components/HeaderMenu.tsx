@@ -43,6 +43,7 @@ export const HeaderMenu = () => {
               logout();
               router.invalidate(); //router contextを初期化　https://tanstack.com/router/latest/docs/framework/react/guide/router-context#invalidating-the-router-context
               onClose();
+              location.reload();
             }}
           >
             <Text>ログアウト</Text>
