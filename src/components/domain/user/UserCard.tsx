@@ -41,12 +41,12 @@ export const UserCard = ({
       width="full"
     >
       <Card.Body>
-        <HStack w="full">
+        <HStack minW={0} w="full">
           <Avatar
             icon={<FediverseLogoIcon fontSize="2rem" />}
             src={user.avatarUrl ?? undefined}
           />
-          <VStack gap="0" overflow="hidden" w="full">
+          <VStack gap="0" minW={0} overflow="hidden" w="full">
             <Text fontSize="xl" truncated>
               {user.name}
             </Text>
