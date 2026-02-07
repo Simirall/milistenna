@@ -6,7 +6,7 @@ type GridContainerProps = { children: ReactNode };
 export const GridContainer = ({ children }: GridContainerProps) => {
   return (
     <Grid
-      gap="md"
+      gap="sm"
       gridTemplateColumns="repeat(auto-fit, min(350px, 100%))"
       justifyContent="space-evenly"
       p="md"

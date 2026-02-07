@@ -10,8 +10,10 @@ function RouteComponent() {
   return (
     <VStack alignItems="center">
       <Card.Root colorScheme="sky" maxW="2xl" size="xl" variant="subtle">
-        <Card.Header>リスト管理</Card.Header>
-        <Card.Body>
+        <Card.Header fontSize="4xl" fontWeight="bold">
+          リスト管理
+        </Card.Header>
+        <Card.Body fontSize="xl">
           <p>リストの作成・編集・削除</p>
         </Card.Body>
         <Card.Footer alignSelf="end">
@@ -22,13 +24,15 @@ function RouteComponent() {
             size="xl"
             to="/list"
           >
-            <Text>リスト一覧</Text>
+            <Text fontWeight="bold">リスト一覧</Text>
           </Button>
         </Card.Footer>
       </Card.Root>
       <Card.Root colorScheme="emerald" maxW="2xl" size="xl" variant="subtle">
-        <Card.Header>アンテナ管理</Card.Header>
-        <Card.Body>
+        <Card.Header fontSize="4xl" fontWeight="bold">
+          アンテナ管理
+        </Card.Header>
+        <Card.Body fontSize="xl">
           <p>アンテナの作成・編集・削除</p>
         </Card.Body>
         <Card.Footer alignSelf="end">
@@ -39,7 +43,7 @@ function RouteComponent() {
             size="xl"
             to="/antenna"
           >
-            <Text>アンテナ一覧</Text>
+            <Text fontWeight="bold">アンテナ一覧</Text>
           </Button>
         </Card.Footer>
       </Card.Root>

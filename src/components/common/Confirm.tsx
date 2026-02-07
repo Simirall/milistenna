@@ -41,7 +41,9 @@ const Confirm = ({
       <Modal.Overlay />
       <Modal.Content>
         <Modal.Header>{title}</Modal.Header>
-        <Modal.Body py="sm">{children}</Modal.Body>
+        <Modal.Body py="sm" whiteSpace="pre-wrap" wordBreak="break-word">
+          {children}
+        </Modal.Body>
         <Modal.Footer>
           <Button
             colorScheme={colorScheme}

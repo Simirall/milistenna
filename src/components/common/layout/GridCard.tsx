@@ -1,4 +1,4 @@
-import { Card, type ColorScheme, Heading } from "@yamada-ui/react";
+import { Card, type ColorScheme } from "@yamada-ui/react";
 import type { ReactElement } from "react";
 
 type GridCardProps = {
@@ -20,20 +20,20 @@ export const GridCard = ({
       display="grid"
       gridRow="span 3"
       gridTemplateRows="subgrid"
-      p="sm"
+      p="md"
       variant="subtle"
     >
-      <Heading
-        css={{
-          overflowWrap: "anywhere",
-        }}
-        lineBreak="strict"
-        wordBreak="normal"
+      <Card.Header
+        whiteSpace="pre-wrap"
+        wordBreak="break-word"
+        fontWeight="bold"
       >
         {title}
-      </Heading>
-      {children}
-      {footer}
+      </Card.Header>
+      <Card.Body flex={1} overflow="auto">
+        {children}
+      </Card.Body>
+      <Card.Footer>{footer}</Card.Footer>
     </Card.Root>
   );
 };
