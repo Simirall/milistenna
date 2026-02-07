@@ -166,6 +166,9 @@ export const SelectListField = ({
             py="xs"
             w="fit-content"
             whiteSpace="pre-wrap"
+            css={{
+              textTransform: "none",
+            }}
           >
             <Box flexShrink="0" as={ListIcon} fontSize="1.2rem" />
             {listName}
