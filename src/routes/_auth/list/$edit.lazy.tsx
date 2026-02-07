@@ -29,6 +29,7 @@ import { getFetchObject } from "@/utils/getFetchObject";
 import { isError } from "@/utils/isError";
 import { DeleteListButton } from "./-components/DeleteListModal";
 import { DeleteUserButton } from "./-components/DeleteUserModal";
+import { useGetUserListsList } from "@/apis/lists/useGetUsersListsList";
 
 export const Route = createLazyFileRoute("/_auth/list/$edit")({
   component: RouteComponent,
@@ -120,6 +121,7 @@ type ListFormProps = { list: UserList; listId: string };
 
 const ListForm = ({ list, listId }: ListFormProps) => {
   const { refetch } = useGetUsersListsShow(listId);
+  const { refetch: refetchList } = useGetUserListsList();
   const [accordionIndex, onChangeAccordionIndex] =
     useState<UseAccordionProps["index"]>(-1);
 
@@ -135,7 +137,7 @@ const ListForm = ({ list, listId }: ListFormProps) => {
         getFetchObject<UsersListsUpdateRequest>(value),
       );
       onChangeAccordionIndex(-1);
-      refetch();
+      await Promise.all([refetch(), refetchList()]);
     },
     validators: {
       onChange: editListSchema,
