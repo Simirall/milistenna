@@ -100,7 +100,7 @@ const AntennaList = () => {
     <GridCard
       colorScheme="emerald"
       footer={
-        <HStack>
+        <HStack wrap="wrap">
           <ExternalLinkButton
             colorScheme="amber"
             href={`https://${instance}/timeline/antenna/${a.id}`}

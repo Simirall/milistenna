@@ -45,7 +45,7 @@ const ListList = () => {
     <GridCard
       colorScheme="sky"
       footer={
-        <HStack>
+        <HStack wrap="wrap">
           <ExternalLinkButton
             colorScheme="amber"
             href={`https://${instance}/timeline/list/${l.id}`}
