@@ -12,6 +12,8 @@ import {
 import type { UsersListsCreateRequest } from "misskey-js/entities.js";
 import { z } from "zod";
 import { useGetUserListsList } from "@/apis/lists/useGetUsersListsList";
+import { LimitAlert } from "@/components/common/LimitAlert";
+import { useLoginStore } from "@/store/login";
 import { getApiUrl } from "@/utils/getApiUrl";
 import { getFetchObject } from "@/utils/getFetchObject";
 
@@ -118,6 +120,16 @@ const CreateListModal = ({ open, onClose }: CreateListModalProps) => {
 
 export const CreateListModalButton = () => {
   const { open, onOpen, onClose } = useDisclosure();
+  const {
+    open: limitOpen,
+    onOpen: onLimitOpen,
+    onClose: onLimitClose,
+  } = useDisclosure();
+  const { mySelf } = useLoginStore();
+  const { lists } = useGetUserListsList();
+
+  const userListLimit = mySelf?.policies.userListLimit ?? 0;
+  const isLimitReached = (lists?.length ?? 0) >= userListLimit;
 
   return (
     <>
@@ -125,7 +137,7 @@ export const CreateListModalButton = () => {
         borderRadius="full"
         bottom="xl"
         colorScheme="sky"
-        onClick={onOpen}
+        onClick={isLimitReached ? onLimitOpen : onOpen}
         pos="fixed"
         right={{ base: "calc(20vw + 1rem)", md: "xl" }}
         shadow="md"
@@ -134,6 +146,12 @@ export const CreateListModalButton = () => {
         <PlusIcon fontSize="1.6rem" weight="bold" />
       </IconButton>
       <CreateListModal onClose={onClose} open={open} />
+      <LimitAlert onClose={onLimitClose} open={limitOpen}>
+        <Text>
+          リストの作成上限（{userListLimit}件）に達しています。
+          新しいリストを作成するには、既存のリストを削除してください。
+        </Text>
+      </LimitAlert>
     </>
   );
 };

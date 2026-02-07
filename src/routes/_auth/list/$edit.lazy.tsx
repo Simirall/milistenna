@@ -1,4 +1,4 @@
-import { CaretLeftIcon } from "@phosphor-icons/react";
+import { CaretLeftIcon, PlusIcon } from "@phosphor-icons/react";
 import { useForm } from "@tanstack/react-form";
 import { createLazyFileRoute } from "@tanstack/react-router";
 import {
@@ -11,6 +11,7 @@ import {
   Switch,
   Text,
   type UseAccordionProps,
+  useDisclosure,
   VStack,
 } from "@yamada-ui/react";
 import type { UserList, UsersListsUpdateRequest } from "misskey-js/entities.js";
@@ -18,6 +19,7 @@ import { useState } from "react";
 import { z } from "zod";
 import { useGetUsersListsShow } from "@/apis/lists/useGetUsersListsShow";
 import { FloatLinkButton } from "@/components/common/FloatLinkButton";
+import { LimitAlert } from "@/components/common/LimitAlert";
 import { Loader } from "@/components/common/Loader";
 import { AddUserModalButton } from "@/components/domain/user/AddUserModal";
 import { UserCard } from "@/components/domain/user/UserCard";
@@ -45,17 +47,44 @@ function RouteComponent() {
   const { edit } = Route.useParams();
   const { mySelf } = useLoginStore();
   const { list } = useGetUsersListsShow(edit);
+  const { open, onOpen, onClose } = useDisclosure();
 
   if (!list || isError(list)) {
     return <Loader />;
   }
+
+  const userEachUserListsLimit =
+    mySelf?.policies.userEachUserListsLimit ?? 0;
+  const isLimitReached =
+    (list.userIds?.length ?? 0) >= userEachUserListsLimit;
 
   return (
     <>
       <VStack>
         <Heading size="lg">{list.name}</Heading>
         <ListForm list={list} listId={edit} />
-        <AddUserModalButton />
+        {isLimitReached ? (
+          <>
+            <Button
+              colorScheme="cyan"
+              onClick={onOpen}
+              size="lg"
+              startIcon={<PlusIcon weight="bold" />}
+              variant="surface"
+            >
+              <Text>ユーザーを追加</Text>
+            </Button>
+            <LimitAlert onClose={onClose} open={open}>
+              <Text>
+                このリストのユーザー数上限（{userEachUserListsLimit}
+                人）に達しています。
+                新しいユーザーを追加するには、既存のユーザーを削除してください。
+              </Text>
+            </LimitAlert>
+          </>
+        ) : (
+          <AddUserModalButton />
+        )}
         <Text>
           メンバー(
           {`${list.userIds?.length ?? 0}/${mySelf?.policies.userEachUserListsLimit}`}

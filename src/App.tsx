@@ -1,9 +1,13 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { createRouter, RouterProvider } from "@tanstack/react-router";
 import { ColorModeScript, UIProvider } from "@yamada-ui/react";
+import type { MeDetailed } from "misskey-js/entities.js";
+import { useEffect } from "react";
 import { routeTree } from "./routeTree.gen.ts";
 import { type LoginState, useLoginStore } from "./store/login.ts";
 import { customConfig, customTheme } from "./theme/index.ts";
+import { getApiUrl } from "./utils/getApiUrl.ts";
+import { getFetchObject } from "./utils/getFetchObject.ts";
 
 const queryClient = new QueryClient();
 
@@ -26,6 +30,23 @@ declare module "@tanstack/react-router" {
 
 export function App() {
   const loginStore = useLoginStore();
+
+  useEffect(() => {
+    if (!loginStore.isLogin || !loginStore.token) return;
+
+    const fetchMySelf = async () => {
+      try {
+        const res = await fetch(getApiUrl("i"), getFetchObject(undefined));
+        if (!res.ok) return;
+        const me: MeDetailed = await res.json();
+        useLoginStore.getState().setMySelf(me);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchMySelf();
+  }, [loginStore.isLogin, loginStore.token]);
 
   return (
     <QueryClientProvider client={queryClient}>
