@@ -13,11 +13,15 @@ Component
     ↓
 Custom Hook (useGetXXX)
     ↓
+queryOptions (TanStack Query)
+    ↓
 useApiQuery
     ↓
-TanStack Query
+fetcher (カリー化関数)
     ↓
-fetcher utility
+getFetchObject (トークン付与)
+    ↓
+getApiUrl (URL生成)
     ↓
 Misskey API
 ```
@@ -26,30 +30,39 @@ Misskey API
 
 ### useApiQuery
 
-Misskey APIのレスポンスを型安全に扱うための基本フック。
+Misskey APIのレスポンスを型安全に扱うための基本フック。`useQuery`をラップし、Misskey API固有のエラーハンドリングを提供します。
 
 ```typescript
-import { useApiQuery } from "@/apis/useApiQuery";
+import { queryOptions } from "@tanstack/react-query";
+import type { MyData, Error as MkError } from "misskey-js/entities.js";
 import { fetcher } from "@/utils/fetcher";
+import { defaultQueryConfig } from "@/utils/queryConfig";
+import { useApiQuery } from "@/apis/useApiQuery";
 
-function MyComponent() {
-  const { data, isLoading, isApiError, apiError } = useApiQuery({
-    queryKey: ["myData"],
-    queryFn: () => fetcher("/api/endpoint", { param: "value" }),
+const myDataQueryOptions = () =>
+  queryOptions<MyData[] | MkError>({
+    queryFn: fetcher("my-endpoint"),
+    queryKey: ["my-endpoint"],
+    ...defaultQueryConfig,
   });
 
-  if (isLoading) return <div>Loading...</div>;
-  if (isApiError) return <div>Error: {apiError.message}</div>;
+function MyComponent() {
+  const { data, isLoading, isApiError, apiError } = useApiQuery(
+    myDataQueryOptions(),
+  );
 
-  return <div>{data.name}</div>;
+  if (isLoading) return <Loader />;
+  if (isApiError) return <div>Error: {apiError?.error.message}</div>;
+
+  return <div>{data?.length} items</div>;
 }
 ```
 
 ### useApiQueryの特徴
 
 - **型安全**: TypeScriptの型推論により、レスポンスの型が自動的に決定
-- **エラーハンドリング**: Misskey APIのエラーを専用のプロパティで取得
-- **キャッシング**: TanStack Queryによる自動キャッシング
+- **エラーハンドリング**: Misskey APIのエラーレスポンスを`isApiError`/`apiError`プロパティで判別
+- **キャッシング**: TanStack Queryによる自動キャッシング（デフォルト5分のstaleTime）
 
 ### 返り値
 
@@ -67,34 +80,60 @@ function MyComponent() {
 
 ### fetcher関数
 
-Misskey APIへのHTTPリクエストを送信する基本関数。
+Misskey APIへのHTTPリクエストを送信するカリー化された関数。misskey-jsの`Endpoints`型を使用して型安全にエンドポイントを指定します。
 
 ```typescript
 import { fetcher } from "@/utils/fetcher";
 
-const result = await fetcher("/api/endpoint", {
-  param1: "value1",
-  param2: "value2",
+// 基本的な使い方（パラメータなし）
+const queryFn = fetcher("antennas/list");
+
+// パラメータ付き
+const queryFn = fetcher("antennas/show", { antennaId: "xxx" });
+
+// queryOptionsで使用（推奨パターン）
+queryOptions({
+  queryFn: fetcher("users/lists/list"),
+  queryKey: ["users/lists/list"],
 });
 ```
 
-### 内部動作
-
-1. ログイン情報（トークン、インスタンス）を取得
-2. APIのURLを生成
-3. POSTリクエストを送信（すべてのMisskey APIはPOST）
-4. レスポンスをJSONとして解析
-5. エラーハンドリング
-
-### エラーハンドリング
+### fetcher関数の実装
 
 ```typescript
-try {
-  const result = await fetcher("/api/endpoint", {});
-} catch (error) {
-  // ネットワークエラーまたはHTTPエラー
-  console.error(error);
-}
+export const fetcher =
+  (endpoint: keyof Endpoints, obj: Record<string, unknown> = {}) =>
+  async () => {
+    const res = await fetch(getApiUrl(endpoint), getFetchObject(obj));
+    return await res.json();
+  };
+```
+
+- **カリー化**: `fetcher(endpoint, params)` は `async () => result` を返す（TanStack Queryの`queryFn`として直接使用可能）
+- **エンドポイント**: `/api/`プレフィックスは不要（`getApiUrl`が自動付与）
+- **トークン**: `getFetchObject`がZustandストアからトークンを自動取得して付与
+- **HTTPメソッド**: すべてPOST（Misskey APIの仕様）
+
+### getApiUrl
+
+```typescript
+// "https://{instance}/api/{endpoint}" 形式のURLを生成
+export const getApiUrl = (endpoint: keyof Endpoints) =>
+  `https://${useLoginStore.getState().instance}/api/${endpoint}`;
+```
+
+### getFetchObject
+
+```typescript
+// fetchのリクエストオブジェクトを生成（トークン自動付与）
+export const getFetchObject = (obj) => ({
+  body: JSON.stringify({
+    i: useLoginStore.getState().token,
+    ...obj,
+  }),
+  headers: { "Content-Type": "application/json" },
+  method: "POST",
+});
 ```
 
 ## カスタムフックの作成
@@ -103,50 +142,92 @@ try {
 
 ```typescript
 // apis/myFeature/useGetMyData.ts
-import { useApiQuery } from "@/apis/useApiQuery";
+import { queryOptions } from "@tanstack/react-query";
+import type { MyData, Error as MkError } from "misskey-js/entities.js";
 import { fetcher } from "@/utils/fetcher";
-import type { MyData } from "misskey-js/entities.js";
+import { defaultQueryConfig } from "@/utils/queryConfig";
+import { useApiQuery } from "../useApiQuery";
 
-export function useGetMyData() {
-  const query = useApiQuery<MyData[]>({
-    queryKey: ["myData"],
-    queryFn: () => fetcher("/api/my-endpoint", {}),
+const endpoint = "my-endpoint";
+
+// queryOptionsを分離（ルートローダーでのプリフェッチにも使用可能）
+export const myDataQueryOptions = () =>
+  queryOptions<MyData[] | MkError>({
+    queryFn: fetcher(endpoint),
+    queryKey: [endpoint],
+    ...defaultQueryConfig,
   });
 
+// カスタムフック
+export const useGetMyData = () => {
+  const { data, isLoading, error, refetch, isApiError } = useApiQuery(
+    myDataQueryOptions(),
+  );
+
   return {
-    data: query.data,
-    isLoading: query.isLoading,
-    isError: query.isApiError,
-    error: query.apiError,
+    data,
+    error,
+    isApiError,
+    isLoading,
+    refetch,
   };
-}
+};
 ```
 
 ### パラメータ付きフック
 
 ```typescript
-export function useGetMyDataById(id: string) {
-  const query = useApiQuery<MyData>({
-    queryKey: ["myData", id],
-    queryFn: () => fetcher("/api/my-endpoint", { id }),
-    enabled: !!id, // idがある場合のみ実行
+const endpoint = "my-endpoint";
+
+export const myDataShowQueryOptions = (id: string) =>
+  queryOptions<MyData | MkError>({
+    enabled: !!id,
+    queryFn: fetcher(endpoint, { id }),
+    queryKey: [endpoint, id],
+    ...defaultQueryConfig,
   });
 
+export const useGetMyDataShow = (id: string) => {
+  const { data, isLoading, error, refetch, isApiError } = useApiQuery(
+    myDataShowQueryOptions(id),
+  );
+
   return {
-    data: query.data,
-    isLoading: query.isLoading,
+    data,
+    error,
+    isApiError,
+    isLoading,
+    refetch,
   };
-}
+};
 ```
 
 ## 主要なAPIエンドポイント
 
 ### 認証
 
+#### MiAuth対応確認
+
+```typescript
+// インスタンスがMiAuthに対応しているか確認
+const res = await fetch(`https://${instance}/api/endpoints`, {
+  body: JSON.stringify({}),
+  headers: { "Content-Type": "application/json" },
+  method: "POST",
+});
+const endpoints: ReadonlyArray<string> = await res.json();
+const isMiAuthSupported = endpoints.includes("miauth/gen-token");
+```
+
 #### MiAuth トークン取得
 
 ```typescript
-const result = await fetcher("/api/miauth/{sessionId}/check", {});
+// MiAuth認証後のトークン取得
+const res = await fetch(
+  `https://${instance}/api/miauth/${sessionId}/check`,
+  { method: "POST" },
+);
+const data = await res.json(); // { token: string }
 ```
 
 ### リスト管理
@@ -154,75 +235,68 @@ const result = await fetcher("/api/miauth/{sessionId}/check", {});
 #### リスト一覧取得
 
 ```typescript
-export function useGetUserListsList() {
-  const query = useApiQuery<UserList[]>({
-    queryKey: ["users", "lists", "list"],
-    queryFn: () => fetcher("/api/users/lists/list", {}),
+export const usersListsListQueryOptions = () =>
+  queryOptions<ReadonlyArray<UserList> | MkError>({
+    queryFn: fetcher("users/lists/list"),
+    queryKey: ["users/lists/list"],
+    ...defaultQueryConfig,
   });
-
-  return {
-    lists: query.data,
-  };
-}
 ```
 
 #### リスト詳細取得
 
 ```typescript
-export function useGetUsersListsShow(listId: string) {
-  const query = useApiQuery<UserList>({
-    queryKey: ["users", "lists", "show", listId],
-    queryFn: () => fetcher("/api/users/lists/show", { listId }),
+export const usersListsShowQueryOptions = (listId: string) =>
+  queryOptions<UserList | MkError>({
     enabled: !!listId,
+    queryFn: fetcher("users/lists/show", { listId }),
+    queryKey: ["users/lists/show", listId],
+    ...defaultQueryConfig,
   });
-
-  return {
-    list: query.data,
-  };
-}
 ```
 
 #### リスト作成
 
 ```typescript
-const result = await fetcher("/api/users/lists/create", {
+await fetch(getApiUrl("users/lists/create"), getFetchObject({
   name: "リスト名",
-});
+}));
 ```
 
 #### リスト更新
 
 ```typescript
-const result = await fetcher("/api/users/lists/update", {
+await fetch(getApiUrl("users/lists/update"), getFetchObject({
   listId: "list-id",
   name: "新しい名前",
-});
+  isPublic: true,
+}));
 ```
 
 #### リスト削除
 
 ```typescript
-const result = await fetcher("/api/users/lists/delete", {
+await fetch(getApiUrl("users/lists/delete"), getFetchObject({
   listId: "list-id",
-});
+}));
 ```
 
-#### ユーザー追加
+#### ユーザー追加（リスト）
 
 ```typescript
-const result = await fetcher("/api/users/lists/push", {
+await fetch(getApiUrl("users/lists/push"), getFetchObject({
   listId: "list-id",
   userId: "user-id",
-});
+}));
 ```
 
-#### ユーザー削除
+#### ユーザー削除（リスト）
 
 ```typescript
-const result = await fetcher("/api/users/lists/pull", {
+await fetch(getApiUrl("users/lists/pull"), getFetchObject({
   listId: "list-id",
   userId: "user-id",
-});
+}));
 ```
 
 ### アンテナ管理
@@ -230,109 +304,110 @@ const result = await fetcher("/api/users/lists/pull", {
 #### アンテナ一覧取得
 
 ```typescript
-export function useGetAntennasList() {
-  const query = useApiQuery<Antenna[]>({
-    queryKey: ["antennas", "list"],
-    queryFn: () => fetcher("/api/antennas/list", {}),
+export const antennasListQueryOptions = () =>
+  queryOptions<ReadonlyArray<Antenna> | MkError>({
+    queryFn: fetcher("antennas/list"),
+    queryKey: ["antennas/list"],
+    ...defaultQueryConfig,
   });
-
-  return {
-    antennas: query.data,
-  };
-}
 ```
 
 #### アンテナ詳細取得
 
 ```typescript
-export function useGetAntennasShow(antennaId: string) {
-  const query = useApiQuery<Antenna>({
-    queryKey: ["antennas", "show", antennaId],
-    queryFn: () => fetcher("/api/antennas/show", { antennaId }),
-    enabled: !!antennaId,
+export const antennaShowQueryOptions = (antennaId: string) =>
+  queryOptions<Antenna | MkError>({
+    enabled: !!antennaId && antennaId !== "create",
+    queryFn: fetcher("antennas/show", { antennaId }),
+    queryKey: ["antennas/show", antennaId],
+    ...defaultQueryConfig,
   });
-
-  return {
-    antenna: query.data,
-  };
-}
 ```
 
 #### アンテナ作成
 
 ```typescript
-const result = await fetcher("/api/antennas/create", {
+await fetch(getApiUrl("antennas/create"), getFetchObject({
   name: "アンテナ名",
-  src: "all", // "home" | "all" | "users" | "list" | "users_blacklist"
+  src: "all",    // "all" | "users" | "users_blacklist" | "list"
   keywords: [["keyword1"], ["keyword2"]],
-  excludeKeywords: [["exclude"]],
+  excludeKeywords: [],
   users: [],
   caseSensitive: false,
   localOnly: false,
+  excludeBots: false,
   withReplies: false,
   withFile: false,
-});
+  excludeNotesInSensitiveChannel: false,
+}));
 ```
 
 #### アンテナ更新
 
 ```typescript
-const result = await fetcher("/api/antennas/update", {
+await fetch(getApiUrl("antennas/update"), getFetchObject({
   antennaId: "antenna-id",
   name: "新しい名前",
   // その他の更新項目
-});
+}));
 ```
 
 #### アンテナ削除
 
 ```typescript
-const result = await fetcher("/api/antennas/delete", {
+await fetch(getApiUrl("antennas/delete"), getFetchObject({
   antennaId: "antenna-id",
-});
+}));
 ```
 
 ### ユーザー検索
 
-#### ユーザー名で検索
+#### ユーザー名とホストで検索
 
 ```typescript
-export function useGetUsersSearchByUsernameAndHost(
-  query: string,
-  limit = 10
-) {
-  const debouncedQuery = useDebounce(query, 500);
-
-  const result = useApiQuery<User[]>({
-    queryKey: ["users", "search-by-username-and-host", debouncedQuery],
-    queryFn: () =>
-      fetcher("/api/users/search-by-username-and-host", {
-        username: debouncedQuery,
-        limit,
-      }),
-    enabled: debouncedQuery.length > 0,
+export const usersSearchByUsernameAndHostQueryOptions = (
+  payload: { username: string; host: string | null },
+) =>
+  queryOptions<ReadonlyArray<UserDetailed> | MkError>({
+    enabled: !!payload.username,
+    queryFn: fetcher("users/search-by-username-and-host", {
+      host: payload.host,
+      username: payload.username,
+    }),
+    queryKey: ["users/search-by-username-and-host", payload],
+    ...defaultQueryConfig,
   });
+```
 
-  return {
-    users: result.data,
-  };
-}
+デバウンス付きバージョン:
+
+```typescript
+export const useDebouncedGetUsersSearchByUsernameAndHost = (
+  payload: SearchPayload,
+) => {
+  const [username] = useDebounce(payload.username, 500);
+  const [host] = useDebounce(payload.host, 500);
+
+  return useGetUsersSearchByUsernameAndHost({ host, username });
+};
 ```
 
 #### フォロー一覧取得
 
 ```typescript
-export function useGetUsersFollowing(userId: string) {
-  const query = useApiQuery<Following[]>({
-    queryKey: ["users", "following", userId],
-    queryFn: () => fetcher("/api/users/following", { userId }),
-    enabled: !!userId,
-  });
+// ログイン中のユーザーのフォロー一覧を自動取得
+export const useGetUsersFollowing = () => {
+  const userId = useLoginStore((state) => state.mySelf?.id);
+
+  const { data, isLoading, error, refetch, isApiError } = useApiQuery(
+    usersFollowingQueryOptions(userId ?? ""),
+  );
 
   return {
-    following: query.data,
+    following: data,
+    // ...
   };
-}
+};
 ```
 
 ## エラーハンドリング
@@ -356,11 +431,10 @@ Misskey APIは、エラー時に以下の形式でレスポンスを返します
 ```typescript
 import { isError } from "@/utils/isError";
 
+// レスポンスにerrorプロパティがあればエラーと判定
 if (isError(response)) {
-  // エラーオブジェクト
   console.error(response.error.code);
 } else {
-  // 正常なデータ
   console.log(response);
 }
 ```
@@ -372,18 +446,27 @@ function MyComponent() {
   const { data, isApiError, apiError } = useGetMyData();
 
   if (isApiError) {
-    return (
-      <ErrorMessage>
-        エラー: {apiError.error.message}
-      </ErrorMessage>
-    );
+    return <div>エラー: {apiError?.error.message}</div>;
   }
 
-  return <div>{data.name}</div>;
+  return <div>{data?.name}</div>;
 }
 ```
 
 ## キャッシュ管理
+
+### デフォルト設定
+
+```typescript
+// utils/queryConfig.ts
+export const DEFAULT_CACHE_TIME = 1000 * 60 * 5; // 5分
+export const DEFAULT_RETRY_COUNT = 2;
+
+export const defaultQueryConfig = {
+  retry: DEFAULT_RETRY_COUNT,
+  staleTime: DEFAULT_CACHE_TIME,
+};
+```
 
 ### キャッシュの無効化
 
@@ -396,81 +479,35 @@ function MyComponent() {
   const handleUpdate = async () => {
     await updateData();
     // キャッシュを無効化して再取得
-    queryClient.invalidateQueries({ queryKey: ["myData"] });
+    queryClient.invalidateQueries({ queryKey: ["my-endpoint"] });
   };
 }
 ```
 
-### 楽観的更新
+### ルートローダーでのプリフェッチ
+
+queryOptionsを分離することで、ルートローダーからデータをプリフェッチできます：
 
 ```typescript
-const mutation = useMutation({
-  mutationFn: updateData,
-  onMutate: async (newData) => {
-    // 進行中のクエリをキャンセル
-    await queryClient.cancelQueries({ queryKey: ["myData"] });
+// routes/_auth/myPage/$id.tsx
+import { createFileRoute } from "@tanstack/react-router";
+import { myDataShowQueryOptions } from "@/apis/myFeature/useGetMyData";
 
-    // 現在のデータを保存
-    const previousData = queryClient.getQueryData(["myData"]);
-
-    // 楽観的に更新
-    queryClient.setQueryData(["myData"], newData);
-
-    return { previousData };
-  },
-  onError: (err, newData, context) => {
-    // エラー時にロールバック
-    queryClient.setQueryData(["myData"], context.previousData);
-  },
-  onSettled: () => {
-    // 最終的に再取得
-    queryClient.invalidateQueries({ queryKey: ["myData"] });
+export const Route = createFileRoute("/_auth/myPage/$id")({
+  beforeLoad: async ({ context, params }) => {
+    await context.queryClient.ensureQueryData(
+      myDataShowQueryOptions(params.id),
+    );
   },
 });
 ```
 
 ## ベストプラクティス
 
-1. **カスタムフックの使用**: 直接fetcherを呼ぶのではなく、カスタムフックを作成
-2. **適切なqueryKey**: キャッシュを適切に管理するため、意味のあるキーを使用
+1. **queryOptionsの分離**: カスタムフックとルートローダーの両方で再利用可能にする
+2. **適切なqueryKey**: エンドポイント名をキーとして使用し、パラメータを追加
 3. **enabledオプション**: 必要な条件が揃ってからクエリを実行
-4. **エラーハンドリング**: すべてのAPI呼び出しでエラー処理を実装
-5. **型安全性**: misskey-jsの型定義を活用
-6. **デバウンス**: 検索など頻繁に呼ばれるAPIにはデバウンスを適用
-7. **キャッシュ戦略**: staleTimeとcacheTimeを適切に設定
-
-## デバッグ
-
-### API呼び出しのログ
-
-```typescript
-// utils/fetcher.ts内
-if (import.meta.env.DEV) {
-  console.log("API Request:", endpoint, body);
-  console.log("API Response:", result);
-}
-```
-
-### TanStack Query DevTools
-
-開発時にクエリの状態を確認：
-
-```typescript
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-
-function App() {
-  return (
-    <>
-      <YourApp />
-      {import.meta.env.DEV && <ReactQueryDevtools />}
-    </>
-  );
-}
-```
-
-## セキュリティ
-
-- **トークンの保護**: トークンはログイン状態のみで保持
-- **HTTPS**: 本番環境では必ずHTTPSを使用
-- **入力のサニタイズ**: ユーザー入力は適切にバリデーション
-- **権限の最小化**: 必要最小限の権限のみリクエスト
+4. **エラーハンドリング**: `isApiError`でMisskey API固有のエラーを判別
+5. **型安全性**: misskey-jsのエンドポイント型とエンティティ型を活用
+6. **デバウンス**: 検索など頻繁に呼ばれるAPIには`use-debounce`を適用
+7. **キャッシュ戦略**: `defaultQueryConfig`のstaleTimeとretryを活用

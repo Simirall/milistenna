@@ -41,24 +41,25 @@ import type { User } from "misskey-js/entities.js";
 
 ### Biome
 
-プロジェクトではBiomeを使用してコードの品質を保証しています。
+プロジェクトではBiome v2を使用してコードの品質を保証しています。
 
 ```bash
 # リント実行
 pnpm lint
 
-# リントエラーを確認
-pnpm lint --write
+# リントエラーを自動修正
+pnpm lint:fix
 ```
 
 ### Biome設定
 
 `biome.json`で設定を管理：
 
-- インデント: タブ
-- 行の最大長: 80文字（推奨）
+- インデント: スペース
 - セミコロン: あり
 - クォート: ダブルクォート
+- インポートの自動整理（assist設定）
+- 属性・キーの自動ソート（assist設定）
 
 ## コンポーネントの作成
 
@@ -67,13 +68,17 @@ pnpm lint --write
 コンポーネントの配置場所を適切に選択：
 
 - **`components/common/`**: 汎用的で再利用可能なコンポーネント
-  - 例: ボタン、モーダル、ローディング、エラー表示
+  - 例: ボタン、モーダル、ローディング、エラー表示、上限アラート
 
-- **`components/feature/`**: 特定の機能に関連するコンポーネント
-  - 例: ユーザーカード、リストカード、アンテナ設定
+- **`components/common/layout/`**: レイアウトに関するコンポーネント
+  - 例: グリッドカード、グリッドコンテナ
 
-- **`components/layout/`**: レイアウト関連のコンポーネント
-  - 例: ヘッダー、フッター、グリッド、サイドバー
+- **`components/domain/`**: 特定のドメイン（業務概念）に関連するコンポーネント
+  - 例: ユーザーカード、ユーザー追加モーダル
+
+- **`routes/_auth/*/​-components/`**: 特定のルートでのみ使用するコンポーネント
+  - 例: アンテナフォーム、リスト作成モーダル、削除モーダル
+  - `-`プレフィックスによりTanStack Routerのルート生成から除外
 
 ### コンポーネントのパターン
 
@@ -102,21 +107,34 @@ export function MyComponent({ title, children, onAction }: Props) {
 
 ```typescript
 // apis/myFeature/useGetMyData.ts
-import { useApiQuery } from "@/apis/useApiQuery";
+import { queryOptions } from "@tanstack/react-query";
+import type { MyData, Error as MkError } from "misskey-js/entities.js";
 import { fetcher } from "@/utils/fetcher";
+import { defaultQueryConfig } from "@/utils/queryConfig";
+import { useApiQuery } from "../useApiQuery";
 
-export function useGetMyData() {
-  const query = useApiQuery({
-    queryKey: ["myData"],
-    queryFn: () => fetcher("/api/my-endpoint", {}),
+const endpoint = "my-endpoint";
+
+export const myDataQueryOptions = () =>
+  queryOptions<MyData[] | MkError>({
+    queryFn: fetcher(endpoint),
+    queryKey: [endpoint],
+    ...defaultQueryConfig,
   });
 
+export const useGetMyData = () => {
+  const { data, isLoading, error, refetch, isApiError } = useApiQuery(
+    myDataQueryOptions(),
+  );
+
   return {
-    data: query.data,
-    isLoading: query.isLoading,
-    error: query.apiError,
+    data,
+    error,
+    isApiError,
+    isLoading,
+    refetch,
   };
-}
+};
 ```
 
 ## 状態管理
@@ -249,10 +267,9 @@ function MyComponent() {
 ### エラーハンドリング
 
 ```typescript
-const { data, isApiError, apiError } = useApiQuery({
-  queryKey: ["myData"],
-  queryFn: () => fetcher("/api/endpoint", {}),
-});
+const { data, isApiError, apiError } = useApiQuery(
+  myDataQueryOptions(),
+);
 
 if (isApiError) {
   // Misskey APIエラー
@@ -266,7 +283,7 @@ if (isApiError) {
 
 ```typescript
 import { useForm } from "@tanstack/react-form";
-import z from "zod";
+import { z } from "zod";
 
 const schema = z.object({
   name: z.string().min(1).max(100),
@@ -292,10 +309,17 @@ function MyForm() {
     }}>
       <form.Field name="name">
         {(field) => (
-          <Input
-            value={field.state.value}
-            onChange={(e) => field.handleChange(e.target.value)}
-          />
+          <Field.Root
+            errorMessage={field.state.meta.errors[0]?.message}
+            invalid={field.state.meta.errors.length > 0}
+          >
+            <Input
+              name={field.name}
+              onBlur={field.handleBlur}
+              onChange={(e) => field.handleChange(e.target.value)}
+              value={field.state.value}
+            />
+          </Field.Root>
         )}
       </form.Field>
     </form>
@@ -330,7 +354,7 @@ if (import.meta.env.DEV) {
 
 ### React Compiler
 
-React 19のCompilerが自動的に最適化を行うため、手動でのメモ化は基本的に不要。
+React Compilerがビルド時に自動的に最適化を行うため、手動でのメモ化は基本的に不要。開発時はSWCプラグインを使用するため、React Compilerは動作しません。
 
 ### 遅延ローディング
 

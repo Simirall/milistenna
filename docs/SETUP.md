@@ -6,12 +6,22 @@
 
 以下のソフトウェアがインストールされている必要があります：
 
-- **Node.js**: v18以上推奨
-- **pnpm**: v10.6.5以上
+- **Node.js**: v24以上（`mise.toml`で指定）
+- **pnpm**: v10.28以上（`mise.toml`で指定）
 
-### pnpmのインストール
+### miseによる環境管理（推奨）
 
-pnpmがインストールされていない場合は、以下のコマンドでインストールできます：
+プロジェクトでは[mise](https://mise.jdx.dev/)を使用してNode.jsとpnpmのバージョンを管理しています。miseがインストールされていれば、プロジェクトディレクトリで自動的に適切なバージョンが使用されます。
+
+```bash
+# miseのインストール（未インストールの場合）
+curl https://mise.run | sh
+
+# ツールのインストール
+mise install
+```
+
+### pnpmのインストール（miseを使わない場合）
 
 ```bash
 npm install -g pnpm
@@ -21,7 +31,7 @@ npm install -g pnpm
 
 ```bash
 corepack enable
-corepack prepare pnpm@10.6.5 --activate
+corepack prepare pnpm@latest --activate
 ```
 
 ## インストール手順
@@ -49,13 +59,13 @@ pnpm install
 pnpm dev
 ```
 
-デフォルトでは、`http://localhost:5173`でアプリケーションが起動します。ブラウザで自動的に開かない場合は、手動でこのURLにアクセスしてください。
+デフォルトでは、`http://localhost:5123`でアプリケーションが起動します。ブラウザで自動的に開かない場合は、手動でこのURLにアクセスしてください。
 
 ### 開発サーバーの特徴
 
 - **ホットモジュールリロード (HMR)**: ファイルを変更すると、自動的にブラウザが更新されます
 - **高速な起動**: Viteの恩恵により、開発サーバーは数秒で起動します
-- **TypeScriptサポート**: 型チェックとコンパイルが自動で行われます
+- **SWCによる高速コンパイル**: 開発時はSWCプラグインを使用して高速にビルドされます
 
 ## ビルド
 
@@ -69,9 +79,9 @@ pnpm build
 
 ### ビルドプロセス
 
-1. TypeScriptのコンパイル (`tsc -b`)
-2. Viteによる最適化とバンドル
-3. 静的ファイルの生成
+1. tsgo（TypeScript native preview）による型チェック (`tsgo -b`)
+2. React CompilerによるReactコードの最適化
+3. Viteによるバンドルと静的ファイルの生成
 
 ## プレビュー
 
@@ -88,10 +98,14 @@ pnpm preview
 コードのリントを実行するには：
 
 ```bash
+# リントの実行
 pnpm lint
+
+# リントエラーの自動修正
+pnpm lint:fix
 ```
 
-このプロジェクトでは、Biomeをリンターとして使用しています。
+このプロジェクトでは、Biome v2をリンター・フォーマッターとして使用しています。
 
 ## トラブルシューティング
 
@@ -110,13 +124,13 @@ pnpm install
 ビルド中にTypeScriptエラーが発生した場合：
 
 ```bash
-# TypeScriptの型チェックを実行
-pnpm tsc --noEmit
+# tsgoによる型チェックを実行
+npx tsgo --noEmit
 ```
 
 ### 開発サーバーが起動しない
 
-ポート5173が既に使用されている場合、別のポートで起動できます：
+ポート5123が既に使用されている場合、`vite.config.ts`の`server.port`を変更するか、以下のコマンドで別のポートを指定できます：
 
 ```bash
 pnpm dev -- --port 3000
