@@ -5,7 +5,7 @@ import { Header } from "@/components/Header";
 
 export const Route = createRootRouteWithContext<RouterContext>()({
   component: () => (
-    <Box display="grid" gridTemplateRows="auto 1fr" minH="100vh">
+    <Box display="grid" gridTemplateRows="auto 1fr" minH="100svh">
       <Header />
       <Box bg="bg.subtle" minW={0} px={{ base: "20vw", md: "md" }} py="md">
         <Box

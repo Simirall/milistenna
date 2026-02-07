@@ -349,7 +349,7 @@ export const AntennaForm = ({ antenna, initialListName }: AntennaFormProps) => {
       <Separator />
 
       {/* 送信ボタン */}
-      <HStack>
+      <HStack alignSelf="end">
         <Button
           colorScheme="emerald"
           loading={form.state.isSubmitting}

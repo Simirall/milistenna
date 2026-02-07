@@ -191,7 +191,7 @@ const ListForm = ({ list, listId }: ListFormProps) => {
                 </Switch>
               )}
             </form.Field>
-            <HStack>
+            <HStack alignSelf="end">
               <Button
                 colorScheme="sky"
                 loading={form.state.isSubmitting}
