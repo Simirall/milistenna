@@ -10,16 +10,17 @@ import {
   NativeSelect,
   Separator,
   Switch,
-  Tag,
   Text,
   Textarea,
   VStack,
 } from "@yamada-ui/react";
 import type { Antenna } from "misskey-js/entities.js";
 import { useGetAntennasShow } from "@/apis/antennas/useGetAntennasShow";
+import { useGetUsersListsShow } from "@/apis/lists/useGetUsersListsShow";
 import { FloatLinkButton } from "@/components/common/FloatLinkButton";
 import { Loader } from "@/components/common/Loader";
 import { isError } from "@/utils/isError";
+import { SelectListField } from "./-components/SelectListModal";
 
 export const Route = createLazyFileRoute("/_auth/antenna/$edit")({
   component: RouteComponent,
@@ -53,19 +54,27 @@ function RouteComponent() {
   const { edit } = Route.useParams();
   const isCreate = edit === "create";
   const { antenna } = useGetAntennasShow(edit);
+  const { list } = useGetUsersListsShow(
+    (!isCreate && antenna && !isError(antenna) && antenna.userListId) || "",
+  );
 
   // 編集モードでデータ取得中はローダーを表示
   if (!isCreate && (!antenna || isError(antenna))) {
     return <Loader />;
   }
 
+  // リストソースの場合、リスト名の取得を待つ
+  const antennaData = isCreate ? undefined : (antenna as Antenna);
+  const initialListName =
+    antennaData?.src === "list" && list && !isError(list) ? list.name : "";
+
   return (
     <>
       <VStack>
         <Heading size="lg">
-          {isCreate ? "アンテナ作成" : `${antenna?.name} の編集`}
+          {isCreate ? "アンテナ作成" : `${antennaData?.name} の編集`}
         </Heading>
-        <AntennaForm antenna={isCreate ? undefined : (antenna as Antenna)} />
+        <AntennaForm antenna={antennaData} initialListName={initialListName} />
       </VStack>
       <FloatLinkButton
         colorScheme="sky"
@@ -82,9 +91,10 @@ function RouteComponent() {
 
 type AntennaFormProps = {
   antenna?: Antenna;
+  initialListName: string;
 };
 
-const AntennaForm = ({ antenna }: AntennaFormProps) => {
+const AntennaForm = ({ antenna, initialListName }: AntennaFormProps) => {
   const isCreate = !antenna;
 
   const form = useForm({
@@ -92,6 +102,7 @@ const AntennaForm = ({ antenna }: AntennaFormProps) => {
       name: antenna?.name ?? "",
       src: antenna?.src ?? "all",
       userListId: antenna?.userListId ?? "",
+      userListName: initialListName,
       users: antenna?.users?.join("\n") ?? "",
       keywords: antenna ? keywordsToString(antenna.keywords) : "",
       excludeKeywords: antenna ? keywordsToString(antenna.excludeKeywords) : "",
@@ -196,20 +207,30 @@ const AntennaForm = ({ antenna }: AntennaFormProps) => {
         }
       </form.Subscribe>
 
-      {/* ソースがlistの場合: リストID入力欄 */}
+      {/* ソースがlistの場合: リスト選択 */}
       <form.Subscribe selector={(state) => state.values.src}>
         {(src) =>
           src === "list" && (
             <form.Field name="userListId">
-              {(field) => (
-                <Field.Root label="リストID">
-                  <Input
-                    onBlur={field.handleBlur}
-                    onChange={(e) => field.handleChange(e.target.value)}
-                    placeholder="リストIDを入力"
-                    value={field.state.value}
-                  />
-                </Field.Root>
+              {(listIdField) => (
+                <form.Field name="userListName">
+                  {(listNameField) => (
+                    <Field.Root label="リスト">
+                      <SelectListField
+                        listId={listIdField.state.value}
+                        listName={listNameField.state.value}
+                        onClear={() => {
+                          listIdField.handleChange("");
+                          listNameField.handleChange("");
+                        }}
+                        onSelect={(list) => {
+                          listIdField.handleChange(list.id);
+                          listNameField.handleChange(list.name);
+                        }}
+                      />
+                    </Field.Root>
+                  )}
+                </form.Field>
               )}
             </form.Field>
           )
@@ -222,22 +243,7 @@ const AntennaForm = ({ antenna }: AntennaFormProps) => {
       <form.Field name="keywords">
         {(field) => (
           <Field.Root
-            helperMessage={
-              <VStack gap="xs">
-                <Text fontSize="xs">
-                  スペース区切りでAND指定、改行区切りでOR指定
-                </Text>
-                <HStack gap="xs">
-                  <Tag colorScheme="cyan" size="sm">
-                    例
-                  </Tag>
-                  <Text fontSize="xs">
-                    「foo bar」→ foo AND bar、別の行に「baz」→ (foo AND bar) OR
-                    baz
-                  </Text>
-                </HStack>
-              </VStack>
-            }
+            helperMessage="スペース区切りでAND指定、改行区切りでOR指定"
             label="キーワード"
           >
             <Textarea
@@ -256,7 +262,7 @@ const AntennaForm = ({ antenna }: AntennaFormProps) => {
       <form.Field name="excludeKeywords">
         {(field) => (
           <Field.Root
-            helperMessage="キーワードと同じ記法で指定"
+            helperMessage="スペース区切りでAND指定、改行区切りでOR指定"
             label="除外キーワード"
           >
             <Textarea
