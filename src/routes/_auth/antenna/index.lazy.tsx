@@ -101,14 +101,14 @@ const AntennaList = () => {
       footer={
         <HStack>
           <ExternalLinkButton
-            colorScheme="sky"
+            colorScheme="amber"
             href={`https://${instance}/timeline/antenna/${a.id}`}
           >
             開く
           </ExternalLinkButton>
           <LinkButton
             buttonProps={{
-              colorScheme: "lime",
+              colorScheme: "sky",
               variant: "surface",
               flex: 1,
               size: "lg",

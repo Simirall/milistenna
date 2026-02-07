@@ -271,7 +271,7 @@ export const AntennaForm = ({ antenna, initialListName }: AntennaFormProps) => {
           {(field) => (
             <Switch
               checked={field.state.value}
-              colorScheme="teal"
+              colorScheme="emerald"
               onChange={(e) => field.handleChange(e.target.checked)}
               size="lg"
             >
@@ -284,7 +284,7 @@ export const AntennaForm = ({ antenna, initialListName }: AntennaFormProps) => {
           {(field) => (
             <Switch
               checked={field.state.value}
-              colorScheme="teal"
+              colorScheme="emerald"
               onChange={(e) => field.handleChange(e.target.checked)}
               size="lg"
             >
@@ -297,7 +297,7 @@ export const AntennaForm = ({ antenna, initialListName }: AntennaFormProps) => {
           {(field) => (
             <Switch
               checked={field.state.value}
-              colorScheme="teal"
+              colorScheme="emerald"
               onChange={(e) => field.handleChange(e.target.checked)}
               size="lg"
             >
@@ -310,7 +310,7 @@ export const AntennaForm = ({ antenna, initialListName }: AntennaFormProps) => {
           {(field) => (
             <Switch
               checked={field.state.value}
-              colorScheme="teal"
+              colorScheme="emerald"
               onChange={(e) => field.handleChange(e.target.checked)}
               size="lg"
             >
@@ -323,7 +323,7 @@ export const AntennaForm = ({ antenna, initialListName }: AntennaFormProps) => {
           {(field) => (
             <Switch
               checked={field.state.value}
-              colorScheme="teal"
+              colorScheme="emerald"
               onChange={(e) => field.handleChange(e.target.checked)}
               size="lg"
             >
@@ -336,7 +336,7 @@ export const AntennaForm = ({ antenna, initialListName }: AntennaFormProps) => {
           {(field) => (
             <Switch
               checked={field.state.value}
-              colorScheme="teal"
+              colorScheme="emerald"
               onChange={(e) => field.handleChange(e.target.checked)}
               size="lg"
             >
@@ -351,7 +351,7 @@ export const AntennaForm = ({ antenna, initialListName }: AntennaFormProps) => {
       {/* 送信ボタン */}
       <HStack>
         <Button
-          colorScheme="cyan"
+          colorScheme="emerald"
           loading={form.state.isSubmitting}
           size="lg"
           type="submit"

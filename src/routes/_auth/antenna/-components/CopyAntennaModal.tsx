@@ -77,7 +77,7 @@ export const CopyAntennaButton = ({ antenna }: CopyAntennaModalProps) => {
   return (
     <>
       <Button
-        colorScheme="amber"
+        colorScheme="blue"
         onClick={handleClick}
         size="lg"
         variant="surface"
@@ -101,7 +101,7 @@ export const CopyAntennaButton = ({ antenna }: CopyAntennaModalProps) => {
           </Modal.Body>
           <Modal.Footer>
             <Button
-              colorScheme="amber"
+              colorScheme="emerald"
               disabled={!name.trim()}
               loading={isSubmitting}
               onClick={handleCopy}
@@ -111,7 +111,7 @@ export const CopyAntennaButton = ({ antenna }: CopyAntennaModalProps) => {
               <Text>コピーして作成</Text>
             </Button>
             <Button
-              colorScheme="amber"
+              colorScheme="emerald"
               loading={isSubmitting}
               onClick={onClose}
               size="lg"

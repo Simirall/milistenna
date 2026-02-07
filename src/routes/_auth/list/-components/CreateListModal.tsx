@@ -102,7 +102,7 @@ const CreateListModal = ({ open, onClose }: CreateListModalProps) => {
             )}
           </form.Subscribe>
           <Button
-            colorScheme="cyan"
+            colorScheme="sky"
             onClick={() => {
               onClose();
               form.reset();

@@ -40,7 +40,7 @@ function RouteComponent() {
         <AntennaForm antenna={antennaData} initialListName={initialListName} />
       </VStack>
       <FloatLinkButton
-        colorScheme="sky"
+        colorScheme="emerald"
         linkProps={{
           to: "/antenna",
         }}

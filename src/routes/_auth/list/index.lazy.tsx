@@ -46,14 +46,14 @@ const ListList = () => {
       footer={
         <HStack>
           <ExternalLinkButton
-            colorScheme="teal"
+            colorScheme="amber"
             href={`https://${instance}/timeline/list/${l.id}`}
           >
             開く
           </ExternalLinkButton>
           <LinkButton
             buttonProps={{
-              colorScheme: "info",
+              colorScheme: "green",
               variant: "surface",
               flex: 1,
               size: "lg",

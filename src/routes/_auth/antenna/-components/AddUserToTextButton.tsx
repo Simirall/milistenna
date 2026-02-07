@@ -59,7 +59,7 @@ export const AddUserToTextButton = ({
   return (
     <>
       <Button
-        colorScheme="cyan"
+        colorScheme="emerald"
         onClick={onOpen}
         size="sm"
         startIcon={<PlusIcon weight="bold" />}

@@ -66,7 +66,7 @@ function RouteComponent() {
         {isLimitReached ? (
           <>
             <Button
-              colorScheme="cyan"
+              colorScheme="sky"
               onClick={onOpen}
               size="lg"
               startIcon={<PlusIcon weight="bold" />}
@@ -180,7 +180,7 @@ const ListForm = ({ list, listId }: ListFormProps) => {
               {(field) => (
                 <Switch
                   checked={field.state.value}
-                  colorScheme="teal"
+                  colorScheme="sky"
                   onChange={(e) => field.handleChange(e.target.checked)}
                   size="lg"
                 >
@@ -190,7 +190,7 @@ const ListForm = ({ list, listId }: ListFormProps) => {
             </form.Field>
             <HStack>
               <Button
-                colorScheme="cyan"
+                colorScheme="sky"
                 loading={form.state.isSubmitting}
                 size="lg"
                 type="submit"
