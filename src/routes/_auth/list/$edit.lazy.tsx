@@ -60,6 +60,7 @@ function RouteComponent() {
 
   return (
     <>
+      <title>リスト編集 | Milistenna</title>
       <VStack>
         <Heading size="lg">{list.name}</Heading>
         <ListForm list={list} listId={edit} />

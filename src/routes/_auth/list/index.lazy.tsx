@@ -17,6 +17,7 @@ export const Route = createLazyFileRoute("/_auth/list/")({
 function RouteComponent() {
   return (
     <>
+      <title>リスト一覧 | Milistenna</title>
       <Box>
         <Heading textAlign="center">リスト一覧</Heading>
         <GridContainer>

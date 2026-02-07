@@ -46,6 +46,7 @@ function RouteComponent() {
 
   return (
     <>
+      <title>アンテナ一覧 | Milistenna</title>
       <Box>
         <Heading textAlign="center">アンテナ一覧</Heading>
         <GridContainer>

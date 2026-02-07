@@ -33,6 +33,11 @@ function RouteComponent() {
 
   return (
     <>
+      {isCreate ? (
+        <title>アンテナ作成 | Milistenna</title>
+      ) : (
+        <title>アンテナ編集 | Milistenna</title>
+      )}
       <VStack>
         <Heading size="lg">
           {isCreate ? "アンテナ作成" : antennaData?.name}
