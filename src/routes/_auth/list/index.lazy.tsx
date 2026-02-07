@@ -9,6 +9,8 @@ import { CreateListModalButton } from "./-components/CreateListModal";
 import { DeleteListButton } from "./-components/DeleteListModal";
 import { useLoginStore } from "@/store/login";
 import { ExternalLinkButton } from "@/components/common/ExternalLinkButton";
+import { FloatLinkButton } from "@/components/common/FloatLinkButton";
+import { CaretLeftIcon } from "@phosphor-icons/react";
 
 export const Route = createLazyFileRoute("/_auth/list/")({
   component: RouteComponent,
@@ -25,6 +27,15 @@ function RouteComponent() {
         </GridContainer>
       </Box>
       <CreateListModalButton />
+      <FloatLinkButton
+        colorScheme="sky"
+        linkProps={{
+          to: "/",
+        }}
+        position="left"
+      >
+        <CaretLeftIcon fontSize="1em" weight="bold" />
+      </FloatLinkButton>
     </>
   );
 }

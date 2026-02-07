@@ -1,4 +1,4 @@
-import { PlusIcon } from "@phosphor-icons/react";
+import { CaretLeftIcon, PlusIcon } from "@phosphor-icons/react";
 import { createLazyFileRoute } from "@tanstack/react-router";
 import {
   Box,
@@ -80,6 +80,15 @@ function RouteComponent() {
           linkProps={{ params: { edit: "create" }, to: "/antenna/$edit" }}
         />
       )}
+      <FloatLinkButton
+        colorScheme="emerald"
+        linkProps={{
+          to: "/",
+        }}
+        position="left"
+      >
+        <CaretLeftIcon fontSize="1em" weight="bold" />
+      </FloatLinkButton>
     </>
   );
 }
