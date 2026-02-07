@@ -21,7 +21,7 @@ import { useGetUsersListsShow } from "@/apis/lists/useGetUsersListsShow";
 import { FloatLinkButton } from "@/components/common/FloatLinkButton";
 import { LimitAlert } from "@/components/common/LimitAlert";
 import { Loader } from "@/components/common/Loader";
-import { AddUserModalButton } from "@/components/domain/user/AddUserModal";
+import { AddUserModalButton } from "./-components/AddUserModal";
 import { UserCard } from "@/components/domain/user/UserCard";
 import { useLoginStore } from "@/store/login";
 import { getApiUrl } from "@/utils/getApiUrl";

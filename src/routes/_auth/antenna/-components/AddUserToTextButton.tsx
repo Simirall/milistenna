@@ -1,7 +1,7 @@
 import { PlusIcon } from "@phosphor-icons/react";
 import { Button, Text, useDisclosure } from "@yamada-ui/react";
 import type { RefObject } from "react";
-import { UserSearchModal } from "@/components/domain/user/AddUserModal";
+import { UserSearchModal } from "@/components/domain/user/UserSearchModal";
 
 type AddUserToTextButtonProps = {
   textareaRef: RefObject<HTMLTextAreaElement | null>;

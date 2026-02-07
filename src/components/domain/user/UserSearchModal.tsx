@@ -1,42 +1,20 @@
+import { At, AtIcon, MagnifyingGlassPlusIcon } from "@phosphor-icons/react";
 import {
-  At,
-  AtIcon,
-  MagnifyingGlassPlusIcon,
-  PlusIcon,
-} from "@phosphor-icons/react";
-import { useParams } from "@tanstack/react-router";
-import {
-  Button,
   Center,
   Field,
   HStack,
   Input,
   InputGroup,
   Modal,
-  Text,
-  useDisclosure,
   VStack,
 } from "@yamada-ui/react";
-import type {
-  UserDetailed,
-  UsersListsPushRequest,
-} from "misskey-js/entities.js";
+import type { UserDetailed } from "misskey-js/entities.js";
 import { useState } from "react";
-import { useGetUsersListsShow } from "@/apis/lists/useGetUsersListsShow";
 import { useDebouncedGetUsersSearchByUsernameAndHost } from "@/apis/users/useGetUsersSearchByUsernameAndHost";
 import { EmptyState } from "@/components/common/EmptyState";
-import { getApiUrl } from "@/utils/getApiUrl";
-import { getFetchObject } from "@/utils/getFetchObject";
+import { useLoginStore } from "@/store/login";
 import { Loader } from "../../common/Loader";
 import { UserCard } from "./UserCard";
-import { useGetUserListsList } from "@/apis/lists/useGetUsersListsList";
-
-const addUserToList = async (payload: UsersListsPushRequest) => {
-  await fetch(
-    getApiUrl("users/lists/push"),
-    getFetchObject<UsersListsPushRequest>(payload),
-  );
-};
 
 /** ユーザー検索モーダルの汎用コンポーネント */
 type UserSearchModalProps = {
@@ -84,51 +62,6 @@ export const UserSearchModal = ({
         </Modal.Body>
       </Modal.Content>
     </Modal.Root>
-  );
-};
-
-type AddUserModalProps = { open: boolean; onClose: () => void };
-
-const AddUserModal = ({ open, onClose }: AddUserModalProps) => {
-  const { edit } = useParams({ strict: false });
-  const { refetch } = useGetUsersListsShow(edit ?? "");
-  const { refetch: refetchList } = useGetUserListsList();
-
-  const handleUserSelect = async (user: UserDetailed) => {
-    if (edit) {
-      await addUserToList({
-        listId: edit,
-        userId: user.id,
-      });
-      await Promise.all([refetch(), refetchList()]);
-    }
-  };
-
-  return (
-    <UserSearchModal
-      onClose={onClose}
-      onUserSelect={handleUserSelect}
-      open={open}
-    />
-  );
-};
-
-export const AddUserModalButton = () => {
-  const { open, onOpen, onClose } = useDisclosure();
-
-  return (
-    <>
-      <Button
-        colorScheme="cyan"
-        onClick={onOpen}
-        size="lg"
-        startIcon={<PlusIcon weight="bold" />}
-        variant="surface"
-      >
-        <Text>ユーザーを追加</Text>
-      </Button>
-      <AddUserModal onClose={onClose} open={open} />
-    </>
   );
 };
 
@@ -192,10 +125,14 @@ const UserSearchResult = ({
   host,
   onUserSelect,
 }: UserSearchResultProps) => {
+  const { mySelf } = useLoginStore();
   const { users, isLoading } = useDebouncedGetUsersSearchByUsernameAndHost({
     host,
     username,
   });
+
+  // 自分を検索結果から除外
+  const filteredUsers = users?.filter((user) => user.id !== mySelf?.id);
 
   // ローディング状態
   if ((username || host) && isLoading) {
@@ -207,19 +144,19 @@ const UserSearchResult = ({
   }
 
   // 初期状態: 検索語が未入力の場合
-  if ((!username && !host) || !users) {
+  if ((!username && !host) || !filteredUsers) {
     return <EmptyState icon={<MagnifyingGlassPlusIcon />} />;
   }
 
   // 検索結果がない場合
-  if (users.length === 0) {
+  if (filteredUsers.length === 0) {
     return <EmptyState title="ユーザーが見つかりません" />;
   }
 
   // 検索結果がある場合
   return (
     <VStack gap="2" mt="4" w="full">
-      {users.map((user) => (
+      {filteredUsers.map((user) => (
         <UserCard
           clickAction={async () => {
             await onUserSelect(user);
