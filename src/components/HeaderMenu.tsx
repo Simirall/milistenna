@@ -6,7 +6,8 @@ import {
   Button,
   IconButton,
   Menu,
-  Select,
+  SegmentedControl,
+  Separator,
   Text,
   useColorMode,
   useColorModeValue,
@@ -53,21 +54,32 @@ export const HeaderMenu = () => {
             <Text>ログアウト</Text>
           </Button>
         )}
+
+        <Separator />
+
         <Box w="full">
-          <Text>フォント</Text>
-          <Select.Root
-            size="sm"
+          <Text fontSize="sm">フォント</Text>
+          <SegmentedControl.Root
+            orientation="vertical"
+            size="lg"
             value={fontValue}
-            width="full"
-            onChange={(e) => setFont(e as FontValue)}
+            w="fit-content"
+            h="fit-content"
+            onChange={(value) => setFont(value as FontValue)}
           >
             {FONT_OPTIONS.map((option) => (
-              <Select.Option key={option.value} value={option.value}>
+              <SegmentedControl.Item key={option.value} value={option.value}>
                 {option.label}
-              </Select.Option>
+              </SegmentedControl.Item>
             ))}
-          </Select.Root>
+          </SegmentedControl.Root>
         </Box>
+
+        <Separator />
+
+        <Text textAlign="start" w="full">
+          カラーモード
+        </Text>
         <IconButton
           borderRadius="full"
           color={colorModeButtonColor}
