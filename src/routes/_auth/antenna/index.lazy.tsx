@@ -19,6 +19,7 @@ import { GridCard } from "@/components/common/layout/GridCard";
 import { GridContainer } from "@/components/common/layout/GridContainer";
 import { useLoginStore } from "@/store/login";
 import { DeleteAntennaButton } from "./-components/DeleteAntennaModal";
+import { ExternalLinkButton } from "@/components/common/ExternalLinkButton";
 
 export const Route = createLazyFileRoute("/_auth/antenna/")({
   component: RouteComponent,
@@ -83,6 +84,7 @@ function RouteComponent() {
 
 const AntennaList = () => {
   const { antennas } = useGetAntennasList();
+  const { instance } = useLoginStore();
 
   if (!antennas) {
     return <Loader />;
@@ -97,6 +99,12 @@ const AntennaList = () => {
       colorScheme="emerald"
       footer={
         <HStack>
+          <ExternalLinkButton
+            colorScheme="sky"
+            href={`https://${instance}/timeline/antenna/${a.id}`}
+          >
+            開く
+          </ExternalLinkButton>
           <LinkButton
             buttonProps={{
               colorScheme: "lime",

@@ -7,6 +7,8 @@ import { GridCard } from "@/components/common/layout/GridCard";
 import { GridContainer } from "@/components/common/layout/GridContainer";
 import { CreateListModalButton } from "./-components/CreateListModal";
 import { DeleteListButton } from "./-components/DeleteListModal";
+import { useLoginStore } from "@/store/login";
+import { ExternalLinkButton } from "@/components/common/ExternalLinkButton";
 
 export const Route = createLazyFileRoute("/_auth/list/")({
   component: RouteComponent,
@@ -28,6 +30,7 @@ function RouteComponent() {
 
 const ListList = () => {
   const { lists } = useGetUserListsList();
+  const { instance } = useLoginStore();
 
   if (!lists) {
     return <Loader />;
@@ -42,6 +45,12 @@ const ListList = () => {
       colorScheme="sky"
       footer={
         <HStack>
+          <ExternalLinkButton
+            colorScheme="teal"
+            href={`https://${instance}/timeline/list/${l.id}`}
+          >
+            開く
+          </ExternalLinkButton>
           <LinkButton
             buttonProps={{
               colorScheme: "info",
