@@ -1,4 +1,4 @@
-import { CaretLeftIcon } from "@phosphor-icons/react";
+import { CaretLeftIcon, PlusIcon } from "@phosphor-icons/react";
 import { useForm } from "@tanstack/react-form";
 import { createLazyFileRoute, useNavigate } from "@tanstack/react-router";
 import {
@@ -12,6 +12,7 @@ import {
   Switch,
   Text,
   Textarea,
+  useDisclosure,
   VStack,
 } from "@yamada-ui/react";
 import type {
@@ -19,14 +20,17 @@ import type {
   AntennasCreateRequest,
   AntennasUpdateRequest,
 } from "misskey-js/entities.js";
+import { useRef } from "react";
 import { useGetAntennasList } from "@/apis/antennas/useGetAntennasList";
 import { useGetAntennasShow } from "@/apis/antennas/useGetAntennasShow";
 import { useGetUsersListsShow } from "@/apis/lists/useGetUsersListsShow";
 import { FloatLinkButton } from "@/components/common/FloatLinkButton";
 import { Loader } from "@/components/common/Loader";
+import { UserSearchModal } from "@/components/domain/user/AddUserModal";
 import { getApiUrl } from "@/utils/getApiUrl";
 import { getFetchObject } from "@/utils/getFetchObject";
 import { isError } from "@/utils/isError";
+import { DeleteAntennaButton } from "./-components/DeleteAntennaModal";
 import { SelectListField } from "./-components/SelectListModal";
 
 export const Route = createLazyFileRoute("/_auth/antenna/$edit")({
@@ -105,6 +109,8 @@ const AntennaForm = ({ antenna, initialListName }: AntennaFormProps) => {
   const isCreate = !antenna;
   const navigate = useNavigate();
   const { refetch } = useGetAntennasList();
+  const { refetch: refetchShow } = useGetAntennasShow(antenna?.id ?? "");
+  const usersTextareaRef = useRef<HTMLTextAreaElement>(null);
 
   const form = useForm({
     defaultValues: {
@@ -170,7 +176,7 @@ const AntennaForm = ({ antenna, initialListName }: AntennaFormProps) => {
           getFetchObject<AntennasUpdateRequest>(payload),
         );
       }
-      await refetch();
+      await Promise.all([refetch(), refetchShow()]);
       navigate({ to: "/antenna" });
     },
   });
@@ -224,22 +230,61 @@ const AntennaForm = ({ antenna, initialListName }: AntennaFormProps) => {
         {(src) =>
           (src === "users" || src === "users_blacklist") && (
             <form.Field name="users">
-              {(field) => (
-                <Field.Root
-                  helperMessage="1行に1ユーザーずつ入力してください（例: @user@example.com）"
-                  label="ユーザー"
-                >
-                  <Textarea
-                    autosize
-                    minRows={3}
-                    onBlur={field.handleBlur}
-                    onChange={(e) => field.handleChange(e.target.value)}
-                    placeholder={"@user@example.com"}
-                    value={field.state.value}
-                    required
-                  />
-                </Field.Root>
-              )}
+              {(field) => {
+                const textareaRef = usersTextareaRef;
+                return (
+                  <Field.Root
+                    helperMessage="1行に1ユーザーずつ入力してください（例: @user@example.com）"
+                    label="ユーザー"
+                  >
+                    <Textarea
+                      autosize
+                      minRows={3}
+                      onBlur={field.handleBlur}
+                      onChange={(e) => field.handleChange(e.target.value)}
+                      placeholder={"@user@example.com"}
+                      ref={textareaRef}
+                      required
+                      value={field.state.value}
+                    />
+                    <AddUserToTextButton
+                      onAdd={(text) => {
+                        const el = textareaRef.current;
+                        const current = field.state.value;
+                        if (!el || !current) {
+                          field.handleChange(current ? `${current}\n${text}` : text);
+                          return;
+                        }
+                        const pos = el.selectionStart ?? current.length;
+                        // カーソルがある行の先頭位置と末尾位置を取得
+                        const lineStart = current.lastIndexOf("\n", pos - 1) + 1;
+                        const lineEnd = current.indexOf("\n", pos);
+                        const line = current.slice(lineStart, lineEnd === -1 ? current.length : lineEnd);
+                        const isAtLineStart = pos === lineStart;
+                        const isLineEmpty = line.length === 0;
+
+                        let newValue: string;
+                        let newCursorPos: number;
+                        if (isAtLineStart && isLineEmpty) {
+                          // 行の先頭かつ空行: そのまま挿入
+                          newValue = `${current.slice(0, pos)}${text}${current.slice(pos)}`;
+                          newCursorPos = pos + text.length;
+                        } else {
+                          // それ以外: 次の行に挿入
+                          const insertPos = lineEnd === -1 ? current.length : lineEnd;
+                          newValue = `${current.slice(0, insertPos)}\n${text}${current.slice(insertPos)}`;
+                          newCursorPos = insertPos + 1 + text.length;
+                        }
+                        field.handleChange(newValue);
+                        // カーソル位置を挿入後の位置に設定
+                        requestAnimationFrame(() => {
+                          el.setSelectionRange(newCursorPos, newCursorPos);
+                        });
+                      }}
+                    />
+                  </Field.Root>
+                );
+              }}
             </form.Field>
           )
         }
@@ -412,7 +457,41 @@ const AntennaForm = ({ antenna, initialListName }: AntennaFormProps) => {
         >
           <Text>{isCreate ? "作成" : "更新"}</Text>
         </Button>
+        {!isCreate && (
+          <DeleteAntennaButton antennaId={antenna.id} name={antenna.name} />
+        )}
       </HStack>
     </VStack>
+  );
+};
+
+/** ユーザー検索モーダルを使ってテキストエリアにユーザーを追加するボタン */
+type AddUserToTextButtonProps = {
+  onAdd: (text: string) => void;
+};
+
+const AddUserToTextButton = ({ onAdd }: AddUserToTextButtonProps) => {
+  const { open, onOpen, onClose } = useDisclosure();
+
+  return (
+    <>
+      <Button
+        colorScheme="cyan"
+        onClick={onOpen}
+        size="sm"
+        startIcon={<PlusIcon weight="bold" />}
+        variant="surface"
+      >
+        <Text>ユーザーを検索して追加</Text>
+      </Button>
+      <UserSearchModal
+        onClose={onClose}
+        onUserSelect={(user) => {
+          const handle = `@${user.username}${user.host ? `@${user.host}` : ""}`;
+          onAdd(handle);
+        }}
+        open={open}
+      />
+    </>
   );
 };

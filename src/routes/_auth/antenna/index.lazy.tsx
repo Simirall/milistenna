@@ -1,5 +1,5 @@
 import { createLazyFileRoute } from "@tanstack/react-router";
-import { Box, Center, Heading, Text } from "@yamada-ui/react";
+import { Box, Center, Heading, HStack, Text } from "@yamada-ui/react";
 import type { Antenna } from "misskey-js/entities.js";
 import { useGetAntennasList } from "@/apis/antennas/useGetAntennasList";
 import { FloatLinkButton } from "@/components/common/FloatLinkButton";
@@ -7,6 +7,7 @@ import { LinkButton } from "@/components/common/LinkButton";
 import { Loader } from "@/components/common/Loader";
 import { GridCard } from "@/components/common/layout/GridCard";
 import { GridContainer } from "@/components/common/layout/GridContainer";
+import { DeleteAntennaButton } from "./-components/DeleteAntennaModal";
 
 export const Route = createLazyFileRoute("/_auth/antenna/")({
   component: RouteComponent,
@@ -54,12 +55,20 @@ const AntennaList = () => {
     <GridCard
       colorScheme="emerald"
       footer={
-        <LinkButton
-          buttonProps={{ colorScheme: "lime", variant: "surface" }}
-          linkProps={{ params: { edit: a.id }, to: "/antenna/$edit" }}
-        >
-          編集
-        </LinkButton>
+        <HStack>
+          <LinkButton
+            buttonProps={{
+              colorScheme: "lime",
+              variant: "surface",
+              flex: 1,
+              size: "lg",
+            }}
+            linkProps={{ params: { edit: a.id }, to: "/antenna/$edit" }}
+          >
+            編集
+          </LinkButton>
+          <DeleteAntennaButton antennaId={a.id} name={a.name} />
+        </HStack>
       }
       key={a.id}
       title={a.name}

@@ -17,7 +17,10 @@ import {
   useDisclosure,
   VStack,
 } from "@yamada-ui/react";
-import type { UsersListsPushRequest } from "misskey-js/entities.js";
+import type {
+  UserDetailed,
+  UsersListsPushRequest,
+} from "misskey-js/entities.js";
 import { useState } from "react";
 import { useGetUsersListsShow } from "@/apis/lists/useGetUsersListsShow";
 import { useDebouncedGetUsersSearchByUsernameAndHost } from "@/apis/users/useGetUsersSearchByUsernameAndHost";
@@ -34,26 +37,26 @@ const addUserToList = async (payload: UsersListsPushRequest) => {
   );
 };
 
-type AddUserModalProps = { open: boolean; onClose: () => void };
+/** ユーザー検索モーダルの汎用コンポーネント */
+type UserSearchModalProps = {
+  open: boolean;
+  onClose: () => void;
+  onUserSelect: (user: UserDetailed) => Promise<void> | void;
+};
 
-const AddUserModal = ({ open, onClose }: AddUserModalProps) => {
+export const UserSearchModal = ({
+  open,
+  onClose,
+  onUserSelect,
+}: UserSearchModalProps) => {
   const [username, setUsername] = useState("");
   const [host, setHost] = useState("");
 
-  const { edit } = useParams({ strict: false });
-  const { refetch } = useGetUsersListsShow(edit ?? "");
-
-  const handleUserSelect = async (userId: string) => {
-    if (edit) {
-      await addUserToList({
-        listId: edit,
-        userId,
-      });
-      await refetch();
-      setUsername("");
-      setHost("");
-      onClose();
-    }
+  const handleUserSelect = async (user: UserDetailed) => {
+    await onUserSelect(user);
+    setUsername("");
+    setHost("");
+    onClose();
   };
 
   return (
@@ -74,12 +77,37 @@ const AddUserModal = ({ open, onClose }: AddUserModalProps) => {
           <UserSearchForm setHost={setHost} setUsername={setUsername} />
           <UserSearchResult
             host={host}
-            onUserClick={handleUserSelect}
+            onUserSelect={handleUserSelect}
             username={username}
           />
         </Modal.Body>
       </Modal.Content>
     </Modal.Root>
+  );
+};
+
+type AddUserModalProps = { open: boolean; onClose: () => void };
+
+const AddUserModal = ({ open, onClose }: AddUserModalProps) => {
+  const { edit } = useParams({ strict: false });
+  const { refetch } = useGetUsersListsShow(edit ?? "");
+
+  const handleUserSelect = async (user: UserDetailed) => {
+    if (edit) {
+      await addUserToList({
+        listId: edit,
+        userId: user.id,
+      });
+      await refetch();
+    }
+  };
+
+  return (
+    <UserSearchModal
+      onClose={onClose}
+      onUserSelect={handleUserSelect}
+      open={open}
+    />
   );
 };
 
@@ -154,13 +182,13 @@ const UserSearchForm = ({ setUsername, setHost }: UserSearchFormProps) => {
 type UserSearchResultProps = {
   username: string;
   host: string;
-  onUserClick: (userId: string) => Promise<void>;
+  onUserSelect: (user: UserDetailed) => Promise<void>;
 };
 
 const UserSearchResult = ({
   username,
   host,
-  onUserClick,
+  onUserSelect,
 }: UserSearchResultProps) => {
   const { users, isLoading } = useDebouncedGetUsersSearchByUsernameAndHost({
     host,
@@ -192,7 +220,7 @@ const UserSearchResult = ({
       {users.map((user) => (
         <UserCard
           clickAction={async () => {
-            await onUserClick(user.id);
+            await onUserSelect(user);
           }}
           key={user.id}
           userId={user.id}
