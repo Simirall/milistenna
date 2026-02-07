@@ -14,7 +14,7 @@
 
 - **コンポーネント**: PascalCase（例: `UserCard`, `CreateListModal`）
 - **関数/変数**: camelCase（例: `getUserData`, `isLoading`）
-- **定数**: camelCase（例: `appName`, `apiUrl`）
+- **定数**: camelCase（例: `apiUrl`）
 - **ファイル名**:
   - コンポーネント: PascalCase（例: `UserCard.tsx`）
   - ユーティリティ: camelCase（例: `fetcher.ts`）
@@ -174,7 +174,7 @@ export const useMyStore = create<State & Actions>()(
 ```typescript
 function MyComponent() {
   const [isOpen, setIsOpen] = useState(false);
-  
+
   return (
     // ...
   );
@@ -244,7 +244,7 @@ export const Route = createFileRoute("/_auth/item/$id")({
 
 function ItemDetail() {
   const { id } = Route.useParams();
-  
+
   return <div>Item ID: {id}</div>;
 }
 ```
@@ -256,10 +256,10 @@ function ItemDetail() {
 ```typescript
 function MyComponent() {
   const { data, isLoading, error } = useGetMyData();
-  
+
   if (isLoading) return <Loader />;
   if (error) return <ErrorMessage error={error} />;
-  
+
   return <div>{data.name}</div>;
 }
 ```

@@ -1,6 +1,5 @@
 import { Link } from "@tanstack/react-router";
 import { Box, Heading, HStack, useColorModeValue } from "@yamada-ui/react";
-import { appName } from "@/constants/appName";
 import { HeaderMenu } from "./HeaderMenu";
 
 export const Header = () => {
@@ -21,7 +20,7 @@ export const Header = () => {
     >
       <HStack justifyContent="space-between">
         <Heading as={Link} to="/" truncated>
-          {appName}
+          Milistenna
         </Heading>
         <HeaderMenu />
       </HStack>

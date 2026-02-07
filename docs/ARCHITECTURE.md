@@ -123,8 +123,6 @@ milistenna/
 │   │       └── user/
 │   │           ├── AddUserModal.tsx
 │   │           └── UserCard.tsx
-│   ├── constants/      # 定数定義
-│   │   └── appName.ts
 │   ├── routes/         # ルート定義（TanStack Router）
 │   │   ├── __root.tsx  # ルートレイアウト
 │   │   ├── index.tsx   # トップページ（ローダー）
