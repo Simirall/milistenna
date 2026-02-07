@@ -18,6 +18,7 @@ import { Loader } from "@/components/common/Loader";
 import { GridCard } from "@/components/common/layout/GridCard";
 import { GridContainer } from "@/components/common/layout/GridContainer";
 import { useLoginStore } from "@/store/login";
+import { CopyAntennaButton } from "./-components/CopyAntennaModal";
 import { DeleteAntennaButton } from "./-components/DeleteAntennaModal";
 import { ExternalLinkButton } from "@/components/common/ExternalLinkButton";
 
@@ -116,6 +117,7 @@ const AntennaList = () => {
           >
             編集
           </LinkButton>
+          <CopyAntennaButton antenna={a} />
           <DeleteAntennaButton antennaId={a.id} name={a.name} />
         </HStack>
       }

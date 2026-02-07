@@ -7,7 +7,7 @@ export const GridContainer = ({ children }: GridContainerProps) => {
   return (
     <Grid
       gap="sm"
-      gridTemplateColumns="repeat(auto-fit, min(350px, 100%))"
+      gridTemplateColumns="repeat(auto-fit, min(450px, 100%))"
       justifyContent="space-evenly"
       p="md"
     >
