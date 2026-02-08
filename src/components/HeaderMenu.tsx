@@ -13,7 +13,12 @@ import {
   useColorModeValue,
   useDisclosure,
 } from "@yamada-ui/react";
-import { FONT_OPTIONS, type FontValue, useFontStore } from "@/store/font";
+import {
+  FONT_OPTIONS,
+  type FontValue,
+  getFontFamily,
+  useFontStore,
+} from "@/store/font";
 import { useLoginStore } from "@/store/login";
 
 export const HeaderMenu = () => {
@@ -68,7 +73,11 @@ export const HeaderMenu = () => {
             onChange={(value) => setFont(value as FontValue)}
           >
             {FONT_OPTIONS.map((option) => (
-              <SegmentedControl.Item key={option.value} value={option.value}>
+              <SegmentedControl.Item
+                key={option.value}
+                fontFamily={getFontFamily(option.value)}
+                value={option.value}
+              >
                 {option.label}
               </SegmentedControl.Item>
             ))}
