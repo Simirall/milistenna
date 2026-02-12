@@ -1,8 +1,7 @@
 import { createLazyFileRoute, useNavigate } from "@tanstack/react-router";
 import type { MeDetailed } from "misskey-js/entities.js";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { Loader } from "@/components/common/Loader";
-import type { LoginState } from "@/store/login";
 import { useLoginStore } from "@/store/login";
 import { getApiUrl } from "@/utils/getApiUrl";
 
@@ -13,52 +12,82 @@ export const Route = createLazyFileRoute("/login/getToken/")({
 function GetToken() {
   const { session } = Route.useSearch();
   const navigate = useNavigate();
-  const login = useLoginStore();
-
-  const tokenUrl = `https://${login.instance}/api/miauth/${session}/check`;
-  fetchData(tokenUrl, login);
+  const instance = useLoginStore((state) => state.instance);
+  const startedRef = useRef(false);
 
   useEffect(() => {
-    if (login.isLogin) {
-      navigate({ replace: true, to: "/" });
+    if (!session) {
+      navigate({ replace: true, to: "/login" });
+      return;
     }
-  }, [login, navigate]);
+
+    if (!instance) {
+      navigate({ replace: true, to: "/login" });
+      return;
+    }
+
+    if (startedRef.current) {
+      return;
+    }
+    startedRef.current = true;
+
+    const tokenUrl = `https://${instance}/api/miauth/${session}/check`;
+
+    void fetchData(tokenUrl)
+      .then((isSuccess) => {
+        if (isSuccess) {
+          navigate({ replace: true, to: "/" });
+          return;
+        }
+
+        navigate({ replace: true, to: "/login" });
+      })
+      .catch((error) => {
+        console.error(error);
+        navigate({ replace: true, to: "/login" });
+      });
+  }, [instance, navigate, session]);
 
   return <Loader />;
 }
 
-const fetchData = async (tokenUrl: string, login: LoginState) => {
+const fetchData = async (tokenUrl: string): Promise<boolean> => {
   const setLogin = useLoginStore.setState;
 
-  try {
-    const res = await fetch(tokenUrl, {
-      method: "POST",
-    });
-    if (!res.ok) {
-      throw new Error(`${res.status} ${res.statusText}`);
-    }
-    const data = await res.json();
-
-    if (data.token) {
-      const ires = await fetch(getApiUrl("i"), {
-        body: JSON.stringify({
-          i: data.token,
-        }),
-        headers: {
-          "Content-Type": "application/json",
-        },
-        method: "POST",
-      });
-      const me: MeDetailed = await ires.json();
-
-      setLogin({
-        ...login,
-        isLogin: true,
-        mySelf: me,
-        token: data.token,
-      });
-    }
-  } catch (error) {
-    console.error(error);
+  const res = await fetch(tokenUrl, {
+    method: "POST",
+  });
+  if (!res.ok) {
+    throw new Error(`${res.status} ${res.statusText}`);
   }
+  const data = await res.json();
+
+  if (!data.token) {
+    return false;
+  }
+
+  const ires = await fetch(getApiUrl("i"), {
+    body: JSON.stringify({
+      i: data.token,
+    }),
+    headers: {
+      "Content-Type": "application/json",
+    },
+    method: "POST",
+  });
+
+  if (!ires.ok) {
+    throw new Error(`${ires.status} ${ires.statusText}`);
+  }
+
+  const me: MeDetailed = await ires.json();
+
+  setLogin((state) => ({
+    ...state,
+    isLogin: true,
+    mySelf: me,
+    token: data.token,
+  }));
+
+  return true;
 };
