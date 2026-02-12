@@ -14,7 +14,11 @@ export type LoginState = {
 };
 
 type LoginActions = {
-  login: (payload: Required<Omit<LoginState, "isLogin" | "mySelf" | "instanceEmojis">>) => void;
+  login: (
+    payload: Required<
+      Omit<LoginState, "isLogin" | "mySelf" | "instanceEmojis">
+    >,
+  ) => void;
   setMySelf: (payload: MeDetailed) => void;
   setInstanceEmojis: (payload: InstanceEmojis) => void;
   logout: () => void;

@@ -14,7 +14,7 @@ import {
   useDisclosure,
   VStack,
 } from "@yamada-ui/react";
-import type { UserList, UsersListsUpdateRequest } from "misskey-js/entities.js";
+import type { UserList } from "misskey-js/entities.js";
 import { useState } from "react";
 import { z } from "zod";
 import { useGetUsersListsShow } from "@/apis/lists/useGetUsersListsShow";
@@ -24,12 +24,11 @@ import { Loader } from "@/components/common/Loader";
 import { AddUserModalButton } from "./-components/AddUserModal";
 import { UserCard } from "@/components/domain/user/UserCard";
 import { useLoginStore } from "@/store/login";
-import { getApiUrl } from "@/utils/getApiUrl";
-import { getFetchObject } from "@/utils/getFetchObject";
 import { isError } from "@/utils/isError";
 import { DeleteListButton } from "./-components/DeleteListModal";
 import { DeleteUserButton } from "./-components/DeleteUserModal";
 import { useGetUserListsList } from "@/apis/lists/useGetUsersListsList";
+import { writeApi } from "@/utils/writeApi";
 
 export const Route = createLazyFileRoute("/_auth/list/$edit")({
   component: RouteComponent,
@@ -54,10 +53,8 @@ function RouteComponent() {
     return <Loader />;
   }
 
-  const userEachUserListsLimit =
-    mySelf?.policies.userEachUserListsLimit ?? 0;
-  const isLimitReached =
-    (list.userIds?.length ?? 0) >= userEachUserListsLimit;
+  const userEachUserListsLimit = mySelf?.policies.userEachUserListsLimit ?? 0;
+  const isLimitReached = (list.userIds?.length ?? 0) >= userEachUserListsLimit;
 
   return (
     <>
@@ -132,10 +129,7 @@ const ListForm = ({ list, listId }: ListFormProps) => {
       name: list.name,
     } satisfies z.infer<typeof editListSchema>,
     onSubmit: async ({ value }) => {
-      await fetch(
-        getApiUrl("users/lists/update"),
-        getFetchObject<UsersListsUpdateRequest>(value),
-      );
+      await writeApi("users/lists/update", value);
       onChangeAccordionIndex(-1);
       await Promise.all([refetch(), refetchList()]);
     },

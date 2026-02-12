@@ -20,9 +20,8 @@ import type {
 import { useRef } from "react";
 import { useGetAntennasList } from "@/apis/antennas/useGetAntennasList";
 import { useGetAntennasShow } from "@/apis/antennas/useGetAntennasShow";
-import { getApiUrl } from "@/utils/getApiUrl";
-import { getFetchObject } from "@/utils/getFetchObject";
 import { keywordsToString, stringToKeywords } from "@/utils/keywords";
+import { writeApi } from "@/utils/writeApi";
 import { AddUserToTextButton } from "./AddUserToTextButton";
 import { DeleteAntennaButton } from "./DeleteAntennaModal";
 import { SelectListField } from "./SelectListModal";
@@ -76,10 +75,7 @@ export const AntennaForm = ({ antenna, initialListName }: AntennaFormProps) => {
           keywords: stringToKeywords(value.keywords),
           excludeKeywords: stringToKeywords(value.excludeKeywords),
         };
-        await fetch(
-          getApiUrl("antennas/create"),
-          getFetchObject<AntennasCreateRequest>(payload),
-        );
+        await writeApi("antennas/create", payload);
       } else {
         const payload: AntennasUpdateRequest = {
           ...value,
@@ -92,10 +88,7 @@ export const AntennaForm = ({ antenna, initialListName }: AntennaFormProps) => {
           keywords: stringToKeywords(value.keywords),
           excludeKeywords: stringToKeywords(value.excludeKeywords),
         };
-        await fetch(
-          getApiUrl("antennas/update"),
-          getFetchObject<AntennasUpdateRequest>(payload),
-        );
+        await writeApi("antennas/update", payload);
       }
       await Promise.all([refetch(), refetchShow()]);
       navigate({ to: "/antenna" });

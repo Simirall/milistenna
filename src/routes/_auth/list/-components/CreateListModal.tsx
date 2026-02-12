@@ -9,13 +9,11 @@ import {
   Text,
   useDisclosure,
 } from "@yamada-ui/react";
-import type { UsersListsCreateRequest } from "misskey-js/entities.js";
 import { z } from "zod";
 import { useGetUserListsList } from "@/apis/lists/useGetUsersListsList";
 import { LimitAlert } from "@/components/common/LimitAlert";
 import { useLoginStore } from "@/store/login";
-import { getApiUrl } from "@/utils/getApiUrl";
-import { getFetchObject } from "@/utils/getFetchObject";
+import { writeApi } from "@/utils/writeApi";
 
 const createListSchema = z.object({
   name: z
@@ -34,12 +32,9 @@ const CreateListModal = ({ open, onClose }: CreateListModalProps) => {
       name: "",
     } satisfies z.infer<typeof createListSchema>,
     onSubmit: async ({ value }) => {
-      await fetch(
-        getApiUrl("users/lists/create"),
-        getFetchObject<UsersListsCreateRequest>({
-          name: value.name,
-        }),
-      );
+      await writeApi("users/lists/create", {
+        name: value.name,
+      });
       await refetch();
       onClose();
       form.reset();

@@ -12,8 +12,7 @@ import { useState } from "react";
 import { useGetAntennasList } from "@/apis/antennas/useGetAntennasList";
 import { LimitAlert } from "@/components/common/LimitAlert";
 import { useLoginStore } from "@/store/login";
-import { getApiUrl } from "@/utils/getApiUrl";
-import { getFetchObject } from "@/utils/getFetchObject";
+import { writeApi } from "@/utils/writeApi";
 
 type CopyAntennaModalProps = {
   antenna: Antenna;
@@ -62,10 +61,7 @@ export const CopyAntennaButton = ({ antenna }: CopyAntennaModalProps) => {
         withFile: antenna.withFile,
         excludeNotesInSensitiveChannel: antenna.excludeNotesInSensitiveChannel,
       };
-      await fetch(
-        getApiUrl("antennas/create"),
-        getFetchObject<AntennasCreateRequest>(payload),
-      );
+      await writeApi("antennas/create", payload);
       await refetch();
       onClose();
       navigate({ to: "/antenna" });

@@ -53,10 +53,7 @@ export function App() {
 
     const fetchInstanceEmojis = async () => {
       try {
-        const res = await fetch(
-          getApiUrl("emojis"),
-          getFetchObject(undefined),
-        );
+        const res = await fetch(getApiUrl("emojis"), getFetchObject(undefined));
         if (!res.ok) return;
         const data: { emojis: { name: string; url: string }[] } =
           await res.json();

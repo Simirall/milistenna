@@ -1,12 +1,10 @@
 import { TrashIcon } from "@phosphor-icons/react";
 import { Text } from "@yamada-ui/react";
-import type { UsersListsPullRequest } from "misskey-js/entities.js";
 import { useGetUsersListsShow } from "@/apis/lists/useGetUsersListsShow";
 import { ConfirmModal } from "@/components/common/Confirm";
 import { UserCard } from "@/components/domain/user/UserCard";
-import { getApiUrl } from "@/utils/getApiUrl";
-import { getFetchObject } from "@/utils/getFetchObject";
 import { useGetUserListsList } from "@/apis/lists/useGetUsersListsList";
+import { writeApi } from "@/utils/writeApi";
 
 type DeleteUserButtonProps = {
   listId: string;
@@ -18,10 +16,10 @@ export const DeleteUserButton = ({ listId, userId }: DeleteUserButtonProps) => {
   const { refetch: refetchList } = useGetUserListsList();
 
   const handleClicked = async () => {
-    await fetch(
-      getApiUrl("users/lists/pull"),
-      getFetchObject<UsersListsPullRequest>({ listId, userId }),
-    );
+    await writeApi("users/lists/pull", {
+      listId,
+      userId,
+    });
     await Promise.all([refetch(), refetchList()]);
   };
 

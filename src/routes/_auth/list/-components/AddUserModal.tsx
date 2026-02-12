@@ -8,14 +8,10 @@ import type {
 import { useGetUsersListsShow } from "@/apis/lists/useGetUsersListsShow";
 import { useGetUserListsList } from "@/apis/lists/useGetUsersListsList";
 import { UserSearchModal } from "@/components/domain/user/UserSearchModal";
-import { getApiUrl } from "@/utils/getApiUrl";
-import { getFetchObject } from "@/utils/getFetchObject";
+import { writeApi } from "@/utils/writeApi";
 
 const addUserToList = async (payload: UsersListsPushRequest) => {
-  await fetch(
-    getApiUrl("users/lists/push"),
-    getFetchObject<UsersListsPushRequest>(payload),
-  );
+  await writeApi("users/lists/push", payload);
 };
 
 type AddUserModalProps = { open: boolean; onClose: () => void };
