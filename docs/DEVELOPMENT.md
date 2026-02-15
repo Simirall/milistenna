@@ -272,10 +272,15 @@ const { data, isApiError, apiError } = useApiQuery(
 );
 
 if (isApiError) {
-  // Misskey APIエラー
-  console.error(apiError);
+  // ユーザー向けエラー表示に変換して表示
+  const message = getUserErrorMessage(apiError);
+  return <ApiErrorMessage message={message} />;
 }
 ```
+
+- ユーザー向け表示は `ApiErrorMessage` に統一する
+- エラー文言は `getUserErrorMessage` で変換し、画面で独自分岐を増やさない
+- 内部ログは `reportInternalError` 経由で出力し、直接 `console.error` を書かない
 
 ## フォーム処理
 

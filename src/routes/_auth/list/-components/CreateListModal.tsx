@@ -9,10 +9,13 @@ import {
   Text,
   useDisclosure,
 } from "@yamada-ui/react";
+import { useState } from "react";
 import { z } from "zod";
 import { useGetUserListsList } from "@/apis/lists/useGetUsersListsList";
+import { ApiErrorMessage } from "@/components/common/ApiErrorMessage";
 import { LimitAlert } from "@/components/common/LimitAlert";
 import { useLoginStore } from "@/store/login";
+import { getUserErrorMessage, reportInternalError } from "@/utils/appError";
 import { writeApi } from "@/utils/writeApi";
 
 const createListSchema = z.object({
@@ -26,18 +29,25 @@ type CreateListModalProps = { open: boolean; onClose: () => void };
 
 const CreateListModal = ({ open, onClose }: CreateListModalProps) => {
   const { refetch } = useGetUserListsList();
+  const [submitError, setSubmitError] = useState<string | undefined>();
 
   const form = useForm({
     defaultValues: {
       name: "",
     } satisfies z.infer<typeof createListSchema>,
     onSubmit: async ({ value }) => {
-      await writeApi("users/lists/create", {
-        name: value.name,
-      });
-      await refetch();
-      onClose();
-      form.reset();
+      setSubmitError(undefined);
+      try {
+        await writeApi("users/lists/create", {
+          name: value.name,
+        });
+        await refetch();
+        onClose();
+        form.reset();
+      } catch (error) {
+        reportInternalError("list-create", error);
+        setSubmitError(getUserErrorMessage(error));
+      }
     },
     validators: {
       onChange: createListSchema,
@@ -47,6 +57,7 @@ const CreateListModal = ({ open, onClose }: CreateListModalProps) => {
   return (
     <Modal.Root
       onClose={() => {
+        setSubmitError(undefined);
         form.reset();
         onClose();
       }}
@@ -79,6 +90,7 @@ const CreateListModal = ({ open, onClose }: CreateListModalProps) => {
               </Field.Root>
             )}
           </form.Field>
+          <ApiErrorMessage message={submitError} />
         </Modal.Body>
         <Modal.Footer>
           <form.Subscribe
@@ -99,6 +111,7 @@ const CreateListModal = ({ open, onClose }: CreateListModalProps) => {
           <Button
             colorScheme="sky"
             onClick={() => {
+              setSubmitError(undefined);
               onClose();
               form.reset();
             }}

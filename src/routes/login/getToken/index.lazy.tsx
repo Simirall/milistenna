@@ -3,6 +3,7 @@ import type { MeDetailed } from "misskey-js/entities.js";
 import { useEffect, useRef } from "react";
 import { Loader } from "@/components/common/Loader";
 import { useLoginStore } from "@/store/login";
+import { reportInternalError } from "@/utils/appError";
 import { getApiUrl } from "@/utils/getApiUrl";
 
 export const Route = createLazyFileRoute("/login/getToken/")({
@@ -43,7 +44,7 @@ function GetToken() {
         navigate({ replace: true, to: "/login" });
       })
       .catch((error) => {
-        console.error(error);
+        reportInternalError("login-get-token", error);
         navigate({ replace: true, to: "/login" });
       });
   }, [instance, navigate, session]);

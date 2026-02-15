@@ -10,8 +10,10 @@ import {
 import type { Antenna, AntennasCreateRequest } from "misskey-js/entities.js";
 import { useState } from "react";
 import { useGetAntennasList } from "@/apis/antennas/useGetAntennasList";
+import { ApiErrorMessage } from "@/components/common/ApiErrorMessage";
 import { LimitAlert } from "@/components/common/LimitAlert";
 import { useLoginStore } from "@/store/login";
+import { getUserErrorMessage, reportInternalError } from "@/utils/appError";
 import { writeApi } from "@/utils/writeApi";
 
 type CopyAntennaModalProps = {
@@ -31,6 +33,7 @@ export const CopyAntennaButton = ({ antenna }: CopyAntennaModalProps) => {
   const navigate = useNavigate();
   const [name, setName] = useState(`${antenna.name} のコピー`);
   const [isSubmitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | undefined>();
 
   const antennaLimit = mySelf?.policies.antennaLimit ?? 0;
   const isLimitReached = (antennas?.length ?? 0) >= antennaLimit;
@@ -40,11 +43,13 @@ export const CopyAntennaButton = ({ antenna }: CopyAntennaModalProps) => {
       onLimitOpen();
       return;
     }
+    setSubmitError(undefined);
     setName(`${antenna.name} のコピー`);
     onOpen();
   };
 
   const handleCopy = async () => {
+    setSubmitError(undefined);
     setSubmitting(true);
     try {
       const payload: AntennasCreateRequest = {
@@ -65,6 +70,9 @@ export const CopyAntennaButton = ({ antenna }: CopyAntennaModalProps) => {
       await refetch();
       onClose();
       navigate({ to: "/antenna" });
+    } catch (error) {
+      reportInternalError("antenna-copy", error);
+      setSubmitError(getUserErrorMessage(error));
     } finally {
       setSubmitting(false);
     }
@@ -82,7 +90,13 @@ export const CopyAntennaButton = ({ antenna }: CopyAntennaModalProps) => {
       </Button>
 
       {/* コピー名入力モーダル */}
-      <Modal.Root onClose={onClose} open={open}>
+      <Modal.Root
+        onClose={() => {
+          setSubmitError(undefined);
+          onClose();
+        }}
+        open={open}
+      >
         <Modal.Overlay />
         <Modal.Content>
           <Modal.Header>アンテナをコピー</Modal.Header>
@@ -94,6 +108,7 @@ export const CopyAntennaButton = ({ antenna }: CopyAntennaModalProps) => {
                 value={name}
               />
             </Field.Root>
+            <ApiErrorMessage message={submitError} />
           </Modal.Body>
           <Modal.Footer>
             <Button

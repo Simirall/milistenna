@@ -28,6 +28,8 @@ import { isError } from "@/utils/isError";
 import { DeleteListButton } from "./-components/DeleteListModal";
 import { DeleteUserButton } from "./-components/DeleteUserModal";
 import { useGetUserListsList } from "@/apis/lists/useGetUsersListsList";
+import { ApiErrorMessage } from "@/components/common/ApiErrorMessage";
+import { getUserErrorMessage, reportInternalError } from "@/utils/appError";
 import { writeApi } from "@/utils/writeApi";
 
 export const Route = createLazyFileRoute("/_auth/list/$edit")({
@@ -121,6 +123,7 @@ const ListForm = ({ list, listId }: ListFormProps) => {
   const { refetch: refetchList } = useGetUserListsList();
   const [accordionIndex, onChangeAccordionIndex] =
     useState<UseAccordionProps["index"]>(-1);
+  const [submitError, setSubmitError] = useState<string | undefined>();
 
   const form = useForm({
     defaultValues: {
@@ -129,9 +132,15 @@ const ListForm = ({ list, listId }: ListFormProps) => {
       name: list.name,
     } satisfies z.infer<typeof editListSchema>,
     onSubmit: async ({ value }) => {
-      await writeApi("users/lists/update", value);
-      onChangeAccordionIndex(-1);
-      await Promise.all([refetch(), refetchList()]);
+      setSubmitError(undefined);
+      try {
+        await writeApi("users/lists/update", value);
+        onChangeAccordionIndex(-1);
+        await Promise.all([refetch(), refetchList()]);
+      } catch (error) {
+        reportInternalError("list-update", error);
+        setSubmitError(getUserErrorMessage(error));
+      }
     },
     validators: {
       onChange: editListSchema,
@@ -185,6 +194,7 @@ const ListForm = ({ list, listId }: ListFormProps) => {
                 </Switch>
               )}
             </form.Field>
+            <ApiErrorMessage message={submitError} />
             <HStack alignSelf="end">
               <Button
                 colorScheme="sky"

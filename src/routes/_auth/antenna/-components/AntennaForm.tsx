@@ -17,9 +17,11 @@ import type {
   AntennasCreateRequest,
   AntennasUpdateRequest,
 } from "misskey-js/entities.js";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { useGetAntennasList } from "@/apis/antennas/useGetAntennasList";
 import { useGetAntennasShow } from "@/apis/antennas/useGetAntennasShow";
+import { ApiErrorMessage } from "@/components/common/ApiErrorMessage";
+import { getUserErrorMessage, reportInternalError } from "@/utils/appError";
 import { keywordsToString, stringToKeywords } from "@/utils/keywords";
 import { writeApi } from "@/utils/writeApi";
 import { AddUserToTextButton } from "./AddUserToTextButton";
@@ -45,6 +47,7 @@ export const AntennaForm = ({ antenna, initialListName }: AntennaFormProps) => {
   const { refetch } = useGetAntennasList();
   const { refetch: refetchShow } = useGetAntennasShow(antenna?.id ?? "");
   const usersTextareaRef = useRef<HTMLTextAreaElement>(null);
+  const [submitError, setSubmitError] = useState<string | undefined>();
 
   const form = useForm({
     defaultValues: {
@@ -64,34 +67,40 @@ export const AntennaForm = ({ antenna, initialListName }: AntennaFormProps) => {
         antenna?.excludeNotesInSensitiveChannel ?? false,
     },
     onSubmit: async ({ value }) => {
-      if (isCreate) {
-        const payload: AntennasCreateRequest = {
-          ...value,
-          userListId: value.src === "list" ? value.userListId : null,
-          users:
-            value.src === "users" || value.src === "users_blacklist"
-              ? value.users.split("\n").filter(Boolean)
-              : [],
-          keywords: stringToKeywords(value.keywords),
-          excludeKeywords: stringToKeywords(value.excludeKeywords),
-        };
-        await writeApi("antennas/create", payload);
-      } else {
-        const payload: AntennasUpdateRequest = {
-          ...value,
-          antennaId: antenna.id,
-          userListId: value.src === "list" ? value.userListId : null,
-          users:
-            value.src === "users" || value.src === "users_blacklist"
-              ? value.users.split("\n").filter(Boolean)
-              : [],
-          keywords: stringToKeywords(value.keywords),
-          excludeKeywords: stringToKeywords(value.excludeKeywords),
-        };
-        await writeApi("antennas/update", payload);
+      setSubmitError(undefined);
+      try {
+        if (isCreate) {
+          const payload: AntennasCreateRequest = {
+            ...value,
+            userListId: value.src === "list" ? value.userListId : null,
+            users:
+              value.src === "users" || value.src === "users_blacklist"
+                ? value.users.split("\n").filter(Boolean)
+                : [],
+            keywords: stringToKeywords(value.keywords),
+            excludeKeywords: stringToKeywords(value.excludeKeywords),
+          };
+          await writeApi("antennas/create", payload);
+        } else {
+          const payload: AntennasUpdateRequest = {
+            ...value,
+            antennaId: antenna.id,
+            userListId: value.src === "list" ? value.userListId : null,
+            users:
+              value.src === "users" || value.src === "users_blacklist"
+                ? value.users.split("\n").filter(Boolean)
+                : [],
+            keywords: stringToKeywords(value.keywords),
+            excludeKeywords: stringToKeywords(value.excludeKeywords),
+          };
+          await writeApi("antennas/update", payload);
+        }
+        await Promise.all([refetch(), refetchShow()]);
+        navigate({ to: "/antenna" });
+      } catch (error) {
+        reportInternalError("antenna-upsert", error);
+        setSubmitError(getUserErrorMessage(error));
       }
-      await Promise.all([refetch(), refetchShow()]);
-      navigate({ to: "/antenna" });
     },
   });
 
@@ -340,6 +349,8 @@ export const AntennaForm = ({ antenna, initialListName }: AntennaFormProps) => {
       </VStack>
 
       <Separator />
+
+      <ApiErrorMessage message={submitError} />
 
       {/* 送信ボタン */}
       <HStack alignSelf="end">

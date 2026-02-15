@@ -8,6 +8,7 @@ import { routeTree } from "./routeTree.gen.ts";
 import { useFontStore } from "./store/font.ts";
 import { type LoginState, useLoginStore } from "./store/login.ts";
 import { createCustomTheme, customConfig } from "./theme/index.ts";
+import { reportInternalError } from "./utils/appError.ts";
 import { getApiUrl } from "./utils/getApiUrl.ts";
 import { getFetchObject } from "./utils/getFetchObject.ts";
 import "mfm-react-render/style.css";
@@ -47,7 +48,7 @@ export function App() {
         const me: MeDetailed = await res.json();
         useLoginStore.getState().setMySelf(me);
       } catch (error) {
-        console.error(error);
+        reportInternalError("app-fetch-myself", error);
       }
     };
 
@@ -63,7 +64,7 @@ export function App() {
         }
         useLoginStore.getState().setInstanceEmojis(emojiMap);
       } catch (error) {
-        console.error(error);
+        reportInternalError("app-fetch-instance-emojis", error);
       }
     };
 

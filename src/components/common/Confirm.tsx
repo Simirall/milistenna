@@ -9,6 +9,8 @@ import {
   useDisclosure,
 } from "@yamada-ui/react";
 import { type ReactElement, type ReactNode, useState } from "react";
+import { getUserErrorMessage, reportInternalError } from "@/utils/appError";
+import { ApiErrorMessage } from "./ApiErrorMessage";
 
 type ConfirmProps = {
   children: ReactNode;
@@ -35,6 +37,7 @@ const Confirm = ({
   onAccept,
 }: ConfirmModalInternalProps) => {
   const [isSubmitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | undefined>();
 
   return (
     <Modal.Root onClose={onClose} open={open}>
@@ -43,16 +46,24 @@ const Confirm = ({
         <Modal.Header>{title}</Modal.Header>
         <Modal.Body py="sm" whiteSpace="pre-wrap" wordBreak="break-word">
           {children}
+          <ApiErrorMessage message={submitError} />
         </Modal.Body>
         <Modal.Footer>
           <Button
             colorScheme={colorScheme}
             loading={isSubmitting}
             onClick={async () => {
+              setSubmitError(undefined);
               setSubmitting(true);
-              await onAccept();
-              setSubmitting(false);
-              onClose();
+              try {
+                await onAccept();
+                onClose();
+              } catch (error) {
+                reportInternalError("confirm-modal", error);
+                setSubmitError(getUserErrorMessage(error));
+              } finally {
+                setSubmitting(false);
+              }
             }}
             size="lg"
             variant="solid"
@@ -62,7 +73,10 @@ const Confirm = ({
           <Button
             colorScheme={colorScheme}
             loading={isSubmitting}
-            onClick={onClose}
+            onClick={() => {
+              setSubmitError(undefined);
+              onClose();
+            }}
             size="lg"
             variant="subtle"
           >
