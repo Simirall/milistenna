@@ -4,9 +4,8 @@ import { useDebounce } from "use-debounce";
 import { z } from "zod";
 import { fetcher } from "@/utils/fetcher";
 import { defaultQueryConfig } from "@/utils/queryConfig";
+import { apiEndpoints, queryKeys } from "@/utils/queryKeys";
 import { useApiQuery } from "../useApiQuery";
-
-const endpoint = "users/search-by-username-and-host";
 
 /**
  * ユーザー検索のためのペイロード型
@@ -30,11 +29,11 @@ export const usersSearchByUsernameAndHostQueryOptions = (
 ) =>
   queryOptions<ReadonlyArray<UserDetailed> | MkError>({
     enabled: !!payload.username,
-    queryFn: fetcher(endpoint, {
+    queryFn: fetcher(apiEndpoints.usersSearchByUsernameAndHost, {
       host: payload.host,
       username: payload.username,
     }),
-    queryKey: [endpoint, payload],
+    queryKey: queryKeys.users.searchByUsernameAndHost(payload),
     ...defaultQueryConfig,
   });
 

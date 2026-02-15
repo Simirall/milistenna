@@ -1,9 +1,9 @@
 import { TrashIcon } from "@phosphor-icons/react";
+import { useQueryClient } from "@tanstack/react-query";
 import { Text } from "@yamada-ui/react";
-import { useGetUsersListsShow } from "@/apis/lists/useGetUsersListsShow";
 import { ConfirmModal } from "@/components/common/Confirm";
 import { UserCard } from "@/components/domain/user/UserCard";
-import { useGetUserListsList } from "@/apis/lists/useGetUsersListsList";
+import { invalidateQueriesAfterWrite } from "@/utils/queryInvalidation";
 import { writeApi } from "@/utils/writeApi";
 
 type DeleteUserButtonProps = {
@@ -12,15 +12,16 @@ type DeleteUserButtonProps = {
 };
 
 export const DeleteUserButton = ({ listId, userId }: DeleteUserButtonProps) => {
-  const { refetch } = useGetUsersListsShow(listId);
-  const { refetch: refetchList } = useGetUserListsList();
+  const queryClient = useQueryClient();
 
   const handleClicked = async () => {
     await writeApi("users/lists/pull", {
       listId,
       userId,
     });
-    await Promise.all([refetch(), refetchList()]);
+    await invalidateQueriesAfterWrite(queryClient, "users/lists/pull", {
+      listId,
+    });
   };
 
   return (

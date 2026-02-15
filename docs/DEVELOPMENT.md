@@ -111,14 +111,13 @@ import { queryOptions } from "@tanstack/react-query";
 import type { MyData, Error as MkError } from "misskey-js/entities.js";
 import { fetcher } from "@/utils/fetcher";
 import { defaultQueryConfig } from "@/utils/queryConfig";
+import { apiEndpoints, queryKeys } from "@/utils/queryKeys";
 import { useApiQuery } from "../useApiQuery";
 
-const endpoint = "my-endpoint";
-
 export const myDataQueryOptions = () =>
-  queryOptions<MyData[] | MkError>({
-    queryFn: fetcher(endpoint),
-    queryKey: [endpoint],
+  queryOptions<ReadonlyArray<MyData> | MkError>({
+    queryFn: fetcher(apiEndpoints.myData),
+    queryKey: queryKeys.myData,
     ...defaultQueryConfig,
   });
 
@@ -136,6 +135,26 @@ export const useGetMyData = () => {
   };
 };
 ```
+
+### TanStack Queryのキャッシュ更新ルール
+
+- `queryKey`は画面やフックで直書きせず、`src/utils/queryKeys.ts`の定数・ビルダーを使う
+- 書き込み後の更新は`refetch`ではなく`queryClient.invalidateQueries`を基本とする
+- 無効化対象は`src/utils/queryInvalidation.ts`の`invalidateQueriesAfterWrite`に集約する
+- `refetch`は「同一コンポーネントで即時再取得が必須」の場合のみ使用する
+
+現在の依存関係は次の通りです。
+
+| 書き込みAPI | invalidate対象 |
+|---|---|
+| `antennas/create` | `queryKeys.antennas.list` |
+| `antennas/update` | `queryKeys.antennas.list`, `queryKeys.antennas.show(antennaId)` |
+| `antennas/delete` | `queryKeys.antennas.list`, `queryKeys.antennas.show(antennaId)` |
+| `users/lists/create` | `queryKeys.lists.list` |
+| `users/lists/update` | `queryKeys.lists.list`, `queryKeys.lists.show(listId)` |
+| `users/lists/push` | `queryKeys.lists.list`, `queryKeys.lists.show(listId)` |
+| `users/lists/pull` | `queryKeys.lists.list`, `queryKeys.lists.show(listId)` |
+| `users/lists/delete` | `queryKeys.lists.list`, `queryKeys.lists.show(listId)`, `queryKeys.antennas.list` |
 
 ## 状態管理
 

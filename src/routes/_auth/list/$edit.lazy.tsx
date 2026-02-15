@@ -1,5 +1,6 @@
 import { CaretLeftIcon, PlusIcon } from "@phosphor-icons/react";
 import { useForm } from "@tanstack/react-form";
+import { useQueryClient } from "@tanstack/react-query";
 import { createLazyFileRoute } from "@tanstack/react-router";
 import {
   Accordion,
@@ -27,9 +28,9 @@ import { useLoginStore } from "@/store/login";
 import { isError } from "@/utils/isError";
 import { DeleteListButton } from "./-components/DeleteListModal";
 import { DeleteUserButton } from "./-components/DeleteUserModal";
-import { useGetUserListsList } from "@/apis/lists/useGetUsersListsList";
 import { ApiErrorMessage } from "@/components/common/ApiErrorMessage";
 import { getUserErrorMessage, reportInternalError } from "@/utils/appError";
+import { invalidateQueriesAfterWrite } from "@/utils/queryInvalidation";
 import { writeApi } from "@/utils/writeApi";
 
 export const Route = createLazyFileRoute("/_auth/list/$edit")({
@@ -119,8 +120,7 @@ function RouteComponent() {
 type ListFormProps = { list: UserList; listId: string };
 
 const ListForm = ({ list, listId }: ListFormProps) => {
-  const { refetch } = useGetUsersListsShow(listId);
-  const { refetch: refetchList } = useGetUserListsList();
+  const queryClient = useQueryClient();
   const [accordionIndex, onChangeAccordionIndex] =
     useState<UseAccordionProps["index"]>(-1);
   const [submitError, setSubmitError] = useState<string | undefined>();
@@ -136,7 +136,9 @@ const ListForm = ({ list, listId }: ListFormProps) => {
       try {
         await writeApi("users/lists/update", value);
         onChangeAccordionIndex(-1);
-        await Promise.all([refetch(), refetchList()]);
+        await invalidateQueriesAfterWrite(queryClient, "users/lists/update", {
+          listId,
+        });
       } catch (error) {
         reportInternalError("list-update", error);
         setSubmitError(getUserErrorMessage(error));

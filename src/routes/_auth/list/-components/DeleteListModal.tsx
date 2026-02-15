@@ -1,21 +1,22 @@
+import { useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
-import { useGetAntennasList } from "@/apis/antennas/useGetAntennasList";
-import { useGetUserListsList } from "@/apis/lists/useGetUsersListsList";
 import { ConfirmModal } from "@/components/common/Confirm";
+import { invalidateQueriesAfterWrite } from "@/utils/queryInvalidation";
 import { writeApi } from "@/utils/writeApi";
 
 type DeleteListButtonProps = { listId: string; name: string };
 
 export const DeleteListButton = ({ listId, name }: DeleteListButtonProps) => {
-  const { refetch } = useGetUserListsList();
-  const { refetch: refetchAntennas } = useGetAntennasList();
+  const queryClient = useQueryClient();
   const navigate = useNavigate();
 
   const handleClicked = async () => {
     await writeApi("users/lists/delete", {
       listId,
     });
-    await Promise.all([refetch(), refetchAntennas()]);
+    await invalidateQueriesAfterWrite(queryClient, "users/lists/delete", {
+      listId,
+    });
     navigate({
       replace: true,
       to: "/list",

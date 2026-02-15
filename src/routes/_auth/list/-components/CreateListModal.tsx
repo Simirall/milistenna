@@ -1,5 +1,6 @@
 import { PlusIcon } from "@phosphor-icons/react";
 import { useForm } from "@tanstack/react-form";
+import { useQueryClient } from "@tanstack/react-query";
 import {
   Button,
   Field,
@@ -16,6 +17,7 @@ import { ApiErrorMessage } from "@/components/common/ApiErrorMessage";
 import { LimitAlert } from "@/components/common/LimitAlert";
 import { useLoginStore } from "@/store/login";
 import { getUserErrorMessage, reportInternalError } from "@/utils/appError";
+import { invalidateQueriesAfterWrite } from "@/utils/queryInvalidation";
 import { writeApi } from "@/utils/writeApi";
 
 const createListSchema = z.object({
@@ -28,7 +30,7 @@ const createListSchema = z.object({
 type CreateListModalProps = { open: boolean; onClose: () => void };
 
 const CreateListModal = ({ open, onClose }: CreateListModalProps) => {
-  const { refetch } = useGetUserListsList();
+  const queryClient = useQueryClient();
   const [submitError, setSubmitError] = useState<string | undefined>();
 
   const form = useForm({
@@ -41,7 +43,7 @@ const CreateListModal = ({ open, onClose }: CreateListModalProps) => {
         await writeApi("users/lists/create", {
           name: value.name,
         });
-        await refetch();
+        await invalidateQueriesAfterWrite(queryClient, "users/lists/create");
         onClose();
         form.reset();
       } catch (error) {

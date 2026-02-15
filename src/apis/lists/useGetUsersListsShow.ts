@@ -2,9 +2,8 @@ import { queryOptions } from "@tanstack/react-query";
 import type { Error as MkError, UserList } from "misskey-js/entities.js";
 import { fetcher } from "@/utils/fetcher";
 import { defaultQueryConfig } from "@/utils/queryConfig";
+import { apiEndpoints, queryKeys } from "@/utils/queryKeys";
 import { useApiQuery } from "../useApiQuery";
-
-const endpoint = "users/lists/show";
 
 /**
  * ユーザーリストの詳細情報を取得するためのクエリオプション
@@ -14,10 +13,10 @@ const endpoint = "users/lists/show";
 export const usersListsShowQueryOptions = (listId: string) =>
   queryOptions<UserList | MkError>({
     enabled: !!listId,
-    queryFn: fetcher(endpoint, {
+    queryFn: fetcher(apiEndpoints.usersListsShow, {
       listId,
     }),
-    queryKey: [endpoint, listId],
+    queryKey: queryKeys.lists.show(listId),
     ...defaultQueryConfig,
   });
 

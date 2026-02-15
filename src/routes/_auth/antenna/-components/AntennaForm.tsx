@@ -1,4 +1,5 @@
 import { useForm } from "@tanstack/react-form";
+import { useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import {
   Button,
@@ -18,11 +19,10 @@ import type {
   AntennasUpdateRequest,
 } from "misskey-js/entities.js";
 import { useRef, useState } from "react";
-import { useGetAntennasList } from "@/apis/antennas/useGetAntennasList";
-import { useGetAntennasShow } from "@/apis/antennas/useGetAntennasShow";
 import { ApiErrorMessage } from "@/components/common/ApiErrorMessage";
 import { getUserErrorMessage, reportInternalError } from "@/utils/appError";
 import { keywordsToString, stringToKeywords } from "@/utils/keywords";
+import { invalidateQueriesAfterWrite } from "@/utils/queryInvalidation";
 import { writeApi } from "@/utils/writeApi";
 import { AddUserToTextButton } from "./AddUserToTextButton";
 import { DeleteAntennaButton } from "./DeleteAntennaModal";
@@ -43,9 +43,8 @@ type AntennaFormProps = {
 
 export const AntennaForm = ({ antenna, initialListName }: AntennaFormProps) => {
   const isCreate = !antenna;
+  const queryClient = useQueryClient();
   const navigate = useNavigate();
-  const { refetch } = useGetAntennasList();
-  const { refetch: refetchShow } = useGetAntennasShow(antenna?.id ?? "");
   const usersTextareaRef = useRef<HTMLTextAreaElement>(null);
   const [submitError, setSubmitError] = useState<string | undefined>();
 
@@ -81,6 +80,7 @@ export const AntennaForm = ({ antenna, initialListName }: AntennaFormProps) => {
             excludeKeywords: stringToKeywords(value.excludeKeywords),
           };
           await writeApi("antennas/create", payload);
+          await invalidateQueriesAfterWrite(queryClient, "antennas/create");
         } else {
           const payload: AntennasUpdateRequest = {
             ...value,
@@ -94,8 +94,10 @@ export const AntennaForm = ({ antenna, initialListName }: AntennaFormProps) => {
             excludeKeywords: stringToKeywords(value.excludeKeywords),
           };
           await writeApi("antennas/update", payload);
+          await invalidateQueriesAfterWrite(queryClient, "antennas/update", {
+            antennaId: antenna.id,
+          });
         }
-        await Promise.all([refetch(), refetchShow()]);
         navigate({ to: "/antenna" });
       } catch (error) {
         reportInternalError("antenna-upsert", error);

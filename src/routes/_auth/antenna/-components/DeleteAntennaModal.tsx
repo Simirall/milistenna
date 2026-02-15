@@ -1,6 +1,7 @@
+import { useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
-import { useGetAntennasList } from "@/apis/antennas/useGetAntennasList";
 import { ConfirmModal } from "@/components/common/Confirm";
+import { invalidateQueriesAfterWrite } from "@/utils/queryInvalidation";
 import { writeApi } from "@/utils/writeApi";
 
 type DeleteAntennaButtonProps = { antennaId: string; name: string };
@@ -9,14 +10,16 @@ export const DeleteAntennaButton = ({
   antennaId,
   name,
 }: DeleteAntennaButtonProps) => {
-  const { refetch } = useGetAntennasList();
+  const queryClient = useQueryClient();
   const navigate = useNavigate();
 
   const handleClicked = async () => {
     await writeApi("antennas/delete", {
       antennaId,
     });
-    await refetch();
+    await invalidateQueriesAfterWrite(queryClient, "antennas/delete", {
+      antennaId,
+    });
     navigate({
       replace: true,
       to: "/antenna",

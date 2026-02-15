@@ -2,9 +2,8 @@ import { queryOptions } from "@tanstack/react-query";
 import type { Antenna, Error as MkError } from "misskey-js/entities.js";
 import { fetcher } from "@/utils/fetcher";
 import { defaultQueryConfig } from "@/utils/queryConfig";
+import { apiEndpoints, queryKeys } from "@/utils/queryKeys";
 import { useApiQuery } from "../useApiQuery";
-
-const endpoint = "antennas/list";
 
 /**
  * アンテナ一覧を取得するためのクエリオプション
@@ -12,8 +11,8 @@ const endpoint = "antennas/list";
  */
 export const antennasListQueryOptions = () =>
   queryOptions<ReadonlyArray<Antenna> | MkError>({
-    queryFn: fetcher(endpoint),
-    queryKey: [endpoint],
+    queryFn: fetcher(apiEndpoints.antennasList),
+    queryKey: queryKeys.antennas.list,
     ...defaultQueryConfig,
   });
 

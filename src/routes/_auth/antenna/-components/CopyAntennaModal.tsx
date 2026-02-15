@@ -1,3 +1,4 @@
+import { useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import {
   Button,
@@ -14,6 +15,7 @@ import { ApiErrorMessage } from "@/components/common/ApiErrorMessage";
 import { LimitAlert } from "@/components/common/LimitAlert";
 import { useLoginStore } from "@/store/login";
 import { getUserErrorMessage, reportInternalError } from "@/utils/appError";
+import { invalidateQueriesAfterWrite } from "@/utils/queryInvalidation";
 import { writeApi } from "@/utils/writeApi";
 
 type CopyAntennaModalProps = {
@@ -28,8 +30,9 @@ export const CopyAntennaButton = ({ antenna }: CopyAntennaModalProps) => {
     onOpen: onLimitOpen,
     onClose: onLimitClose,
   } = useDisclosure();
+  const queryClient = useQueryClient();
   const { mySelf } = useLoginStore();
-  const { antennas, refetch } = useGetAntennasList();
+  const { antennas } = useGetAntennasList();
   const navigate = useNavigate();
   const [name, setName] = useState(`${antenna.name} のコピー`);
   const [isSubmitting, setSubmitting] = useState(false);
@@ -67,7 +70,7 @@ export const CopyAntennaButton = ({ antenna }: CopyAntennaModalProps) => {
         excludeNotesInSensitiveChannel: antenna.excludeNotesInSensitiveChannel,
       };
       await writeApi("antennas/create", payload);
-      await refetch();
+      await invalidateQueriesAfterWrite(queryClient, "antennas/create");
       onClose();
       navigate({ to: "/antenna" });
     } catch (error) {

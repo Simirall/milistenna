@@ -3,9 +3,8 @@ import type { Following, Error as MkError } from "misskey-js/entities.js";
 import { useLoginStore } from "@/store/login";
 import { fetcher } from "@/utils/fetcher";
 import { defaultQueryConfig } from "@/utils/queryConfig";
+import { apiEndpoints, queryKeys } from "@/utils/queryKeys";
 import { useApiQuery } from "../useApiQuery";
-
-const endpoint = "users/following";
 
 /**
  * フォロー中のユーザー一覧を取得するためのクエリオプション
@@ -15,11 +14,11 @@ const endpoint = "users/following";
 export const usersFollowingQueryOptions = (userId: string) =>
   queryOptions<ReadonlyArray<Following> | MkError>({
     enabled: !!userId,
-    queryFn: fetcher(endpoint, {
+    queryFn: fetcher(apiEndpoints.usersFollowing, {
       limit: 10,
       userId,
     }),
-    queryKey: [endpoint, userId],
+    queryKey: queryKeys.users.following(userId),
     ...defaultQueryConfig,
   });
 
