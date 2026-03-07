@@ -20,6 +20,15 @@
   - ユーティリティ: camelCase（例: `fetcher.ts`）
   - カスタムフック: camelCase with `use`プレフィックス（例: `useGetAntennasList.ts`）
 
+#### 単数/複数の使い分け
+
+- **単数 (`list`, `user`, `antenna`)**: 単一リソースを表す変数/戻り値/関数名に使う
+  - 例: `list`, `useGetUsersListsShow`, `queryKeys.lists.show(listId)`
+- **複数 (`lists`, `users`, `antennas`)**: 配列や一覧取得を表す変数/戻り値/関数名に使う
+  - 例: `lists`, `useGetUsersListsList`, `queryKeys.lists.list`
+- **API名に合わせる**: Misskey APIエンドポイントが複数形の場合、フック名・query option名も同じ語形に揃える
+  - 例: `users/lists/list` → `usersListsListQueryOptions`, `useGetUsersListsList`
+
 ### ファイル構造
 
 ```typescript
@@ -62,6 +71,16 @@ pnpm lint:fix
 - 属性・キーの自動ソート（assist設定）
 
 ## コンポーネントの作成
+
+### ドメイン定数・文言の配置
+
+- ポリシーキー・上限文言・画面共通ラベルは `src/constants/` に集約する
+- ルートやコンポーネント内でのインライン文字列は、再利用される時点で定数へ切り出す
+- ドメイン別にファイルを分ける
+  - 例: `src/constants/policies.ts`（ポリシーキー、上限メッセージ）
+  - 例: `src/constants/antennas.ts`（アンテナの表示ラベル）
+- 文字列組み立てが必要な文言は関数化して定義する
+  - 例: ``limitMessages.listCreateReached(limit)``
 
 ### ディレクトリの選択
 
@@ -155,6 +174,25 @@ export const useGetMyData = () => {
 | `users/lists/push` | `queryKeys.lists.list`, `queryKeys.lists.show(listId)` |
 | `users/lists/pull` | `queryKeys.lists.list`, `queryKeys.lists.show(listId)` |
 | `users/lists/delete` | `queryKeys.lists.list`, `queryKeys.lists.show(listId)`, `queryKeys.antennas.list` |
+
+## ドキュメント同期ルール
+
+実装変更時は、以下のドキュメント更新要否をPR作成時に必ず確認します。
+
+| 変更内容 | 更新対象ドキュメント |
+|---|---|
+| API呼び出し仕様、エンドポイント、payload構造 | `docs/API.md` |
+| 画面仕様、導線、操作方法、文言 | `docs/FEATURES.md` |
+| 設計方針、責務分離、レイヤー構成 | `docs/ARCHITECTURE.md` |
+| 開発規約、運用ルール、実装パターン | `docs/DEVELOPMENT.md` |
+| セットアップ手順、開発環境要件 | `docs/SETUP.md` |
+| 改善項目の進捗・完了条件 | `docs/IMPROVEMENT_CHECKLIST.md` |
+
+### 差分更新手順（最小）
+
+1. 実装差分を「機能仕様」「設計」「運用ルール」の3観点で整理する
+2. 上表に従って更新対象ドキュメントを特定する
+3. ドキュメントへ差分追記後、PR本文で更新/非更新の理由を明記する
 
 ## 状態管理
 
