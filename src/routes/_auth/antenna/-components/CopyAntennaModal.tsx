@@ -12,6 +12,7 @@ import type { Antenna, AntennasCreateRequest } from "misskey-js/entities.js";
 import { useState } from "react";
 import { useGetAntennasList } from "@/apis/antennas/useGetAntennasList";
 import { ApiErrorMessage } from "@/components/common/ApiErrorMessage";
+import { limitMessages, policyKeys } from "@/constants/policies";
 import { LimitAlert } from "@/components/common/LimitAlert";
 import { useLoginStore } from "@/store/login";
 import { getUserErrorMessage, reportInternalError } from "@/utils/appError";
@@ -38,7 +39,7 @@ export const CopyAntennaButton = ({ antenna }: CopyAntennaModalProps) => {
   const [isSubmitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | undefined>();
 
-  const antennaLimit = mySelf?.policies.antennaLimit ?? 0;
+  const antennaLimit = mySelf?.policies[policyKeys.antennaLimit] ?? 0;
   const isLimitReached = (antennas?.length ?? 0) >= antennaLimit;
 
   const handleClick = () => {
@@ -140,8 +141,8 @@ export const CopyAntennaButton = ({ antenna }: CopyAntennaModalProps) => {
       {/* 上限到達アラート */}
       <LimitAlert onClose={onLimitClose} open={limitOpen}>
         <Text>
-          アンテナの作成上限（{antennaLimit}件）に達しています。
-          新しいアンテナを作成するには、既存のアンテナを削除してください。
+          {limitMessages.antennaCreateReached(antennaLimit)}
+          {limitMessages.antennaCreateAction}
         </Text>
       </LimitAlert>
     </>

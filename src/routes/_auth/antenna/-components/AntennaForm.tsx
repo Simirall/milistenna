@@ -1,4 +1,4 @@
-import { useForm } from "@tanstack/react-form";
+import { useForm, useStore } from "@tanstack/react-form";
 import { useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import {
@@ -20,6 +20,7 @@ import type {
 } from "misskey-js/entities.js";
 import { useRef, useState } from "react";
 import { ApiErrorMessage } from "@/components/common/ApiErrorMessage";
+import { antennaSourceOptions } from "@/constants/antennas";
 import { getUserErrorMessage, reportInternalError } from "@/utils/appError";
 import { keywordsToString, stringToKeywords } from "@/utils/keywords";
 import { invalidateQueriesAfterWrite } from "@/utils/queryInvalidation";
@@ -27,14 +28,6 @@ import { writeApi } from "@/utils/writeApi";
 import { AddUserToTextButton } from "./AddUserToTextButton";
 import { DeleteAntennaButton } from "./DeleteAntennaModal";
 import { SelectListField } from "./SelectListModal";
-
-/** 受信ソースの選択肢 */
-const srcOptions: { label: string; value: Antenna["src"] }[] = [
-  { label: "すべてのノート", value: "all" },
-  { label: "指定したユーザー", value: "users" },
-  { label: "指定したユーザーを除外", value: "users_blacklist" },
-  { label: "リスト", value: "list" },
-];
 
 type AntennaFormProps = {
   antenna?: Antenna;
@@ -106,6 +99,8 @@ export const AntennaForm = ({ antenna, initialListName }: AntennaFormProps) => {
     },
   });
 
+  const selectedSrc = useStore(form.store, (state) => state.values.src);
+
   return (
     <VStack
       as="form"
@@ -140,7 +135,7 @@ export const AntennaForm = ({ antenna, initialListName }: AntennaFormProps) => {
               }
               value={field.state.value}
             >
-              {srcOptions.map((opt) => (
+              {antennaSourceOptions.map((opt) => (
                 <NativeSelect.Option key={opt.value} value={opt.value}>
                   {opt.label}
                 </NativeSelect.Option>
@@ -151,79 +146,71 @@ export const AntennaForm = ({ antenna, initialListName }: AntennaFormProps) => {
       </form.Field>
 
       {/* ソースがusersまたはusers_blacklistの場合: ユーザー入力欄 */}
-      <form.Subscribe selector={(state) => state.values.src}>
-        {(src) =>
-          (src === "users" || src === "users_blacklist") && (
-            <form.Field name="users">
-              {(field) => (
+      {(selectedSrc === "users" || selectedSrc === "users_blacklist") && (
+        <form.Field name="users">
+          {(field) => (
+            <Field.Root
+              helperMessage="1行に1ユーザーずつ入力してください（例: @user@example.com）"
+              label="ユーザー"
+              required
+            >
+              <Textarea
+                autosize
+                minRows={3}
+                onBlur={field.handleBlur}
+                onChange={(e) => field.handleChange(e.target.value)}
+                placeholder={"@user@example.com"}
+                ref={usersTextareaRef}
+                required
+                value={field.state.value}
+              />
+              <AddUserToTextButton
+                onChange={(v) => field.handleChange(v)}
+                textareaRef={usersTextareaRef}
+                value={field.state.value}
+              />
+            </Field.Root>
+          )}
+        </form.Field>
+      )}
+
+      {/* ソースがlistの場合: リスト選択 */}
+      {selectedSrc === "list" && (
+        <form.Field
+          name="userListId"
+          validators={{
+            onSubmit: ({ value }) =>
+              !value ? "リストを選択してください" : undefined,
+          }}
+        >
+          {(listIdField) => (
+            <form.Field name="userListName">
+              {(listNameField) => (
                 <Field.Root
-                  helperMessage="1行に1ユーザーずつ入力してください（例: @user@example.com）"
-                  label="ユーザー"
+                  errorMessage={listIdField.state.meta.errors[0]}
+                  helperMessage="リストを削除すると、そのリストをソースにしているアンテナも削除されます"
+                  invalid={listIdField.state.meta.errors.length > 0}
+                  label="リスト"
                   required
                 >
-                  <Textarea
-                    autosize
-                    minRows={3}
-                    onBlur={field.handleBlur}
-                    onChange={(e) => field.handleChange(e.target.value)}
-                    placeholder={"@user@example.com"}
-                    ref={usersTextareaRef}
-                    required
-                    value={field.state.value}
-                  />
-                  <AddUserToTextButton
-                    onChange={(v) => field.handleChange(v)}
-                    textareaRef={usersTextareaRef}
-                    value={field.state.value}
+                  <SelectListField
+                    listId={listIdField.state.value}
+                    listName={listNameField.state.value}
+                    onClear={() => {
+                      listIdField.handleChange("");
+                      listNameField.handleChange("");
+                    }}
+                    onSelect={(list) => {
+                      listIdField.handleChange(list.id);
+                      listNameField.handleChange(list.name);
+                    }}
                   />
                 </Field.Root>
               )}
             </form.Field>
-          )
-        }
-      </form.Subscribe>
-
-      {/* ソースがlistの場合: リスト選択 */}
-      <form.Subscribe selector={(state) => state.values.src}>
-        {(src) =>
-          src === "list" && (
-            <form.Field
-              name="userListId"
-              validators={{
-                onSubmit: ({ value }) =>
-                  !value ? "リストを選択してください" : undefined,
-              }}
-            >
-              {(listIdField) => (
-                <form.Field name="userListName">
-                  {(listNameField) => (
-                    <Field.Root
-                      errorMessage={listIdField.state.meta.errors[0]}
-                      helperMessage="リストを削除すると、そのリストをソースにしているアンテナも削除されます"
-                      invalid={listIdField.state.meta.errors.length > 0}
-                      label="リスト"
-                      required
-                    >
-                      <SelectListField
-                        listId={listIdField.state.value}
-                        listName={listNameField.state.value}
-                        onClear={() => {
-                          listIdField.handleChange("");
-                          listNameField.handleChange("");
-                        }}
-                        onSelect={(list) => {
-                          listIdField.handleChange(list.id);
-                          listNameField.handleChange(list.name);
-                        }}
-                      />
-                    </Field.Root>
-                  )}
-                </form.Field>
-              )}
-            </form.Field>
-          )
-        }
-      </form.Subscribe>
+          )}
+        </form.Field>
+      )}
 
       <Separator />
 

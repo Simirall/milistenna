@@ -1,5 +1,5 @@
 import { PlusIcon } from "@phosphor-icons/react";
-import { useForm } from "@tanstack/react-form";
+import { useForm, useStore } from "@tanstack/react-form";
 import { useQueryClient } from "@tanstack/react-query";
 import {
   Button,
@@ -12,9 +12,10 @@ import {
 } from "@yamada-ui/react";
 import { useState } from "react";
 import { z } from "zod";
-import { useGetUserListsList } from "@/apis/lists/useGetUsersListsList";
+import { useGetUsersListsList } from "@/apis/lists/useGetUsersListsList";
 import { ApiErrorMessage } from "@/components/common/ApiErrorMessage";
 import { LimitAlert } from "@/components/common/LimitAlert";
+import { limitMessages, policyKeys } from "@/constants/policies";
 import { useLoginStore } from "@/store/login";
 import { getUserErrorMessage, reportInternalError } from "@/utils/appError";
 import { invalidateQueriesAfterWrite } from "@/utils/queryInvalidation";
@@ -56,6 +57,9 @@ const CreateListModal = ({ open, onClose }: CreateListModalProps) => {
     },
   });
 
+  const canSubmit = useStore(form.store, (state) => state.canSubmit);
+  const isSubmitting = useStore(form.store, (state) => state.isSubmitting);
+
   return (
     <Modal.Root
       onClose={() => {
@@ -95,21 +99,15 @@ const CreateListModal = ({ open, onClose }: CreateListModalProps) => {
           <ApiErrorMessage message={submitError} />
         </Modal.Body>
         <Modal.Footer>
-          <form.Subscribe
-            selector={(state) => [state.canSubmit, state.isSubmitting]}
+          <Button
+            colorScheme="sky"
+            disabled={!canSubmit}
+            loading={isSubmitting}
+            size="lg"
+            type="submit"
           >
-            {([canSubmit, isSubmitting]) => (
-              <Button
-                colorScheme="sky"
-                disabled={!canSubmit}
-                loading={isSubmitting}
-                size="lg"
-                type="submit"
-              >
-                <Text>作成</Text>
-              </Button>
-            )}
-          </form.Subscribe>
+            <Text>作成</Text>
+          </Button>
           <Button
             colorScheme="sky"
             onClick={() => {
@@ -136,9 +134,9 @@ export const CreateListModalButton = () => {
     onClose: onLimitClose,
   } = useDisclosure();
   const { mySelf } = useLoginStore();
-  const { lists } = useGetUserListsList();
+  const { lists } = useGetUsersListsList();
 
-  const userListLimit = mySelf?.policies.userListLimit ?? 0;
+  const userListLimit = mySelf?.policies[policyKeys.userListLimit] ?? 0;
   const isLimitReached = (lists?.length ?? 0) >= userListLimit;
 
   return (
@@ -158,8 +156,8 @@ export const CreateListModalButton = () => {
       <CreateListModal onClose={onClose} open={open} />
       <LimitAlert onClose={onLimitClose} open={limitOpen}>
         <Text>
-          リストの作成上限（{userListLimit}件）に達しています。
-          新しいリストを作成するには、既存のリストを削除してください。
+          {limitMessages.listCreateReached(userListLimit)}
+          {limitMessages.listCreateAction}
         </Text>
       </LimitAlert>
     </>

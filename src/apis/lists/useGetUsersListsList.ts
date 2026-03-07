@@ -20,7 +20,7 @@ export const usersListsListQueryOptions = () =>
  * ユーザーリスト一覧を取得するためのカスタムフック
  * @returns ユーザーリスト一覧とクエリの状態
  */
-export const useGetUserListsList = () => {
+export const useGetUsersListsList = () => {
   const { data, isLoading, error, refetch, isApiError } = useApiQuery(
     usersListsListQueryOptions(),
   );

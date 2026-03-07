@@ -24,6 +24,7 @@ import { LimitAlert } from "@/components/common/LimitAlert";
 import { Loader } from "@/components/common/Loader";
 import { AddUserModalButton } from "./-components/AddUserModal";
 import { UserCard } from "@/components/domain/user/UserCard";
+import { limitMessages, policyKeys } from "@/constants/policies";
 import { useLoginStore } from "@/store/login";
 import { isError } from "@/utils/isError";
 import { DeleteListButton } from "./-components/DeleteListModal";
@@ -56,7 +57,8 @@ function RouteComponent() {
     return <Loader />;
   }
 
-  const userEachUserListsLimit = mySelf?.policies.userEachUserListsLimit ?? 0;
+  const userEachUserListsLimit =
+    mySelf?.policies[policyKeys.userEachUserListsLimit] ?? 0;
   const isLimitReached = (list.userIds?.length ?? 0) >= userEachUserListsLimit;
 
   return (
@@ -78,9 +80,8 @@ function RouteComponent() {
             </Button>
             <LimitAlert onClose={onClose} open={open}>
               <Text>
-                このリストのユーザー数上限（{userEachUserListsLimit}
-                人）に達しています。
-                新しいユーザーを追加するには、既存のユーザーを削除してください。
+                {limitMessages.listMemberReached(userEachUserListsLimit)}
+                {limitMessages.listMemberAction}
               </Text>
             </LimitAlert>
           </>
@@ -89,7 +90,7 @@ function RouteComponent() {
         )}
         <Text>
           メンバー(
-          {`${list.userIds?.length ?? 0}/${mySelf?.policies.userEachUserListsLimit}`}
+          {`${list.userIds?.length ?? 0}/${mySelf?.policies[policyKeys.userEachUserListsLimit]}`}
           )
         </Text>
         {list.userIds && (

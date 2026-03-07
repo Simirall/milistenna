@@ -9,7 +9,6 @@ import {
   Text,
   useDisclosure,
 } from "@yamada-ui/react";
-import type { Antenna } from "misskey-js/entities.js";
 import { useGetAntennasList } from "@/apis/antennas/useGetAntennasList";
 import { FloatLinkButton } from "@/components/common/FloatLinkButton";
 import { LimitAlert } from "@/components/common/LimitAlert";
@@ -17,6 +16,12 @@ import { LinkButton } from "@/components/common/LinkButton";
 import { Loader } from "@/components/common/Loader";
 import { GridCard } from "@/components/common/layout/GridCard";
 import { GridContainer } from "@/components/common/layout/GridContainer";
+import { antennaSourceLabels } from "@/constants/antennas";
+import {
+  commonDisplayLabels,
+  limitMessages,
+  policyKeys,
+} from "@/constants/policies";
 import { useLoginStore } from "@/store/login";
 import { CopyAntennaButton } from "./-components/CopyAntennaModal";
 import { DeleteAntennaButton } from "./-components/DeleteAntennaModal";
@@ -26,22 +31,12 @@ export const Route = createLazyFileRoute("/_auth/antenna/")({
   component: RouteComponent,
 });
 
-const antennaSource: {
-  [key in Antenna["src"]]: string;
-} = {
-  all: "すべての投稿",
-  home: "ホーム？",
-  list: "指定したリスト",
-  users: "指定したユーザーの投稿",
-  users_blacklist: "指定したユーザーを除いたすべて",
-};
-
 function RouteComponent() {
   const { mySelf } = useLoginStore();
   const { antennas } = useGetAntennasList();
   const { open, onOpen, onClose } = useDisclosure();
 
-  const antennaLimit = mySelf?.policies.antennaLimit ?? 0;
+  const antennaLimit = mySelf?.policies[policyKeys.antennaLimit] ?? 0;
   const isLimitReached = (antennas?.length ?? 0) >= antennaLimit;
 
   return (
@@ -69,8 +64,8 @@ function RouteComponent() {
           </IconButton>
           <LimitAlert onClose={onClose} open={open}>
             <Text>
-              アンテナの作成上限（{antennaLimit}件）に達しています。
-              新しいアンテナを作成するには、既存のアンテナを削除してください。
+              {limitMessages.antennaCreateReached(antennaLimit)}
+              {limitMessages.antennaCreateAction}
             </Text>
           </LimitAlert>
         </>
@@ -102,7 +97,7 @@ const AntennaList = () => {
   }
 
   if (antennas.length === 0) {
-    return <Center>ありません</Center>;
+    return <Center>{commonDisplayLabels.empty}</Center>;
   }
 
   return antennas.map((a) => (
@@ -134,7 +129,7 @@ const AntennaList = () => {
       key={a.id}
       title={a.name}
     >
-      <Text>ソース: {antennaSource[a.src]}</Text>
+      <Text>ソース: {antennaSourceLabels[a.src]}</Text>
     </GridCard>
   ));
 };

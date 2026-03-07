@@ -12,7 +12,7 @@ import {
   VStack,
 } from "@yamada-ui/react";
 import { useMemo, useState } from "react";
-import { useGetUserListsList } from "@/apis/lists/useGetUsersListsList";
+import { useGetUsersListsList } from "@/apis/lists/useGetUsersListsList";
 import { EmptyState } from "@/components/common/EmptyState";
 import { Loader } from "@/components/common/Loader";
 
@@ -27,7 +27,7 @@ type SelectListModalProps = {
  * 自分のリスト一覧を表示し、検索・選択ができる
  */
 const SelectListModal = ({ open, onClose, onSelect }: SelectListModalProps) => {
-  const { lists, isLoading } = useGetUserListsList();
+  const { lists, isLoading } = useGetUsersListsList();
   const [searchQuery, setSearchQuery] = useState("");
 
   /** 検索クエリでフィルタリングされたリスト */

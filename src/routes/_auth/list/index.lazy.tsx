@@ -1,12 +1,13 @@
 import { createLazyFileRoute } from "@tanstack/react-router";
 import { Box, Center, Heading, HStack, Text } from "@yamada-ui/react";
-import { useGetUserListsList } from "@/apis/lists/useGetUsersListsList";
+import { useGetUsersListsList } from "@/apis/lists/useGetUsersListsList";
 import { LinkButton } from "@/components/common/LinkButton";
 import { Loader } from "@/components/common/Loader";
 import { GridCard } from "@/components/common/layout/GridCard";
 import { GridContainer } from "@/components/common/layout/GridContainer";
 import { CreateListModalButton } from "./-components/CreateListModal";
 import { DeleteListButton } from "./-components/DeleteListModal";
+import { commonDisplayLabels } from "@/constants/policies";
 import { useLoginStore } from "@/store/login";
 import { ExternalLinkButton } from "@/components/common/ExternalLinkButton";
 import { FloatLinkButton } from "@/components/common/FloatLinkButton";
@@ -23,7 +24,7 @@ function RouteComponent() {
       <Box>
         <Heading textAlign="center">リスト一覧</Heading>
         <GridContainer>
-          <ListList />
+          <ListCards />
         </GridContainer>
       </Box>
       <CreateListModalButton />
@@ -40,8 +41,8 @@ function RouteComponent() {
   );
 }
 
-const ListList = () => {
-  const { lists } = useGetUserListsList();
+const ListCards = () => {
+  const { lists } = useGetUsersListsList();
   const { instance } = useLoginStore();
 
   if (!lists) {
@@ -49,7 +50,7 @@ const ListList = () => {
   }
 
   if (lists.length === 0) {
-    return <Center>ありません</Center>;
+    return <Center>{commonDisplayLabels.empty}</Center>;
   }
 
   return lists.map((l) => (
