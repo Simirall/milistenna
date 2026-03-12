@@ -4,16 +4,4 @@ pnpm = "10.28"
 
 [tasks.sync-ai]
 description = "Sync AI instruction files"
-run = '''
-#!/usr/bin/env bash
-# miseのキャッシュからスクリプトを取得して実行
-TMP=$(mktemp -d)
-git clone --depth 1 git@github.com:Simirall/ai-files.git "$TMP"
-bash "$TMP/sync.sh"
-rm -rf "$TMP"
-'''
-
-# remote script機能が安定したらこっちにしたい
-[tasks.sync-ai-tobe]
-description = "Sync AI instruction files"
 file = "git::ssh://git@github.com/Simirall/ai-files.git//sync.sh?ref=main"
